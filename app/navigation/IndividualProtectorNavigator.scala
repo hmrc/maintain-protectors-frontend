@@ -57,7 +57,7 @@ class IndividualProtectorNavigator @Inject()() extends Navigator {
     case CountryOfResidenceUkYesNoPage => ua =>
       yesNoNav(ua, CountryOfResidenceUkYesNoPage, navigateAwayFromCountryOfResidenceQuestions(mode, ua), rts.CountryOfResidenceController.onPageLoad(mode))
     case AddressYesNoPage => ua =>
-      yesNoNav(ua, AddressYesNoPage, rts.LiveInTheUkYesNoController.onPageLoad(mode), navigateToStartDateQuestionOrCheckDetails(mode, ua))
+      yesNoNav(ua, AddressYesNoPage, rts.LiveInTheUkYesNoController.onPageLoad(mode), navigateAwayFromIdentificationQuestions(mode, ua))
     case LiveInTheUkYesNoPage => ua =>
       yesNoNav(ua, LiveInTheUkYesNoPage, rts.UkAddressController.onPageLoad(mode), rts.NonUkAddressController.onPageLoad(mode))
     case PassportDetailsYesNoPage => ua =>
