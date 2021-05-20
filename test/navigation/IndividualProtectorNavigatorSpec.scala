@@ -551,12 +551,12 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
               .mustBe(rts.LiveInTheUkYesNoController.onPageLoad(mode))
           }
 
-          "-> No -> Start date page" in {
+          "-> No -> Has mental capacity page" in {
             val answers = baseAnswers
               .set(page, false).success.value
 
             navigator.nextPage(page, mode, answers)
-              .mustBe(addRts.StartDateController.onPageLoad())
+              .mustBe(rts.MentalCapacityYesNoController.onPageLoad(mode))
           }
         }
 
