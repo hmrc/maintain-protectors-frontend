@@ -17,7 +17,6 @@
 package utils.print
 
 import models.{Address, CombinedPassportOrIdCard, IdCard, NonUkAddress, Passport, UkAddress}
-import org.joda.time.{LocalDate => JodaDate}
 import play.api.i18n.Messages
 import play.twirl.api.Html
 import play.twirl.api.HtmlFormat.escape
@@ -33,8 +32,7 @@ class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils,
                                        countryOptions: CountryOptions) {
 
   def formatDate(date: JavaDate)(implicit messages: Messages): Html = {
-    val convertedDate: JodaDate = new JodaDate(date.getYear, date.getMonthValue, date.getDayOfMonth)
-    escape(languageUtils.Dates.formatDate(convertedDate))
+    escape(languageUtils.Dates.formatDate(date))
   }
 
   def yesOrNo(answer: Boolean)(implicit messages: Messages): Html = {
