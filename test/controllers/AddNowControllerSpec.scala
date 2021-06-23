@@ -18,10 +18,14 @@ package controllers
 
 import base.SpecBase
 import forms.AddProtectorTypeFormProvider
-import models.{NormalMode, ProtectorType}
+import models.ProtectorType
+import navigation.ProtectorNavigator
+import org.mockito.Matchers.any
+import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.AddNowPage
 import play.api.data.Form
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.AddNowView
@@ -73,36 +77,23 @@ class AddNowControllerSpec extends SpecBase with MockitoSugar {
       application.stop()
     }
 
-    "redirect to the next page when Individual protector is submitted" in {
+    "redirect to the next page when valid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val mockNavigator = mock[ProtectorNavigator]
+      when(mockNavigator.addProtectorNowRoute(any())).thenReturn(fakeNavigator.desiredRoute)
 
-      val request =
-        FakeRequest(POST, addNowRoute)
-          .withFormUrlEncodedBody(("value", individualProtectorAnswer.toString))
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[ProtectorNavigator].toInstance(mockNavigator))
+        .build()
 
-      val result = route(application, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual controllers.individual.routes.NameController.onPageLoad(NormalMode).url
-
-      application.stop()
-    }
-
-    "redirect to the next page when Business protector is submitted" in {
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
-      val request =
-        FakeRequest(POST, addNowRoute)
-          .withFormUrlEncodedBody(("value", businessProtectorAnswer.toString))
+      val request = FakeRequest(POST, addNowRoute)
+        .withFormUrlEncodedBody(("value", individualProtectorAnswer.toString))
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.business.routes.NameController.onPageLoad(NormalMode).url
+      redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
 
       application.stop()
     }

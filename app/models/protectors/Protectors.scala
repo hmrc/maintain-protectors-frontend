@@ -16,9 +16,12 @@
 
 package models.protectors
 
+import models.Constant.MAX
+import models.ProtectorType
 import play.api.i18n.{Messages, MessagesProvider}
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Reads, __}
+import viewmodels.RadioOption
 
 import java.time.LocalDate
 
@@ -34,17 +37,28 @@ case class Protectors(protector: List[IndividualProtector],
   def addToHeading()(implicit mp: MessagesProvider): String = {
 
     size match {
-      case 0 => Messages("addAProtector.heading")
-      case 1 => Messages("addAProtector.singular.heading")
-      case l => Messages("addAProtector.count.heading", l)
+      case c if c > 1 => Messages("addAProtector.count.heading", c)
+      case _ => Messages("addAProtector.heading")
     }
   }
 
-  val isMaxedOut: Boolean = {
-    (protector ++ protectorCompany).size >= 25
+  private val options: List[(Int, ProtectorType)] = {
+    (protector.size, ProtectorType.IndividualProtector) ::
+      (protectorCompany.size, ProtectorType.BusinessProtector) ::
+      Nil
   }
 
-  val isNotMaxedOut: Boolean = !isMaxedOut
+  val nonMaxedOutOptions: List[RadioOption] = {
+    options.filter(x => x._1 < MAX).map {
+      x => RadioOption(ProtectorType.prefix, x._2.toString)
+    }
+  }
+
+  val maxedOutOptions: List[RadioOption] = {
+    options.filter(x => x._1 >= MAX).map {
+      x => RadioOption(ProtectorType.prefix, x._2.toString)
+    }
+  }
 
 }
 

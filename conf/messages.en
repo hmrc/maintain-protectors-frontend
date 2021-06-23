@@ -110,14 +110,15 @@ featureNotAvailable.link = contact our trusts helpline (opens in a new window or
 featureNotAvailable.p2 = You will be able to update these details online in the future.
 
 addAProtector.heading = Add a protector
-addAProtector.singular.heading = Add a protector
 addAProtector.count.heading = The trust has {0} protectors
 addAProtector.additional-content = Do you want to add a new protector?
 addAProtector.add-them-now = Yes, I want to add them now
 addAProtector.add-them-later = No, not now
 addAProtector.no-complete = No, all the protectors are up to date
 addAProtector.error.required = Select yes if you want to add a new protector
-addAProtector.maxedOut = You cannot enter another protector as you have entered a maximum of 25.
+addAProtector.maxedOut.just1 = You cannot add another {0} as you have entered a maximum of 25.
+addAProtector.maxedOut.just1.paragraph = Check the protectors you have added. If you have further protectors to add within this type, write to HMRC with their details.
+addAProtector.maxedOut = You cannot enter another protector as you have entered a maximum of 50.
 addAProtector.maxedOut.paragraph = Check the protectors you have added. If you have further protectors to add, write to HMRC with their details.
 
 addAProtectorYesNo.title = Do you want to add a protector?

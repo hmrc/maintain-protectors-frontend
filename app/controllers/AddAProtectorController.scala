@@ -20,8 +20,9 @@ import config.FrontendAppConfig
 import connectors.TrustsStoreConnector
 import controllers.actions.StandardActionSets
 import forms.{AddAProtectorFormProvider, YesNoFormProvider}
-import javax.inject.Inject
 import models.AddAProtector
+import models.protectors.Protectors
+import navigation.ProtectorNavigator
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -29,10 +30,10 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.AddAProtectorViewHelper
+import utils.{AddAProtectorViewHelper, Session}
 import views.html.{AddAProtectorView, AddAProtectorYesNoView, MaxedOutProtectorsView}
-import utils.Session
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddAProtectorController @Inject()(
@@ -47,12 +48,13 @@ class AddAProtectorController @Inject()(
                                          repository: PlaybackRepository,
                                          addAnotherView: AddAProtectorView,
                                          yesNoView: AddAProtectorYesNoView,
-                                         completeView: MaxedOutProtectorsView
+                                         completeView: MaxedOutProtectorsView,
+                                         navigator: ProtectorNavigator
                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
-  val addAnotherForm : Form[AddAProtector] = addAnotherFormProvider()
+  private val addAnotherForm: Form[AddAProtector] = addAnotherFormProvider()
 
-  val yesNoForm: Form[Boolean] = yesNoFormProvider.withPrefix("addAProtectorYesNo")
+  private val yesNoForm: Form[Boolean] = yesNoFormProvider.withPrefix("addAProtectorYesNo")
 
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
@@ -62,24 +64,28 @@ class AddAProtectorController @Inject()(
         updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
         _ <- repository.set(updatedAnswers)
       } yield {
+
         val protectorRows = new AddAProtectorViewHelper(protectors).rows
 
-        protectors.size match {
-          case 0 =>
+        protectors match {
+          case Protectors(Nil, Nil) =>
             Ok(yesNoView(yesNoForm))
-          case _ if protectors.isNotMaxedOut =>
-            Ok(addAnotherView(
-              form = addAnotherForm,
-              inProgressProtectors = protectorRows.inProgress,
-              completeProtectors = protectorRows.complete,
-              heading = protectors.addToHeading
-            ))
-          case _ if protectors.isMaxedOut =>
-            Ok(completeView(
-              inProgressProtectors = protectorRows.inProgress,
-              completeProtectors = protectorRows.complete,
-              heading = protectors.addToHeading
-            ))
+          case _ =>
+            if (protectors.nonMaxedOutOptions.isEmpty) {
+              Ok(completeView(
+                inProgressProtectors = protectorRows.inProgress,
+                completeProtectors = protectorRows.complete,
+                heading = protectors.addToHeading
+              ))
+            } else {
+              Ok(addAnotherView(
+                form = addAnotherForm,
+                inProgressProtectors = protectorRows.inProgress,
+                completeProtectors = protectorRows.complete,
+                heading = protectors.addToHeading,
+                maxedOut = protectors.maxedOutOptions.map(x => x.messageKey)
+              ))
+            }
         }
       }
   }
@@ -122,7 +128,8 @@ class AddAProtectorController @Inject()(
                 formWithErrors,
                 rows.inProgress,
                 rows.complete,
-                protectors.addToHeading
+                protectors.addToHeading,
+                maxedOut = protectors.maxedOutOptions.map(x => x.messageKey)
               )
             ))
           },
@@ -131,7 +138,7 @@ class AddAProtectorController @Inject()(
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
                 _ <- repository.set(updatedAnswers)
-              } yield Redirect(controllers.routes.AddNowController.onPageLoad())
+              } yield Redirect(navigator.addProtectorRoute(protectors))
 
             case AddAProtector.YesLater =>
               Future.successful(Redirect(appConfig.maintainATrustOverview))

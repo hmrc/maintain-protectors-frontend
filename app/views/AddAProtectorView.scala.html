@@ -24,14 +24,17 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_],
+@(
+    form: Form[_],
     inProgressProtectors: Seq[AddRow],
     completeProtectors: Seq[AddRow],
-    heading: String)(implicit request: Request[_], messages: Messages)
+    heading: String,
+    maxedOut: List[String]
+)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)}$heading"
-    ) {
+) {
 
     @formHelper(action = AddAProtectorController.submitAnother(), 'autoComplete -> "off") {
 
@@ -42,6 +45,13 @@
         @components.data_list(inProgressProtectors, "inprogress")
 
         @components.data_list(completeProtectors, "complete")
+
+        @if(maxedOut.nonEmpty) {
+            <ul>
+                <li class="panel-indent"><p>@messages("addAProtector.maxedOut.just1", messages(maxedOut.head).toLowerCase)</p></li>
+                <li class="panel-indent"><p>@messages("addAProtector.maxedOut.just1.paragraph")</p></li>
+            </ul>
+        }
 
         @components.input_radio(
             field = form("value"),

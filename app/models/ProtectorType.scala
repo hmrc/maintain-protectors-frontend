@@ -23,6 +23,8 @@ sealed trait ProtectorType
 
 object ProtectorType extends Enumerable.Implicits {
 
+  val prefix = "whatTypeOfProtector"
+
   case object IndividualProtector extends WithName("individual") with ProtectorType
   case object BusinessProtector extends WithName("business") with ProtectorType
 
@@ -32,7 +34,7 @@ object ProtectorType extends Enumerable.Implicits {
 
   val options: List[RadioOption] = values.map {
     value =>
-      RadioOption("whatTypeOfProtector", value.toString)
+      RadioOption(prefix, value.toString)
   }
 
   implicit val enumerable: Enumerable[ProtectorType] =

@@ -18,9 +18,8 @@ package controllers
 
 import controllers.actions.StandardActionSets
 import forms.AddProtectorTypeFormProvider
-import javax.inject.Inject
-import models.ProtectorType.IndividualProtector
-import models.{NormalMode, ProtectorType}
+import models.ProtectorType
+import navigation.ProtectorNavigator
 import pages.AddNowPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -29,6 +28,7 @@ import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.AddNowView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddNowController @Inject()(
@@ -37,8 +37,9 @@ class AddNowController @Inject()(
                                   val controllerComponents: MessagesControllerComponents,
                                   view: AddNowView,
                                   formProvider: AddProtectorTypeFormProvider,
-                                  repository: PlaybackRepository
-                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                  repository: PlaybackRepository,
+                                  navigator: ProtectorNavigator
+                                )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   val form: Form[ProtectorType] = formProvider()
 
@@ -64,12 +65,7 @@ class AddNowController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(AddNowPage, value))
             _ <- repository.set(updatedAnswers)
-          } yield {
-            value match {
-              case IndividualProtector => Redirect(controllers.individual.routes.NameController.onPageLoad(NormalMode))
-              case _ => Redirect(controllers.business.routes.NameController.onPageLoad(NormalMode))
-            }
-          }
+          } yield Redirect(navigator.addProtectorNowRoute(value))
       )
   }
 }

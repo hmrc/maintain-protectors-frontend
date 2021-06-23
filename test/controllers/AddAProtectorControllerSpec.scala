@@ -228,7 +228,8 @@ class AddAProtectorControllerSpec extends SpecBase with ScalaFutures {
             addProtectorForm,
             Nil,
             protectorRows,
-            "The trust has 2 protectors"
+            "The trust has 2 protectors",
+            Nil
           )(request, messages).toString
 
         application.stop()
@@ -327,7 +328,8 @@ class AddAProtectorControllerSpec extends SpecBase with ScalaFutures {
             boundForm,
             Nil,
             protectorRows,
-            "The trust has 2 protectors"
+            "The trust has 2 protectors",
+            Nil
           )(request, messages).toString
 
         application.stop()
@@ -338,7 +340,7 @@ class AddAProtectorControllerSpec extends SpecBase with ScalaFutures {
 
       "return OK and the correct view for a GET" in {
 
-        val protectors = Protectors(List.fill(12)(individualProtector(true)), List.fill(13)(businessProtector(true)))
+        val protectors = Protectors(List.fill(25)(individualProtector(true)), List.fill(25)(businessProtector(true)))
 
         val fakeService = new FakeService(protectors)
 
@@ -364,7 +366,7 @@ class AddAProtectorControllerSpec extends SpecBase with ScalaFutures {
             protectorRows.complete,
             protectors.addToHeading
           )(request, messages).toString
-        content must include("You cannot enter another protector as you have entered a maximum of 25.")
+        content must include("You cannot enter another protector as you have entered a maximum of 50.")
         content must include("If you have further protectors to add, write to HMRC with their details.")
 
         application.stop()

@@ -19,7 +19,7 @@ package controllers.business
 import base.SpecBase
 import config.annotations.BusinessProtector
 import forms.CountryFormProvider
-import models.{Name, NormalMode, UserAnswers}
+import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import pages.business.{CountryOfResidencePage, NamePage}
 import play.api.data.Form
