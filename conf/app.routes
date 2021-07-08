@@ -1,5 +1,8 @@
 # microservice specific routes
 
+->         /govuk-frontend                              govuk.Routes
+->         /hmrc-frontend                               hmrcfrontend.Routes
+
 ->         /individual                                  individualProtector.Routes
 
 ->         /business                                    businessProtector.Routes
