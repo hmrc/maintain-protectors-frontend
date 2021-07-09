@@ -14,26 +14,18 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
-@import views.html.components.Heading
-
 @this(
-    main_template: MainTemplate,
-    config: FrontendAppConfig,
-    heading: Heading
+    button: GovukButton,
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@(overrideMessage: Option[String] = None, submitClass: Option[String] = None)(implicit messages: Messages)
 
-@main_template(
-    title = messages("featureNotAvailable.title"),
-    showBackLink = true
-) {
-
-    @heading("featureNotAvailable.heading")
-
-    <p>@messages("featureNotAvailable.p1") <a href="@config.helplineUrl" target="_blank">@messages("featureNotAvailable.link")</a></p>
-
-    <p>@messages("featureNotAvailable.p2")</p>
-
-}
+@button(Button(
+    attributes = Map("id"->"submit"),
+    classes = s"button ${submitClass.getOrElse("")}",
+    content = if(overrideMessage.isEmpty) {
+        Text(messages("site.save.continue"))
+    } else {
+        Text(messages(overrideMessage.get))
+    }
+))

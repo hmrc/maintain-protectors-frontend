@@ -14,26 +14,8 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
-@import views.html.components.Heading
+@this()
 
-@this(
-    main_template: MainTemplate,
-    config: FrontendAppConfig,
-    heading: Heading
-)
+@(href : String, id : String = "", key : String, openInNewWindow: Boolean = false)(implicit messages: Messages)
 
-@()(implicit request: Request[_], messages: Messages)
-
-@main_template(
-    title = messages("featureNotAvailable.title"),
-    showBackLink = true
-) {
-
-    @heading("featureNotAvailable.heading")
-
-    <p>@messages("featureNotAvailable.p1") <a href="@config.helplineUrl" target="_blank">@messages("featureNotAvailable.link")</a></p>
-
-    <p>@messages("featureNotAvailable.p2")</p>
-
-}
+<a class="govuk-link" id="@id" href="@href" @if(openInNewWindow) {target="_blank"}>@messages(key)</a>

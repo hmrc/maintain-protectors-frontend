@@ -14,17 +14,13 @@
  * limitations under the License.
  *@
 
-@import viewmodels.Link
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
-@(
-    hint: Option[String] = None,
-    link: Option[Link] = None
-)(implicit messages: Messages)
+@this(govukInsetText : GovukInsetText)
 
-@if(hint.nonEmpty) {
-  <span id="form-hint" class="form-hint">@hint
-  @link.map { l =>
-    <a id="link" href="@l.url" target="_blank">@l.text</a>
-  }
-  </span>
-}
+@(messageKey: String, id: String)(implicit messages: Messages)
+
+@govukInsetText(InsetText(
+ id = Some(s"inset-text--$id"),
+ content = Text(messages(messageKey))
+))

@@ -14,6 +14,13 @@
  * limitations under the License.
  *@
 
-@(headingKey: String, msgParam: Option[String] = None, headingSize: String = "heading-large")(implicit messages: Messages)
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
-<h1 class="@headingSize">@messages(headingKey, msgParam.getOrElse(""))</h1>
+@this(govukWarningText : GovukWarningText)
+
+@(messageKeyPrefix: String)(implicit messages: Messages)
+
+@govukWarningText(WarningText(
+    iconFallbackText = messages("site.warning"),
+    content = Text(messages(s"$messageKeyPrefix.warning"))
+))

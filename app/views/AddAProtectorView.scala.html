@@ -17,11 +17,16 @@
 @import controllers.routes._
 @import models.AddAProtector
 @import viewmodels.addAnother.AddRow
-@import viewmodels.RadioOption
+@import views.html.components.{Heading, ErrorSummary, AddToList, InputRadio, SubmitButton}
 
 @this(
     mainTemplate: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+    headingComp: Heading,
+    errorSummary: ErrorSummary,
+    addToList: AddToList,
+    inputRadio: InputRadio,
+    submitButton: SubmitButton
 )
 
 @(
@@ -33,18 +38,19 @@
 )(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = s"${errorPrefix(form)}$heading"
+    title = s"${errorPrefix(form)}$heading",
+    showBackLink = true
 ) {
 
     @formHelper(action = AddAProtectorController.submitAnother(), 'autoComplete -> "off") {
 
-        @components.error_summary(form.errors)
+        @errorSummary(form.errors)
 
-        @components.heading(heading)
+        @headingComp(heading)
 
-        @components.data_list(inProgressProtectors, "inprogress")
+        @addToList(inProgressProtectors, "inprogress", "protector")
 
-        @components.data_list(completeProtectors, "complete")
+        @addToList(completeProtectors, "complete", "protector")
 
         @if(maxedOut.nonEmpty) {
             <ul>
@@ -53,13 +59,13 @@
             </ul>
         }
 
-        @components.input_radio(
+        @inputRadio(
             field = form("value"),
             legend = messages("addAProtector.additional-content"),
-            legendClass = Some("heading-medium"),
-            inputs = AddAProtector.options
+            legendClass = Some("govuk-heading-m"),
+            inputs = mapRadioOptionsToRadioItems(form("value"), false, AddAProtector.options)
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

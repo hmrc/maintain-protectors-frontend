@@ -15,31 +15,35 @@
  *@
 
 @import controllers.individual.add.routes._
+@import views.html.components.{ErrorSummary, InputDate, SubmitButton}
 
 @this(
     main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+    errorSummary: ErrorSummary,
+    inputDate: InputDate,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], name: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)}${messages("individualProtector.startDate.title", name)}"
+    title = s"${errorPrefix(form)}${messages("individualProtector.startDate.title", name)}",
+    showBackLink = true
 ) {
 
     @formHelper(action = StartDateController.onSubmit(), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
-
-        @components.input_date(
+        @inputDate(
             field = form("value"),
             legend = messages("individualProtector.startDate.heading", name),
-            headingIsLegend = true,
+            legendClass = "govuk-heading-l",
+            legendAsHeading = true,
             hint = Some(messages("individualProtector.startDate.hint"))
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }
