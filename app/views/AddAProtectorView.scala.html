@@ -53,9 +53,9 @@
         @addToList(completeProtectors, "complete", "protector")
 
         @if(maxedOut.nonEmpty) {
-            <ul>
-                <li class="panel-indent"><p>@messages("addAProtector.maxedOut.just1", messages(maxedOut.head).toLowerCase)</p></li>
-                <li class="panel-indent"><p>@messages("addAProtector.maxedOut.just1.paragraph")</p></li>
+            <ul class="govuk-inset-text">
+                <li>@messages("addAProtector.maxedOut.just1", messages(maxedOut.head).toLowerCase)</li>
+                <li>@messages("addAProtector.maxedOut.just1.paragraph")</li>
             </ul>
         }
 
