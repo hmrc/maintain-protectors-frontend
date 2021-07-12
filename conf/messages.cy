@@ -1,4 +1,6 @@
 service.name=Cofrestru Ymddiriedolaeth a’i Chynnal
+session_expired.title=Er eich diogelwch, mae'r gwasanaeth hwn wedi'i ailosod
+session_expired.heading=Er eich diogelwch, mae'r gwasanaeth hwn wedi'i ailosod
 
 timeout.message=Byddwn yn eich allgofnodi os na fyddwch yn ymateb ymhen
 individualProtector.countryOfNationalityYesNo.title=A ydych yn gwybod gwlad cenedligrwydd yr amddiffynnydd unigol?
