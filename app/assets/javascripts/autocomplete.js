@@ -36,8 +36,8 @@ $(document).ready(function() {
     }
 
     if (document.querySelectorAll('select[data-non-uk-countries]').length) {
-       var selectDescribedByValues = $('select[data-non-uk-countries]').attr('aria-describedby');
-       $(".autocomplete__wrapper #value").attr('aria-describedby', selectDescribedByValues);
+        var selectDescribedByValues = $('select[data-non-uk-countries]').attr('aria-describedby');
+        $(".autocomplete__wrapper #value").attr('aria-describedby', selectDescribedByValues);
     }
 
     if (document.querySelectorAll('.autocomplete__dropdown-arrow-down').length) {
@@ -50,12 +50,13 @@ $(document).ready(function() {
 
     // Set the border colour to black with orange border when clicking into the input field
     $('.autocomplete__wrapper input').focus(function(e){
-        if ($(".govuk-form-group--error .autocomplete__wrapper").length) $(".autocomplete__wrapper input").css({"border" : "2px solid #0b0c0c", "-webkit-box-shadow" : "none", "box-shadow" : "none"});
+        if ($(".govuk-form-group--error .autocomplete__wrapper").length > 0) $(".autocomplete__wrapper input").css({"border" : "2px solid #0b0c0c", "-webkit-box-shadow" : "none", "box-shadow" : "none"});
     })
 
     // Set the border colour back to red when clicking out of the input field
+    // Set the gov.uk error colour https://design-system.service.gov.uk/styles/colour/
     $('.autocomplete__wrapper input').focusout(function(e){
-        if ($(".govuk-form-group--error .autocomplete__wrapper").length) $(".autocomplete__wrapper input").css("border", "2px solid #d4351c");
+        if ($(".govuk-form-group--error .autocomplete__wrapper").length > 0) $(".autocomplete__wrapper input").css("border", "2px solid #d4351c");
     })
 
 
@@ -67,7 +68,6 @@ $(document).ready(function() {
     $('body').on('mouseup', ".autocomplete__option > strong", function(e){
         e.preventDefault(); $(this).parent().trigger('click');
     })
-
     // temporary fix for the autocomplete holding onto the last matching country when a user then enters an invalid or blank country
     $('input[role="combobox"]').on('keydown', function(e){
         if (e.which != 13 && e.which != 9) {
