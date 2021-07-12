@@ -35,7 +35,7 @@
 
     @formHelper(action = AddNowController.onSubmit(), 'autoComplete -> "off") {
 
-        @errorSummary(form.errors)
+        @errorSummary(form.errors, ProtectorType.options)
 
         @inputRadio(
             field = form("value"),
