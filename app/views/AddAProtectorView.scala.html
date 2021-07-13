@@ -44,7 +44,7 @@
 
     @formHelper(action = AddAProtectorController.submitAnother(), 'autoComplete -> "off") {
 
-        @errorSummary(form.errors)
+        @errorSummary(form.errors, AddAProtector.options)
 
         @headingComp(heading)
 
