@@ -25,7 +25,7 @@ import views.html.individual.remove.RemoveIndividualProtectorView
 
 class RemoveIndividualProtectorViewSpec extends YesNoViewBehaviours {
 
-  val messageKeyPrefix = "removeIndividualProtector"
+  val messageKeyPrefix = "removeIndividualProtectorYesNo"
   val form = (new YesNoFormProvider).withPrefix(messageKeyPrefix)
   val name = "Name"
   val index = 0

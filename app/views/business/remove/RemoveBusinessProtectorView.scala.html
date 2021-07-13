@@ -28,7 +28,7 @@
 @(form: Form[_], index: Int, name: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)}${messages("removeBusinessProtector.title")}",
+    title = s"${errorPrefix(form)}${messages("removeBusinessProtectorYesNo.title")}",
     showBackLink = true
 ) {
 
@@ -38,7 +38,7 @@
 
         @inputYesNo(
             field = form("value"),
-            label = messages("removeBusinessProtector.heading", name)
+            label = messages("removeBusinessProtectorYesNo.heading", name)
         )
 
         @submitButton()
