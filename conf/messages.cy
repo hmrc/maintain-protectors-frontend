@@ -1,3 +1,5 @@
+service.name=Cofrestru Ymddiriedolaeth a’i Chynnal
+
 timeout.message=Byddwn yn eich allgofnodi os na fyddwch yn ymateb ymhen
 individualProtector.countryOfNationalityYesNo.title=A ydych yn gwybod gwlad cenedligrwydd yr amddiffynnydd unigol?
 individualProtector.countryOfNationalityYesNo.heading=A ydych yn gwybod gwlad cenedligrwydd {0}?

@@ -118,9 +118,9 @@ class AnswerRowConverter @Inject()(checkAnswersFormatters: CheckAnswersFormatter
                            (implicit rds: Reads[T]): Option[AnswerRow] = {
       userAnswers.get(query) map { x =>
         AnswerRow(
-          label = HtmlFormat.escape(messages(s"$labelKey.checkYourAnswersLabel", name)),
+          label = messages(s"$labelKey.checkYourAnswersLabel", name),
           answer = format(x),
-          changeUrl = changeUrl
+          changeUrl = Some(changeUrl)
         )
       }
     }

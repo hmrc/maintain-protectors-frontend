@@ -17,11 +17,15 @@
 @import controllers.routes._
 @import models.AddAProtector
 @import viewmodels.addAnother.AddRow
-@import viewmodels.RadioOption
+@import views.html.components.{Heading, ErrorSummary, AddToList, SubmitButton}
 
 @this(
     main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+    headingComp: Heading,
+    errorSummary: ErrorSummary,
+    addToList: AddToList,
+    submitButton: SubmitButton
 )
 
 @(inProgressProtectors: Seq[AddRow],
@@ -34,19 +38,17 @@
 
     @formHelper(action = AddAProtectorController.submitComplete(), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @headingComp(heading)
 
-        @components.heading(heading)
+        @addToList(inProgressProtectors, "inprogress", "protector")
 
-        @components.data_list(inProgressProtectors, "inprogress")
+        @addToList(completeProtectors, "complete", "protector")
 
-        @components.data_list(completeProtectors, "complete")
-
-        <ul>
-            <li class="panel-indent"><p>@messages("addAProtector.maxedOut")</p></li>
-            <li class="panel-indent"><p>@messages("addAProtector.maxedOut.paragraph")</p></li>
+        <ul class="govuk-inset-text">
+            <li>@messages("addAProtector.maxedOut")</li>
+            <li>@messages("addAProtector.maxedOut.paragraph")</li>
         </ul>
 
-        @components.submit_button()
+        @submitButton()
     }
 }

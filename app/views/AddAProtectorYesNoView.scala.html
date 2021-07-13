@@ -15,27 +15,33 @@
  *@
 
 @import controllers.routes._
+@import views.html.components.{ErrorSummary, InputYesNo, SubmitButton}
 
 @this(
-main_template: MainTemplate,
-formHelper: FormWithCSRF
+    main_template: MainTemplate,
+    formHelper: FormWithCSRF,
+    errorSummary: ErrorSummary,
+    inputYesNo: InputYesNo,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-title = s"${errorPrefix(form)}${messages("addAProtectorYesNo.title")}"
+    title = s"${errorPrefix(form)}${messages("addAProtectorYesNo.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = AddAProtectorController.submitOne(), 'autoComplete -> "off") {
 
-    @components.error_summary(form.errors)
+        @errorSummary(form.errors)
 
-    @components.input_yes_no(
-    field = form("value"),
-    legend = messages("addAProtectorYesNo.heading")
-    )
+        @inputYesNo(
+            field = form("value"),
+            label = messages("addAProtectorYesNo.heading")
+        )
 
-    @components.submit_button()
+        @submitButton()
+
     }
 }

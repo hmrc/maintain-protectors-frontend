@@ -58,17 +58,17 @@ class BusinessProtectorPrintHelperSpec extends SpecBase {
       result mustBe AnswerSection(
         headingKey = None,
         rows = Seq(
-          AnswerRow(label = Html(messages("businessProtector.name.checkYourAnswersLabel")), answer = Html("Name"), changeUrl = rts.NameController.onPageLoad(mode).url),
-          AnswerRow(label = Html(messages("businessProtector.utrYesNo.checkYourAnswersLabel", name)), answer = Html("Yes"), changeUrl = rts.UtrYesNoController.onPageLoad(mode).url),
-          AnswerRow(label = Html(messages("businessProtector.utr.checkYourAnswersLabel", name)), answer = Html("1234567890"), changeUrl = rts.UtrController.onPageLoad(mode).url),
-          AnswerRow(label = Html(messages("businessProtector.countryOfResidenceYesNo.checkYourAnswersLabel", name)), answer = Html("Yes"), changeUrl = rts.CountryOfResidenceYesNoController.onPageLoad(mode).url),
-          AnswerRow(label = Html(messages("businessProtector.countryOfResidenceUkYesNo.checkYourAnswersLabel", name)), answer = Html("No"), changeUrl = rts.CountryOfResidenceUkYesNoController.onPageLoad(mode).url),
-          AnswerRow(label = Html(messages("businessProtector.countryOfResidence.checkYourAnswersLabel", name)), answer = Html("France"), changeUrl = rts.CountryOfResidenceController.onPageLoad(mode).url),
-          AnswerRow(label = Html(messages("businessProtector.addressYesNo.checkYourAnswersLabel", name)), answer = Html("Yes"), changeUrl = rts.AddressYesNoController.onPageLoad(mode).url),
-          AnswerRow(label = Html(messages("businessProtector.addressUkYesNo.checkYourAnswersLabel", name)), answer = Html("Yes"), changeUrl = rts.AddressUkYesNoController.onPageLoad(mode).url),
-          AnswerRow(label = Html(messages("businessProtector.ukAddress.checkYourAnswersLabel", name)), answer = Html("value 1<br />value 2<br />AB1 1AB"), changeUrl = rts.UkAddressController.onPageLoad(mode).url),
-          AnswerRow(label = Html(messages("businessProtector.nonUkAddress.checkYourAnswersLabel", name)), answer = Html("value 1<br />value 2<br />Germany"), changeUrl = rts.NonUkAddressController.onPageLoad(mode).url),
-          AnswerRow(label = Html(messages("businessProtector.startDate.checkYourAnswersLabel", name)), answer = Html("1 January 2020"), changeUrl = rts.StartDateController.onPageLoad().url)
+          AnswerRow(label = messages("businessProtector.name.checkYourAnswersLabel"), answer = Html("Name"), changeUrl = Some(rts.NameController.onPageLoad(mode).url)),
+          AnswerRow(label = messages("businessProtector.utrYesNo.checkYourAnswersLabel", name), answer = Html("Yes"), changeUrl = Some(rts.UtrYesNoController.onPageLoad(mode).url)),
+          AnswerRow(label = messages("businessProtector.utr.checkYourAnswersLabel", name), answer = Html("1234567890"), changeUrl = Some(rts.UtrController.onPageLoad(mode).url)),
+          AnswerRow(label = messages("businessProtector.countryOfResidenceYesNo.checkYourAnswersLabel", name), answer = Html("Yes"), changeUrl = Some(rts.CountryOfResidenceYesNoController.onPageLoad(mode).url)),
+          AnswerRow(label = messages("businessProtector.countryOfResidenceUkYesNo.checkYourAnswersLabel", name), answer = Html("No"), changeUrl = Some(rts.CountryOfResidenceUkYesNoController.onPageLoad(mode).url)),
+          AnswerRow(label = messages("businessProtector.countryOfResidence.checkYourAnswersLabel", name), answer = Html("France"), changeUrl = Some(rts.CountryOfResidenceController.onPageLoad(mode).url)),
+          AnswerRow(label = messages("businessProtector.addressYesNo.checkYourAnswersLabel", name), answer = Html("Yes"), changeUrl = Some(rts.AddressYesNoController.onPageLoad(mode).url)),
+          AnswerRow(label = messages("businessProtector.addressUkYesNo.checkYourAnswersLabel", name), answer = Html("Yes"), changeUrl = Some(rts.AddressUkYesNoController.onPageLoad(mode).url)),
+          AnswerRow(label = messages("businessProtector.ukAddress.checkYourAnswersLabel", name), answer = Html("value 1<br />value 2<br />AB1 1AB"), changeUrl = Some(rts.UkAddressController.onPageLoad(mode).url)),
+          AnswerRow(label = messages("businessProtector.nonUkAddress.checkYourAnswersLabel", name), answer = Html("value 1<br />value 2<br />Germany"), changeUrl = Some(rts.NonUkAddressController.onPageLoad(mode).url)),
+          AnswerRow(label = messages("businessProtector.startDate.checkYourAnswersLabel", name), answer = Html("1 January 2020"), changeUrl = Some(rts.StartDateController.onPageLoad().url))
         )
       )
     }
@@ -82,16 +82,16 @@ class BusinessProtectorPrintHelperSpec extends SpecBase {
       result mustBe AnswerSection(
         headingKey = None,
         rows = Seq(
-          AnswerRow(label = Html(messages("businessProtector.name.checkYourAnswersLabel")), answer = Html("Name"), changeUrl = rts.NameController.onPageLoad(mode).url),
-          AnswerRow(label = Html(messages("businessProtector.utrYesNo.checkYourAnswersLabel", name)), answer = Html("Yes"), changeUrl = rts.UtrYesNoController.onPageLoad(mode).url),
-          AnswerRow(label = Html(messages("businessProtector.utr.checkYourAnswersLabel", name)), answer = Html("1234567890"), changeUrl = rts.UtrController.onPageLoad(mode).url),
-          AnswerRow(label = Html(messages("businessProtector.countryOfResidenceYesNo.checkYourAnswersLabel", name)), answer = Html("Yes"), changeUrl = rts.CountryOfResidenceYesNoController.onPageLoad(mode).url),
-          AnswerRow(label = Html(messages("businessProtector.countryOfResidenceUkYesNo.checkYourAnswersLabel", name)), answer = Html("No"), changeUrl = rts.CountryOfResidenceUkYesNoController.onPageLoad(mode).url),
-          AnswerRow(label = Html(messages("businessProtector.countryOfResidence.checkYourAnswersLabel", name)), answer = Html("France"), changeUrl = rts.CountryOfResidenceController.onPageLoad(mode).url),
-          AnswerRow(label = Html(messages("businessProtector.addressYesNo.checkYourAnswersLabel", name)), answer = Html("Yes"), changeUrl = rts.AddressYesNoController.onPageLoad(mode).url),
-          AnswerRow(label = Html(messages("businessProtector.addressUkYesNo.checkYourAnswersLabel", name)), answer = Html("Yes"), changeUrl = rts.AddressUkYesNoController.onPageLoad(mode).url),
-          AnswerRow(label = Html(messages("businessProtector.ukAddress.checkYourAnswersLabel", name)), answer = Html("value 1<br />value 2<br />AB1 1AB"), changeUrl = rts.UkAddressController.onPageLoad(mode).url),
-          AnswerRow(label = Html(messages("businessProtector.nonUkAddress.checkYourAnswersLabel", name)), answer = Html("value 1<br />value 2<br />Germany"), changeUrl = rts.NonUkAddressController.onPageLoad(mode).url)
+          AnswerRow(label = messages("businessProtector.name.checkYourAnswersLabel"), answer = Html("Name"), changeUrl = Some(rts.NameController.onPageLoad(mode).url)),
+          AnswerRow(label = messages("businessProtector.utrYesNo.checkYourAnswersLabel", name), answer = Html("Yes"), changeUrl = Some(rts.UtrYesNoController.onPageLoad(mode).url)),
+          AnswerRow(label = messages("businessProtector.utr.checkYourAnswersLabel", name), answer = Html("1234567890"), changeUrl = Some(rts.UtrController.onPageLoad(mode).url)),
+          AnswerRow(label = messages("businessProtector.countryOfResidenceYesNo.checkYourAnswersLabel", name), answer = Html("Yes"), changeUrl = Some(rts.CountryOfResidenceYesNoController.onPageLoad(mode).url)),
+          AnswerRow(label = messages("businessProtector.countryOfResidenceUkYesNo.checkYourAnswersLabel", name), answer = Html("No"), changeUrl = Some(rts.CountryOfResidenceUkYesNoController.onPageLoad(mode).url)),
+          AnswerRow(label = messages("businessProtector.countryOfResidence.checkYourAnswersLabel", name), answer = Html("France"), changeUrl = Some(rts.CountryOfResidenceController.onPageLoad(mode).url)),
+          AnswerRow(label = messages("businessProtector.addressYesNo.checkYourAnswersLabel", name), answer = Html("Yes"), changeUrl = Some(rts.AddressYesNoController.onPageLoad(mode).url)),
+          AnswerRow(label = messages("businessProtector.addressUkYesNo.checkYourAnswersLabel", name), answer = Html("Yes"), changeUrl = Some(rts.AddressUkYesNoController.onPageLoad(mode).url)),
+          AnswerRow(label = messages("businessProtector.ukAddress.checkYourAnswersLabel", name), answer = Html("value 1<br />value 2<br />AB1 1AB"), changeUrl = Some(rts.UkAddressController.onPageLoad(mode).url)),
+          AnswerRow(label = messages("businessProtector.nonUkAddress.checkYourAnswersLabel", name), answer = Html("value 1<br />value 2<br />Germany"), changeUrl = Some(rts.NonUkAddressController.onPageLoad(mode).url))
         )
       )
     }

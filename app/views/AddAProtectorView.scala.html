@@ -17,11 +17,16 @@
 @import controllers.routes._
 @import models.AddAProtector
 @import viewmodels.addAnother.AddRow
-@import viewmodels.RadioOption
+@import views.html.components.{Heading, ErrorSummary, AddToList, InputRadio, SubmitButton}
 
 @this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    mainTemplate: MainTemplate,
+    formHelper: FormWithCSRF,
+    headingComp: Heading,
+    errorSummary: ErrorSummary,
+    addToList: AddToList,
+    inputRadio: InputRadio,
+    submitButton: SubmitButton
 )
 
 @(
@@ -32,34 +37,35 @@
     maxedOut: List[String]
 )(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = s"${errorPrefix(form)}$heading"
+@mainTemplate(
+    title = s"${errorPrefix(form)}$heading",
+    showBackLink = true
 ) {
 
     @formHelper(action = AddAProtectorController.submitAnother(), 'autoComplete -> "off") {
 
-        @components.error_summary(form.errors)
+        @errorSummary(form.errors, AddAProtector.options)
 
-        @components.heading(heading)
+        @headingComp(heading)
 
-        @components.data_list(inProgressProtectors, "inprogress")
+        @addToList(inProgressProtectors, "inprogress", "protector")
 
-        @components.data_list(completeProtectors, "complete")
+        @addToList(completeProtectors, "complete", "protector")
 
         @if(maxedOut.nonEmpty) {
-            <ul>
-                <li class="panel-indent"><p>@messages("addAProtector.maxedOut.just1", messages(maxedOut.head).toLowerCase)</p></li>
-                <li class="panel-indent"><p>@messages("addAProtector.maxedOut.just1.paragraph")</p></li>
+            <ul class="govuk-inset-text">
+                <li>@messages("addAProtector.maxedOut.just1", messages(maxedOut.head).toLowerCase)</li>
+                <li>@messages("addAProtector.maxedOut.just1.paragraph")</li>
             </ul>
         }
 
-        @components.input_radio(
+        @inputRadio(
             field = form("value"),
             legend = messages("addAProtector.additional-content"),
-            legendClass = Some("heading-medium"),
-            inputs = AddAProtector.options
+            legendClass = Some("govuk-heading-m"),
+            inputs = mapRadioOptionsToRadioItems(form("value"), false, AddAProtector.options)
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }
