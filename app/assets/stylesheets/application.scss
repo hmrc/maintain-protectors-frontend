@@ -15,7 +15,18 @@ body:not(.js-enabled) {
         height: 0;
     }
 }
+
 // ----------------
+// Trusts Add-to-list pattern as a 4th column
+// this ensures the second column moves down correctly underneath on mobile devices
+// ----------------
+@include govuk-media-query($until: desktop) {
+  .hmrc-add-to-a-list__identifier__second {
+    position: absolute;
+    top: inherit;
+    left: 0;
+  }
+}
 
 p {
     @extend .govuk-body;
@@ -23,4 +34,8 @@ p {
 
 a {
     @extend .govuk-link;
+}
+
+h2 {
+    @extend .govuk-heading-m;
 }
