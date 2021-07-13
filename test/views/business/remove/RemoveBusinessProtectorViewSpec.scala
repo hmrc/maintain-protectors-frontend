@@ -25,7 +25,7 @@ import views.html.business.remove.RemoveBusinessProtectorView
 
 class RemoveBusinessProtectorViewSpec extends YesNoViewBehaviours {
 
-  val messageKeyPrefix = "removeBusinessProtector"
+  val messageKeyPrefix = "removeBusinessProtectorYesNo"
   val form = (new YesNoFormProvider).withPrefix(messageKeyPrefix)
   val name = "Name"
   val index = 0

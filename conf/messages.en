@@ -341,9 +341,9 @@ individualProtector.startDate.error.past = The date the protector was added to t
 individualProtector.checkDetails.title = Check individual protector details
 individualProtector.checkDetails.heading = Check individual protector details
 
-removeIndividualProtector.title = Are you sure you want to remove the individual protector?
-removeIndividualProtector.heading = Are you sure you want to remove {0}?
-removeIndividualProtector.error.required = Select yes if you want to remove the individual protector
+removeIndividualProtectorYesNo.title = Are you sure you want to remove the individual protector?
+removeIndividualProtectorYesNo.heading = Are you sure you want to remove {0}?
+removeIndividualProtectorYesNo.error.required = Select yes if you want to remove the individual protector
 
 individualProtector.whenRemoved.title = When was the individual removed as a protector?
 individualProtector.whenRemoved.heading = When was {0} removed as a protector?
@@ -429,9 +429,9 @@ businessProtector.startDate.error.past = The date the protector was added to the
 businessProtector.checkDetails.title = Check business protector details
 businessProtector.checkDetails.heading = Check business protector details
 
-removeBusinessProtector.title = Are you sure you want to remove the business protector?
-removeBusinessProtector.heading = Are you sure you want to remove {0}?
-removeBusinessProtector.error.required = Select yes if you want to remove the business protector
+removeBusinessProtectorYesNo.title = Are you sure you want to remove the business protector?
+removeBusinessProtectorYesNo.heading = Are you sure you want to remove {0}?
+removeBusinessProtectorYesNo.error.required = Select yes if you want to remove the business protector
 
 businessProtector.whenRemoved.title = When was the business removed as a protector?
 businessProtector.whenRemoved.heading = When was {0} removed as a protector?
