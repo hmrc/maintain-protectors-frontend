@@ -16,8 +16,6 @@
 
 package controllers
 
-import java.time.LocalDate
-
 import base.SpecBase
 import connectors.TrustsStoreConnector
 import forms.{AddAProtectorFormProvider, YesNoFormProvider}
@@ -36,6 +34,7 @@ import utils.AddAProtectorViewHelper
 import viewmodels.addAnother.AddRow
 import views.html.{AddAProtectorView, AddAProtectorYesNoView, MaxedOutProtectorsView}
 
+import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddAProtectorControllerSpec extends SpecBase with ScalaFutures {
@@ -78,7 +77,8 @@ class AddAProtectorControllerSpec extends SpecBase with ScalaFutures {
   )
 
   class FakeService(data: Protectors) extends TrustService {
-    override def getProtectors(utr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Protectors] = Future.successful(data)
+    override def getProtectors(utr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Protectors] =
+      Future.successful(data)
 
     override def getIndividualProtector(utr: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[IndividualProtector] =
       Future.successful(individualProtector(false))
@@ -88,6 +88,9 @@ class AddAProtectorControllerSpec extends SpecBase with ScalaFutures {
 
     override def removeProtector(utr: String, protector: RemoveProtector)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
       Future.successful(HttpResponse(OK, ""))
+
+    override def getBusinessUtrs(identifier: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] =
+      Future.successful(Nil)
   }
 
   "AddAProtector Controller" when {

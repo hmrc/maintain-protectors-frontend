@@ -18,11 +18,11 @@ package services
 
 import com.google.inject.ImplementedBy
 import connectors.TrustsConnector
-import javax.inject.Inject
 import models.RemoveProtector
 import models.protectors.{BusinessProtector, IndividualProtector, Protectors}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class TrustServiceImpl @Inject()(connector: TrustsConnector) extends TrustService {
@@ -39,6 +39,9 @@ class TrustServiceImpl @Inject()(connector: TrustsConnector) extends TrustServic
   override def removeProtector(identifier: String, protector: RemoveProtector)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
     connector.removeProtector(identifier, protector)
 
+  override def getBusinessUtrs(identifier: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] =
+    getProtectors(identifier).map(_.protectorCompany.flatMap(_.utr))
+
 }
 
 @ImplementedBy(classOf[TrustServiceImpl])
@@ -51,5 +54,7 @@ trait TrustService {
   def getBusinessProtector(identifier: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[BusinessProtector]
 
   def removeProtector(identifier: String, protector: RemoveProtector)(implicit hc:HeaderCarrier, ec:ExecutionContext): Future[HttpResponse]
+
+  def getBusinessUtrs(identifier: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]]
 
 }
