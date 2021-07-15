@@ -89,7 +89,7 @@ class AddAProtectorControllerSpec extends SpecBase with ScalaFutures {
     override def removeProtector(utr: String, protector: RemoveProtector)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
       Future.successful(HttpResponse(OK, ""))
 
-    override def getBusinessUtrs(identifier: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] =
+    override def getBusinessUtrs(identifier: String, index: Option[Int])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] =
       Future.successful(Nil)
   }
 

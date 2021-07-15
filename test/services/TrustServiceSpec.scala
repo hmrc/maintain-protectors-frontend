@@ -47,7 +47,7 @@ class TrustServiceSpec extends SpecBase {
           when(mockConnector.getProtectors(any())(any(), any()))
             .thenReturn(Future.successful(Protectors(Nil, Nil)))
 
-          val result = Await.result(service.getBusinessUtrs(identifier), Duration.Inf)
+          val result = Await.result(service.getBusinessUtrs(identifier, None), Duration.Inf)
 
           result mustBe Nil
         }
@@ -61,14 +61,29 @@ class TrustServiceSpec extends SpecBase {
           when(mockConnector.getProtectors(any())(any(), any()))
             .thenReturn(Future.successful(Protectors(Nil, businesses)))
 
-          val result = Await.result(service.getBusinessUtrs(identifier), Duration.Inf)
+          val result = Await.result(service.getBusinessUtrs(identifier, None), Duration.Inf)
+
+          result mustBe Nil
+        }
+
+        "there is a business with a UTR but it's the same index as the one we're amending" in {
+
+          val businesses = List(
+            BusinessProtector("Business", Some("utr"), None, None, LocalDate.parse("2000-01-01"), provisional = true)
+          )
+
+          when(mockConnector.getProtectors(any())(any(), any()))
+            .thenReturn(Future.successful(Protectors(Nil, businesses)))
+
+          val result = Await.result(service.getBusinessUtrs(identifier, Some(0)), Duration.Inf)
 
           result mustBe Nil
         }
       }
 
       "return UTRs" when {
-        "businesses have UTRs" in {
+
+        "businesses have UTRs and we're adding (i.e. no index)" in {
 
           val businesses = List(
             BusinessProtector("Business 1", Some("utr1"), None, None, LocalDate.parse("2000-01-01"), provisional = true),
@@ -78,9 +93,24 @@ class TrustServiceSpec extends SpecBase {
           when(mockConnector.getProtectors(any())(any(), any()))
             .thenReturn(Future.successful(Protectors(Nil, businesses)))
 
-          val result = Await.result(service.getBusinessUtrs(identifier), Duration.Inf)
+          val result = Await.result(service.getBusinessUtrs(identifier, None), Duration.Inf)
 
           result mustBe List("utr1", "utr2")
+        }
+
+        "businesses have UTRs and we're amending" in {
+
+          val businesses = List(
+            BusinessProtector("Business 1", Some("utr1"), None, None, LocalDate.parse("2000-01-01"), provisional = true),
+            BusinessProtector("Business 2", Some("utr2"), None, None, LocalDate.parse("2000-01-01"), provisional = true)
+          )
+
+          when(mockConnector.getProtectors(any())(any(), any()))
+            .thenReturn(Future.successful(Protectors(Nil, businesses)))
+
+          val result = Await.result(service.getBusinessUtrs(identifier, Some(0)), Duration.Inf)
+
+          result mustBe List("utr2")
         }
       }
     }

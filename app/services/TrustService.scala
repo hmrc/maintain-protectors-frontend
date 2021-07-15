@@ -39,9 +39,12 @@ class TrustServiceImpl @Inject()(connector: TrustsConnector) extends TrustServic
   override def removeProtector(identifier: String, protector: RemoveProtector)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
     connector.removeProtector(identifier, protector)
 
-  override def getBusinessUtrs(identifier: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] =
-    getProtectors(identifier).map(_.protectorCompany.flatMap(_.utr))
-
+  override def getBusinessUtrs(identifier: String, index: Option[Int])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] =
+    getProtectors(identifier).map(_.protectorCompany
+      .zipWithIndex
+      .filterNot(x => index.contains(x._2))
+      .flatMap(_._1.utr)
+    )
 }
 
 @ImplementedBy(classOf[TrustServiceImpl])
@@ -55,6 +58,6 @@ trait TrustService {
 
   def removeProtector(identifier: String, protector: RemoveProtector)(implicit hc:HeaderCarrier, ec:ExecutionContext): Future[HttpResponse]
 
-  def getBusinessUtrs(identifier: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]]
+  def getBusinessUtrs(identifier: String, index: Option[Int])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]]
 
 }
