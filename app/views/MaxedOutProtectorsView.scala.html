@@ -44,10 +44,12 @@
 
         @addToList(completeProtectors, "complete", "protector")
 
-        <ul class="govuk-inset-text">
-            <li>@messages("addAProtector.maxedOut")</li>
-            <li>@messages("addAProtector.maxedOut.paragraph")</li>
-        </ul>
+        <div class="govuk-inset-text">
+            <ul class="govuk-list">
+                <li>@messages("addAProtector.maxedOut")</li>
+                <li>@messages("addAProtector.maxedOut.paragraph")</li>
+            </ul>
+        </div>
 
         @submitButton()
     }
