@@ -53,10 +53,12 @@
         @addToList(completeProtectors, "complete", "protector")
 
         @if(maxedOut.nonEmpty) {
-            <ul class="govuk-inset-text">
-                <li>@messages("addAProtector.maxedOut.just1", messages(maxedOut.head).toLowerCase)</li>
-                <li>@messages("addAProtector.maxedOut.just1.paragraph")</li>
-            </ul>
+            <div class="govuk-inset-text">
+                <ul class="govuk-list">
+                    <li>@messages("addAProtector.maxedOut.just1", messages(maxedOut.head).toLowerCase)</li>
+                    <li>@messages("addAProtector.maxedOut.just1.paragraph")</li>
+                </ul>
+            </div>
         }
 
         @inputRadio(
