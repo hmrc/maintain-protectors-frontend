@@ -18,8 +18,8 @@ package services
 
 import com.google.inject.ImplementedBy
 import connectors.TrustsConnector
-import models.RemoveProtector
 import models.protectors.{BusinessProtector, IndividualProtector, Protectors}
+import models.{NationalInsuranceNumber, RemoveProtector}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 import javax.inject.Inject
@@ -45,6 +45,19 @@ class TrustServiceImpl @Inject()(connector: TrustsConnector) extends TrustServic
       .filterNot(x => index.contains(x._2))
       .flatMap(_._1.utr)
     )
+
+  override def getIndividualNinos(identifier: String, index: Option[Int])
+                                 (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] = {
+    getProtectors(identifier).map(_.protector
+      .zipWithIndex
+      .filterNot(x => index.contains(x._2))
+      .map(_._1.identification)
+      .collect {
+        case Some(NationalInsuranceNumber(nino)) => nino
+      }
+    )
+  }
+
 }
 
 @ImplementedBy(classOf[TrustServiceImpl])
@@ -59,5 +72,7 @@ trait TrustService {
   def removeProtector(identifier: String, protector: RemoveProtector)(implicit hc:HeaderCarrier, ec:ExecutionContext): Future[HttpResponse]
 
   def getBusinessUtrs(identifier: String, index: Option[Int])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]]
+
+  def getIndividualNinos(identifier: String, index: Option[Int])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]]
 
 }

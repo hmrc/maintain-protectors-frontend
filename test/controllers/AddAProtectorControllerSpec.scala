@@ -91,6 +91,9 @@ class AddAProtectorControllerSpec extends SpecBase with ScalaFutures {
 
     override def getBusinessUtrs(identifier: String, index: Option[Int])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] =
       Future.successful(Nil)
+
+    override def getIndividualNinos(identifier: String, index: Option[Int])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] =
+      Future.successful(Nil)
   }
 
   "AddAProtector Controller" when {
