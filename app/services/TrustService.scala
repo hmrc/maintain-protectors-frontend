@@ -51,9 +51,9 @@ class TrustServiceImpl @Inject()(connector: TrustsConnector) extends TrustServic
     getProtectors(identifier).map(_.protector
       .zipWithIndex
       .filterNot(x => index.contains(x._2))
-      .map(_._1.identification)
+      .flatMap(_._1.identification)
       .collect {
-        case Some(NationalInsuranceNumber(nino)) => nino
+        case NationalInsuranceNumber(nino) => nino
       }
     )
   }
