@@ -45,13 +45,15 @@ class UtrController @Inject()(
                                trustsService: TrustService
                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def form(utrs: List[String])(implicit request: ProtectorNameRequest[AnyContent]): Form[String] =
+  private def form(utrs: List[String])(implicit request: ProtectorNameRequest[AnyContent]): Form[String] =
     formProvider.apply("businessProtector.utr", request.userAnswers.identifier, utrs)
+
+  private def index(implicit request: ProtectorNameRequest[AnyContent]): Option[Int] = request.userAnswers.get(IndexPage)
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.andThen(nameAction).async {
     implicit request =>
 
-      trustsService.getBusinessUtrs(request.userAnswers.identifier, request.userAnswers.get(IndexPage)) map { utrs =>
+      trustsService.getBusinessUtrs(request.userAnswers.identifier, index) map { utrs =>
         val preparedForm = request.userAnswers.get(UtrPage) match {
           case None => form(utrs)
           case Some(value) => form(utrs).fill(value)
@@ -64,7 +66,7 @@ class UtrController @Inject()(
   def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.andThen(nameAction).async {
     implicit request =>
 
-      trustsService.getBusinessUtrs(request.userAnswers.identifier, request.userAnswers.get(IndexPage)) flatMap { utrs =>
+      trustsService.getBusinessUtrs(request.userAnswers.identifier, index) flatMap { utrs =>
         form(utrs).bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
             Future.successful(BadRequest(view(formWithErrors, request.protectorName, mode))),
