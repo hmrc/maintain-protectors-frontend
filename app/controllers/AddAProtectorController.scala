@@ -102,7 +102,7 @@ class AddAProtectorController @Inject()(
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
               _ <- repository.set(updatedAnswers)
-            } yield Redirect(controllers.routes.AddNowController.onPageLoad())
+            } yield Redirect(controllers.routes.InfoController.onPageLoad())
           } else {
             for {
               _ <- trustStoreConnector.setTaskComplete(request.userAnswers.identifier)
