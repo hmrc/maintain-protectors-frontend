@@ -60,8 +60,6 @@ timeout.title=Your application will time out soon
 timeout.message=We will sign you out if you do not respond in
 timeout.keep-alive-button=Continue application
 
-
-
 site.address.uk.title = What is the address?
 site.address.uk.heading = What is {0}’s address?
 site.address.uk.line1 = Address line 1
@@ -110,6 +108,32 @@ featureNotAvailable.heading = This part of the online service is not available y
 featureNotAvailable.p1 = If you need to make any changes to the trust you can
 featureNotAvailable.link = contact our trusts helpline (opens in a new window or tab)
 featureNotAvailable.p2 = You will be able to update these details online in the future.
+
+protector.info.title = Information you need to add a protector
+protector.info.heading = Information you need to add a protector
+protector.info.caption = Protectors
+protector.info.caption.hidden = This section is
+protector.info.section1.subheading = Protectors that are an individual
+protector.info.section1.p1 = For individual protectors named in the trust deed, you need to tell HMRC their:
+protector.info.section1.bullet1 = name
+protector.info.section1.bullet2 = country of nationality
+protector.info.section1.bullet3 = country of residence
+protector.info.section2.subheading = Protectors that are a business
+protector.info.section2.p1 = If the protector is a business, you need to tell HMRC its:
+protector.info.section2.bullet1 = name
+protector.info.section2.bullet2 = country of residence
+protector.info.details.heading = What we mean by country of residence
+protector.info.details.subheading1 = Individual
+protector.info.details.p1 = This is usually the country where the protector lives and works most of the time during the tax year. You can check the status of their residency through the Statutory Residence Test (SRT).
+protector.info.details.subheading2 = Business
+protector.info.details.p2 = This is usually where the business is registered (incorporated). The business has UK residency if it is registered with Companies House.
+protector.info.section3.subheading = Protectors that lack mental capacity
+protector.info.section3.p1 = You need to tell HMRC if any of the protectors lack mental capacity at time of registration.
+protector.info.section3.p2 = A protector does not have mental capacity if they cannot understand information or make decisions about the trust due to any of the following:
+protector.info.section3.bullet1 = mental illness
+protector.info.section3.bullet2 = learning disability
+protector.info.section3.bullet3 = dementia or a related condition
+protector.info.section3.bullet4 = being unable to communicate
 
 addAProtector.heading = Add a protector
 addAProtector.count.heading = The trust has {0} protectors

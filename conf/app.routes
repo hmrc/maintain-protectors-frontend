@@ -7,6 +7,9 @@
 
 ->         /business                                    businessProtector.Routes
 
+GET        /information-you-need                        controllers.InfoController.onPageLoad()
+POST       /information-you-need                        controllers.InfoController.onSubmit()
+
 GET        /add                                         controllers.AddAProtectorController.onPageLoad()
 POST       /add                                         controllers.AddAProtectorController.submitOne()
 GET        /add-another                                 controllers.AddAProtectorController.onPageLoad()

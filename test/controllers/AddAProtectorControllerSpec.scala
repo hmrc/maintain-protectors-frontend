@@ -186,7 +186,7 @@ class AddAProtectorControllerSpec extends SpecBase with ScalaFutures {
         application.stop()
       }
 
-      "redirect to the what type (add now) when the user answers yes" in {
+      "redirect to the info page when the user answers yes" in {
 
         val fakeService = new FakeService(Protectors(Nil, Nil))
 
@@ -204,7 +204,7 @@ class AddAProtectorControllerSpec extends SpecBase with ScalaFutures {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.routes.AddNowController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.InfoController.onPageLoad().url
 
         application.stop()
       }
