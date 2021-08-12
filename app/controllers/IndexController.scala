@@ -18,25 +18,25 @@ package controllers
 
 import connectors.TrustsConnector
 import controllers.actions.StandardActionSets
-
-import javax.inject.Inject
+import models.TaskStatus.InProgress
 import models.UserAnswers
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
-import services.FeatureFlagService
+import services.TrustsStoreService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Session
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IndexController @Inject()(
                                  val controllerComponents: MessagesControllerComponents,
                                  actions: StandardActionSets,
-                                 cacheRepository : PlaybackRepository,
-                                 connector: TrustsConnector,
-                                 featureFlagService: FeatureFlagService
+                                 cacheRepository: PlaybackRepository,
+                                 trustsConnector: TrustsConnector,
+                                 trustsStoreService: TrustsStoreService
                                )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   def onPageLoad(identifier: String): Action[AnyContent] = (actions.auth andThen actions.saveSession(identifier) andThen actions.getData).async {
@@ -44,9 +44,9 @@ class IndexController @Inject()(
       logger.info(s"[Session ID: ${Session.id(hc)}][UTR/URN: $identifier]" +
         s" user has started to maintain protectors")
       for {
-        details <- connector.getTrustDetails(identifier)
-        is5mldEnabled <- featureFlagService.is5mldEnabled()
-        isUnderlyingData5mld <- connector.isTrust5mld(identifier)
+        details <- trustsConnector.getTrustDetails(identifier)
+        is5mldEnabled <- trustsStoreService.is5mldEnabled()
+        isUnderlyingData5mld <- trustsConnector.isTrust5mld(identifier)
         ua <- Future.successful(
           request.userAnswers match {
             case Some(userAnswers) => userAnswers.copy(
@@ -65,6 +65,7 @@ class IndexController @Inject()(
           }
         )
         _ <- cacheRepository.set(ua)
+        _ <- trustsStoreService.updateTaskStatus(identifier, InProgress)
       } yield {
         Redirect(controllers.routes.AddAProtectorController.onPageLoad())
       }

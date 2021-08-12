@@ -21,6 +21,7 @@ import connectors.TrustsStoreConnector
 import controllers.actions.StandardActionSets
 import forms.{AddAProtectorFormProvider, YesNoFormProvider}
 import models.AddAProtector
+import models.TaskStatus.Completed
 import models.protectors.Protectors
 import navigation.ProtectorNavigator
 import play.api.Logging
@@ -104,11 +105,7 @@ class AddAProtectorController @Inject()(
               _ <- repository.set(updatedAnswers)
             } yield Redirect(controllers.routes.InfoController.onPageLoad())
           } else {
-            for {
-              _ <- trustStoreConnector.setTaskComplete(request.userAnswers.identifier)
-            } yield {
-              Redirect(appConfig.maintainATrustOverview)
-            }
+            submitComplete()(request)
           }
         }
       )
@@ -144,11 +141,7 @@ class AddAProtectorController @Inject()(
               Future.successful(Redirect(appConfig.maintainATrustOverview))
 
             case AddAProtector.NoComplete =>
-              for {
-                _ <- trustStoreConnector.setTaskComplete(request.userAnswers.identifier)
-              } yield {
-                Redirect(appConfig.maintainATrustOverview)
-              }
+              submitComplete()(request)
           }
         )
       }
@@ -158,7 +151,7 @@ class AddAProtectorController @Inject()(
     implicit request =>
 
       for {
-        _ <- trustStoreConnector.setTaskComplete(request.userAnswers.identifier)
+        _ <- trustStoreConnector.updateTaskStatus(request.userAnswers.identifier, Completed)
       } yield {
         logger.info(s"[Session ID: ${Session.id(hc)}]" +
           s" user has finished maintaining protectors and is returning to the task list")

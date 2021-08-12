@@ -19,11 +19,14 @@ package controllers
 import base.SpecBase
 import connectors.TrustsStoreConnector
 import forms.{AddAProtectorFormProvider, YesNoFormProvider}
+import models.TaskStatus.Completed
 import models.protectors.{BusinessProtector, IndividualProtector, Protectors}
 import models.{AddAProtector, Name, NationalInsuranceNumber, RemoveProtector}
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
+import org.mockito.Matchers.{any, eq => eqTo}
+import org.mockito.Mockito.{reset, verify, when}
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.Headers
 import play.api.test.FakeRequest
@@ -37,17 +40,17 @@ import views.html.{AddAProtectorView, AddAProtectorYesNoView, MaxedOutProtectors
 import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddAProtectorControllerSpec extends SpecBase with ScalaFutures {
+class AddAProtectorControllerSpec extends SpecBase with ScalaFutures with BeforeAndAfterEach {
 
-  lazy val getRoute : String = controllers.routes.AddAProtectorController.onPageLoad().url
-  lazy val submitOneRoute : String = controllers.routes.AddAProtectorController.submitOne().url
-  lazy val submitAnotherRoute : String = controllers.routes.AddAProtectorController.submitAnother().url
-  lazy val submitCompleteRoute : String = controllers.routes.AddAProtectorController.submitComplete().url
+  lazy val getRoute: String = controllers.routes.AddAProtectorController.onPageLoad().url
+  lazy val submitOneRoute: String = controllers.routes.AddAProtectorController.submitOne().url
+  lazy val submitAnotherRoute: String = controllers.routes.AddAProtectorController.submitAnother().url
+  lazy val submitCompleteRoute: String = controllers.routes.AddAProtectorController.submitComplete().url
 
-  val mockStoreConnector : TrustsStoreConnector = mock[TrustsStoreConnector]
+  val mockStoreConnector: TrustsStoreConnector = mock[TrustsStoreConnector]
 
   val addProtectorForm = new AddAProtectorFormProvider()()
-  val addProtectorYesNoForm = new YesNoFormProvider().withPrefix("addAProtectorYesNo")
+  val addProtectorYesNoForm: Form[Boolean] = new YesNoFormProvider().withPrefix("addAProtectorYesNo")
 
   private def individualProtector(provisional: Boolean) = IndividualProtector(
     name = Name(firstName = "First", middleName = None, lastName = "Last"),
@@ -69,7 +72,7 @@ class AddAProtectorControllerSpec extends SpecBase with ScalaFutures {
 
   private val protectors = Protectors(List(individualProtector(true)), List(businessProtector(true)))
 
-  lazy val featureNotAvailable : String = controllers.routes.FeatureNotAvailableController.onPageLoad().url
+  lazy val featureNotAvailable: String = controllers.routes.FeatureNotAvailableController.onPageLoad().url
 
   val protectorRows = List(
     AddRow("First Last", typeLabel = "Individual protector", "Change details", Some(controllers.individual.amend.routes.CheckDetailsController.extractAndRender(0).url), "Remove", Some(controllers.individual.remove.routes.RemoveIndividualProtectorController.onPageLoad(0).url)),
@@ -96,6 +99,13 @@ class AddAProtectorControllerSpec extends SpecBase with ScalaFutures {
       Future.successful(Nil)
   }
 
+  override def beforeEach(): Unit = {
+    reset(mockStoreConnector)
+
+    when(mockStoreConnector.updateTaskStatus(any(), any())(any(), any()))
+      .thenReturn(Future.successful(HttpResponse.apply(OK, "")))
+  }
+
   "AddAProtector Controller" when {
 
     "no protectors" must {
@@ -104,9 +114,9 @@ class AddAProtectorControllerSpec extends SpecBase with ScalaFutures {
 
         val fakeService = new FakeService(Protectors(Nil, Nil))
 
-        val application = applicationBuilder(userAnswers = None).overrides(Seq(
-          bind(classOf[TrustService]).toInstance(fakeService)
-        )).build()
+        val application = applicationBuilder(userAnswers = None)
+          .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+          .build()
 
         val request = FakeRequest(GET, getRoute)
 
@@ -122,9 +132,8 @@ class AddAProtectorControllerSpec extends SpecBase with ScalaFutures {
 
         val application = applicationBuilder(userAnswers = None).build()
 
-        val request =
-          FakeRequest(POST, submitAnotherRoute)
-            .withFormUrlEncodedBody(("value", AddAProtector.values.head.toString))
+        val request = FakeRequest(POST, submitAnotherRoute)
+          .withFormUrlEncodedBody(("value", AddAProtector.values.head.toString))
 
         val result = route(application, request).value
 
@@ -140,9 +149,8 @@ class AddAProtectorControllerSpec extends SpecBase with ScalaFutures {
         val fakeService = new FakeService(Protectors(Nil, Nil))
 
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(Seq(
-          bind(classOf[TrustService]).toInstance(fakeService)
-        )).build()
+          .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+          .build()
 
         val request = FakeRequest(GET, getRoute)
 
@@ -165,23 +173,21 @@ class AddAProtectorControllerSpec extends SpecBase with ScalaFutures {
         val fakeService = new FakeService(Protectors(Nil, Nil))
 
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(Seq(
-          bind(classOf[TrustService]).toInstance(fakeService),
-          bind(classOf[TrustsStoreConnector]).toInstance(mockStoreConnector)
-        )).build()
+          .overrides(
+            bind(classOf[TrustService]).toInstance(fakeService),
+            bind(classOf[TrustsStoreConnector]).toInstance(mockStoreConnector)
+          ).build()
 
-        val request =
-          FakeRequest(POST, submitOneRoute)
-            .withFormUrlEncodedBody(("value", "false"))
-
-        when(mockStoreConnector.setTaskComplete(any())(any(), any()))
-          .thenReturn(Future.successful(HttpResponse.apply(OK, "")))
+        val request = FakeRequest(POST, submitOneRoute)
+          .withFormUrlEncodedBody(("value", "false"))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual "http://localhost:9788/maintain-a-trust/overview"
+
+        verify(mockStoreConnector).updateTaskStatus(any(), eqTo(Completed))(any(), any())
 
         application.stop()
       }
@@ -191,14 +197,13 @@ class AddAProtectorControllerSpec extends SpecBase with ScalaFutures {
         val fakeService = new FakeService(Protectors(Nil, Nil))
 
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(Seq(
+          .overrides(
             bind(classOf[TrustService]).toInstance(fakeService),
             bind(classOf[TrustsStoreConnector]).toInstance(mockStoreConnector)
-          )).build()
+          ).build()
 
-        val request =
-          FakeRequest(POST, submitOneRoute)
-            .withFormUrlEncodedBody(("value", "true"))
+        val request = FakeRequest(POST, submitOneRoute)
+          .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
 
@@ -217,9 +222,9 @@ class AddAProtectorControllerSpec extends SpecBase with ScalaFutures {
 
         val fakeService = new FakeService(protectors)
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(Seq(
-          bind(classOf[TrustService]).toInstance(fakeService)
-        )).build()
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+          .build()
 
         val request = FakeRequest(GET, getRoute)
 
@@ -245,22 +250,22 @@ class AddAProtectorControllerSpec extends SpecBase with ScalaFutures {
 
         val fakeService = new FakeService(protectors)
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(Seq(
-          bind(classOf[TrustService]).toInstance(fakeService),
-          bind(classOf[TrustsStoreConnector]).toInstance(mockStoreConnector)
-        )).build()
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(
+            bind(classOf[TrustService]).toInstance(fakeService),
+            bind(classOf[TrustsStoreConnector]).toInstance(mockStoreConnector)
+          ).build()
 
-        val request =
-          FakeRequest(POST, submitAnotherRoute)
-            .withFormUrlEncodedBody(("value", AddAProtector.NoComplete.toString))
-
-        when(mockStoreConnector.setTaskComplete(any())(any(), any())).thenReturn(Future.successful(HttpResponse.apply(OK, "")))
+        val request = FakeRequest(POST, submitAnotherRoute)
+          .withFormUrlEncodedBody(("value", AddAProtector.NoComplete.toString))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual "http://localhost:9788/maintain-a-trust/overview"
+
+        verify(mockStoreConnector).updateTaskStatus(any(), eqTo(Completed))(any(), any())
 
         application.stop()
       }
@@ -269,13 +274,12 @@ class AddAProtectorControllerSpec extends SpecBase with ScalaFutures {
 
         val fakeService = new FakeService(protectors)
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(Seq(
-          bind(classOf[TrustService]).toInstance(fakeService)
-        )).build()
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+          .build()
 
-        val request =
-          FakeRequest(POST, submitAnotherRoute)
-            .withFormUrlEncodedBody(("value", AddAProtector.YesLater.toString))
+        val request = FakeRequest(POST, submitAnotherRoute)
+          .withFormUrlEncodedBody(("value", AddAProtector.YesLater.toString))
 
         val result = route(application, request).value
 
@@ -291,14 +295,13 @@ class AddAProtectorControllerSpec extends SpecBase with ScalaFutures {
         val fakeService = new FakeService(protectors)
 
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(Seq(
+          .overrides(
             bind(classOf[TrustService]).toInstance(fakeService),
             bind(classOf[TrustsStoreConnector]).toInstance(mockStoreConnector)
-          )).build()
+          ).build()
 
-        val request =
-          FakeRequest(POST, submitAnotherRoute)
-            .withFormUrlEncodedBody(("value", AddAProtector.YesNow.toString))
+        val request = FakeRequest(POST, submitAnotherRoute)
+          .withFormUrlEncodedBody(("value", AddAProtector.YesNow.toString))
 
         val result = route(application, request).value
 
@@ -313,13 +316,12 @@ class AddAProtectorControllerSpec extends SpecBase with ScalaFutures {
 
         val fakeService = new FakeService(protectors)
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(Seq(
-          bind(classOf[TrustService]).toInstance(fakeService)
-        )).build()
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+          .build()
 
-        val request =
-          FakeRequest(POST, submitAnotherRoute)
-            .withFormUrlEncodedBody(("value", "invalid value"))
+        val request = FakeRequest(POST, submitAnotherRoute)
+          .withFormUrlEncodedBody(("value", "invalid value"))
 
         val boundForm = addProtectorForm.bind(Map("value" -> "invalid value"))
 
@@ -352,9 +354,9 @@ class AddAProtectorControllerSpec extends SpecBase with ScalaFutures {
 
         val protectorRows = new AddAProtectorViewHelper(protectors).rows
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(Seq(
-          bind(classOf[TrustService]).toInstance(fakeService)
-        )).build()
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+          .build()
 
         val request = FakeRequest(GET, getRoute)
 
@@ -383,20 +385,21 @@ class AddAProtectorControllerSpec extends SpecBase with ScalaFutures {
 
         val fakeService = new FakeService(protectors)
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(Seq(
-          bind(classOf[TrustService]).toInstance(fakeService),
-          bind(classOf[TrustsStoreConnector]).toInstance(mockStoreConnector)
-        )).build()
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(
+            bind(classOf[TrustService]).toInstance(fakeService),
+            bind(classOf[TrustsStoreConnector]).toInstance(mockStoreConnector)
+          ).build()
 
         val request = FakeRequest(POST, submitCompleteRoute)
-
-        when(mockStoreConnector.setTaskComplete(any())(any(), any())).thenReturn(Future.successful(HttpResponse.apply(OK, "")))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual "http://localhost:9788/maintain-a-trust/overview"
+
+        verify(mockStoreConnector).updateTaskStatus(any(), eqTo(Completed))(any(), any())
 
         application.stop()
 
@@ -411,9 +414,9 @@ class AddAProtectorControllerSpec extends SpecBase with ScalaFutures {
 
         val submitRoute = submitAnotherRoute
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(Seq(
-          bind(classOf[TrustService]).toInstance(fakeService)
-        )).build()
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+          .build()
 
         val submitEmptyFormRequest = FakeRequest(POST, submitRoute).withFormUrlEncodedBody(("value", ""))
         val submitEmptyFormResult = route(application, submitEmptyFormRequest).value
