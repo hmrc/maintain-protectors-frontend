@@ -38,7 +38,9 @@ class TrustsStoreConnectorSpec extends SpecBase
 
   "trusts store connector" when {
 
-    ".setTaskComplete" must {
+    ".updateTaskStatus" must {
+      
+      val url = "/trusts-store/maintain/tasks/update-protectors/123456789"
 
       "return OK with the current task status" in {
         val application = applicationBuilder()
@@ -52,7 +54,7 @@ class TrustsStoreConnectorSpec extends SpecBase
         val connector = application.injector.instanceOf[TrustsStoreConnector]
 
         server.stubFor(
-          post(urlEqualTo("/trusts-store/maintain/tasks/update-protectors/123456789"))
+          post(urlEqualTo(url))
             .willReturn(ok())
         )
 
@@ -78,7 +80,7 @@ class TrustsStoreConnectorSpec extends SpecBase
         val connector = application.injector.instanceOf[TrustsStoreConnector]
 
         server.stubFor(
-          post(urlEqualTo("/trusts-store/maintain/tasks/update-protectors/123456789"))
+          post(urlEqualTo(url))
             .willReturn(serverError())
         )
 
