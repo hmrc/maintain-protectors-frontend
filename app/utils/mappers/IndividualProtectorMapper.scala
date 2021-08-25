@@ -57,8 +57,8 @@ class IndividualProtectorMapper extends Mapper[IndividualProtector] {
     } yield (hasNino, hasAddress, hasPassport, hasIdCard, hasPassportOrIdCard)
 
     identification.flatMap[Option[IndividualIdentification]] {
-      case (false, true, true, false, _) => PassportDetailsPage.path.read[Passport].map(Some(_))
-      case (false, true, false, true, _) => IdCardDetailsPage.path.read[IdCard].map(Some(_))
+      case (false, true, true, false, _) => PassportDetailsPage.path.read[Passport].map(_.asCombined).map(Some(_))
+      case (false, true, false, true, _) => IdCardDetailsPage.path.read[IdCard].map(_.asCombined).map(Some(_))
       case (false, true, false, false, true) => PassportOrIdCardDetailsPage.path.read[CombinedPassportOrIdCard].map(Some(_))
       case _ => Reads(_ => JsSuccess(None))
     }
