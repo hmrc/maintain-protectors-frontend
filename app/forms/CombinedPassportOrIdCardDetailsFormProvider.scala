@@ -18,8 +18,10 @@ package forms
 
 import config.FrontendAppConfig
 import forms.mappings.{Constraints, Mappings}
+
 import javax.inject.Inject
 import models.CombinedPassportOrIdCard
+import models.DetailsType.DetailsType
 import play.api.data.Form
 import play.api.data.Forms.mapping
 
@@ -59,7 +61,8 @@ class CombinedPassportOrIdCardDetailsFormProvider @Inject()(config: FrontendAppC
           config.minDate,
           s"$prefix.expiryDate.error.past", "day", "month", "year"
         )
-      ))
+      )),
+      "detailsType" -> enumerable[DetailsType]()
     )(CombinedPassportOrIdCard.apply)(CombinedPassportOrIdCard.unapply)
   )
 }

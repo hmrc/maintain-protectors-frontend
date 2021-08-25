@@ -85,6 +85,16 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
     }
   }
 
+  def pageWithHiddenInput(form: Form[A],
+                          createView: Form[A] => HtmlFormat.Appendable,
+                          field: String): Unit = {
+
+    s"contain hidden input for $field" in {
+      val doc = asDocument(createView(form))
+      doc.getElementById(field).attr("type") mustBe "hidden"
+    }
+  }
+
   def pageWithPassportOrIDCardDetailsFields(form: Form[A],
                                             createView: Form[A] => HtmlFormat.Appendable,
                                             messageKeyPrefix: String,

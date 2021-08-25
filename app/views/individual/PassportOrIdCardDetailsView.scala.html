@@ -15,8 +15,9 @@
  *@
 
 @import controllers.individual.routes._
+@import models.DetailsType
 @import utils.InputOption
-@import views.html.components.{Heading, ErrorSummary, InputSelect, InputText, InputDate, SubmitButton}
+@import views.html.components.{Heading, ErrorSummary, InputSelect, InputText, InputDate, SubmitButton, InputHidden}
 
 @this(
     main_template: MainTemplate,
@@ -26,6 +27,7 @@
     inputSelect: InputSelect,
     inputText: InputText,
     inputDate: InputDate,
+    inputHidden: InputHidden,
     submitButton: SubmitButton
 )
 
@@ -62,7 +64,12 @@
             legend = messages("individualProtector.passportOrIdCardDetails.expiryDate.title"),
             legendClass = "bold",
             legendAsHeading = false,
-            hint = Some(messages(s"individualProtector.passportOrIdCardDetails.expiryDate.hint"))
+            hint = Some(messages("individualProtector.passportOrIdCardDetails.expiryDate.hint"))
+        )
+
+        @inputHidden(
+            field = form("detailsType"),
+            defaultValue = Some(DetailsType.Combined.toString)
         )
 
         @submitButton()
