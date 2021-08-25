@@ -137,14 +137,62 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
           }
         }
 
-        "UK address page -> Do you know passport details page" in {
-          navigator.nextPage(UkAddressPage, mode, baseAnswers)
-            .mustBe(addRts.PassportDetailsYesNoController.onPageLoad())
+        "UK address page" when {
+          "provisional" must {
+            "-> Do you know passport details yes/no page" in {
+              val answers = baseAnswers
+                .set(ProvisionalIdDetailsPage, true).success.value
+
+              navigator.nextPage(UkAddressPage, mode, answers)
+                .mustBe(rts.PassportDetailsYesNoController.onPageLoad(mode))
+            }
+          }
+
+          "not provisional" must {
+            "-> Do you know passport or ID card details yes/no page" in {
+              val answers = baseAnswers
+                .set(ProvisionalIdDetailsPage, false).success.value
+
+              navigator.nextPage(UkAddressPage, mode, answers)
+                .mustBe(rts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode))
+            }
+          }
+
+          "unknown provisional status" must {
+            "-> Do you know passport details yes/no page" in {
+              navigator.nextPage(UkAddressPage, mode, baseAnswers)
+                .mustBe(rts.PassportDetailsYesNoController.onPageLoad(mode))
+            }
+          }
         }
 
-        "Non-UK address page -> Do you know passport details page" in {
-          navigator.nextPage(NonUkAddressPage, mode, baseAnswers)
-            .mustBe(addRts.PassportDetailsYesNoController.onPageLoad())
+        "Non-UK address page" when {
+          "provisional" must {
+            "-> Do you know passport details yes/no page" in {
+              val answers = baseAnswers
+                .set(ProvisionalIdDetailsPage, true).success.value
+
+              navigator.nextPage(NonUkAddressPage, mode, answers)
+                .mustBe(rts.PassportDetailsYesNoController.onPageLoad(mode))
+            }
+          }
+
+          "not provisional" must {
+            "-> Do you know passport or ID card details yes/no page" in {
+              val answers = baseAnswers
+                .set(ProvisionalIdDetailsPage, false).success.value
+
+              navigator.nextPage(NonUkAddressPage, mode, answers)
+                .mustBe(rts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode))
+            }
+          }
+
+          "unknown provisional status" must {
+            "-> Do you know passport details yes/no page" in {
+              navigator.nextPage(NonUkAddressPage, mode, baseAnswers)
+                .mustBe(rts.PassportDetailsYesNoController.onPageLoad(mode))
+            }
+          }
         }
 
         "Do you know passport details page" when {
@@ -155,7 +203,7 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
               .set(page, true).success.value
 
             navigator.nextPage(page, mode, answers)
-              .mustBe(addRts.PassportDetailsController.onPageLoad())
+              .mustBe(rts.PassportDetailsController.onPageLoad(mode))
           }
 
           "-> No -> Do you know ID card details page" in {
@@ -163,7 +211,7 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
               .set(page, false).success.value
 
             navigator.nextPage(page, mode, answers)
-              .mustBe(addRts.IdCardDetailsYesNoController.onPageLoad())
+              .mustBe(rts.IdCardDetailsYesNoController.onPageLoad(mode))
           }
         }
 
@@ -180,7 +228,7 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
               .set(page, true).success.value
 
             navigator.nextPage(page, mode, answers)
-              .mustBe(addRts.IdCardDetailsController.onPageLoad())
+              .mustBe(rts.IdCardDetailsController.onPageLoad(mode))
           }
 
           "-> No -> Start Date page" in {
@@ -307,14 +355,62 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
           }
         }
 
-        "UK address page -> Do you know passport or ID card details page" in {
-          navigator.nextPage(UkAddressPage, mode, baseAnswers)
-            .mustBe(amendRts.PassportOrIdCardDetailsYesNoController.onPageLoad())
+        "UK address page" when {
+          "provisional" must {
+            "-> Do you know passport details yes/no page" in {
+              val answers = baseAnswers
+                .set(ProvisionalIdDetailsPage, true).success.value
+
+              navigator.nextPage(UkAddressPage, mode, answers)
+                .mustBe(rts.PassportDetailsYesNoController.onPageLoad(mode))
+            }
+          }
+
+          "not provisional" must {
+            "-> Do you know passport or ID card details yes/no page" in {
+              val answers = baseAnswers
+                .set(ProvisionalIdDetailsPage, false).success.value
+
+              navigator.nextPage(UkAddressPage, mode, answers)
+                .mustBe(rts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode))
+            }
+          }
+
+          "unknown provisional status" must {
+            "-> Do you know passport details yes/no page" in {
+              navigator.nextPage(UkAddressPage, mode, baseAnswers)
+                .mustBe(rts.PassportDetailsYesNoController.onPageLoad(mode))
+            }
+          }
         }
 
-        "Non-UK address page -> Do you know passport or ID card details page" in {
-          navigator.nextPage(NonUkAddressPage, mode, baseAnswers)
-            .mustBe(amendRts.PassportOrIdCardDetailsYesNoController.onPageLoad())
+        "Non-UK address page" when {
+          "provisional" must {
+            "-> Do you know passport details yes/no page" in {
+              val answers = baseAnswers
+                .set(ProvisionalIdDetailsPage, true).success.value
+
+              navigator.nextPage(NonUkAddressPage, mode, answers)
+                .mustBe(rts.PassportDetailsYesNoController.onPageLoad(mode))
+            }
+          }
+
+          "not provisional" must {
+            "-> Do you know passport or ID card details yes/no page" in {
+              val answers = baseAnswers
+                .set(ProvisionalIdDetailsPage, false).success.value
+
+              navigator.nextPage(NonUkAddressPage, mode, answers)
+                .mustBe(rts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode))
+            }
+          }
+
+          "unknown provisional status" must {
+            "-> Do you know passport details yes/no page" in {
+              navigator.nextPage(NonUkAddressPage, mode, baseAnswers)
+                .mustBe(rts.PassportDetailsYesNoController.onPageLoad(mode))
+            }
+          }
         }
 
         "Do you know passport or ID card details page" when {
@@ -325,7 +421,7 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
               .set(page, true).success.value
 
             navigator.nextPage(page, mode, answers)
-              .mustBe(amendRts.PassportOrIdCardDetailsController.onPageLoad())
+              .mustBe(rts.PassportOrIdCardDetailsController.onPageLoad(mode))
           }
 
           "-> No -> Check Details page" in {
@@ -580,14 +676,62 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
           }
         }
 
-        "UK address page -> Do you know passport details page" in {
-          navigator.nextPage(UkAddressPage, mode, baseAnswers)
-            .mustBe(addRts.PassportDetailsYesNoController.onPageLoad())
+        "UK address page" when {
+          "provisional" must {
+            "-> Do you know passport details yes/no page" in {
+              val answers = baseAnswers
+                .set(ProvisionalIdDetailsPage, true).success.value
+
+              navigator.nextPage(UkAddressPage, mode, answers)
+                .mustBe(rts.PassportDetailsYesNoController.onPageLoad(mode))
+            }
+          }
+
+          "not provisional" must {
+            "-> Do you know passport or ID card details yes/no page" in {
+              val answers = baseAnswers
+                .set(ProvisionalIdDetailsPage, false).success.value
+
+              navigator.nextPage(UkAddressPage, mode, answers)
+                .mustBe(rts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode))
+            }
+          }
+
+          "unknown provisional status" must {
+            "-> Do you know passport details yes/no page" in {
+              navigator.nextPage(UkAddressPage, mode, baseAnswers)
+                .mustBe(rts.PassportDetailsYesNoController.onPageLoad(mode))
+            }
+          }
         }
 
-        "Non-UK address page -> Do you know passport details page" in {
-          navigator.nextPage(NonUkAddressPage, mode, baseAnswers)
-            .mustBe(addRts.PassportDetailsYesNoController.onPageLoad())
+        "Non-UK address page" when {
+          "provisional" must {
+            "-> Do you know passport details yes/no page" in {
+              val answers = baseAnswers
+                .set(ProvisionalIdDetailsPage, true).success.value
+
+              navigator.nextPage(NonUkAddressPage, mode, answers)
+                .mustBe(rts.PassportDetailsYesNoController.onPageLoad(mode))
+            }
+          }
+
+          "not provisional" must {
+            "-> Do you know passport or ID card details yes/no page" in {
+              val answers = baseAnswers
+                .set(ProvisionalIdDetailsPage, false).success.value
+
+              navigator.nextPage(NonUkAddressPage, mode, answers)
+                .mustBe(rts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode))
+            }
+          }
+
+          "unknown provisional status" must {
+            "-> Do you know passport details yes/no page" in {
+              navigator.nextPage(NonUkAddressPage, mode, baseAnswers)
+                .mustBe(rts.PassportDetailsYesNoController.onPageLoad(mode))
+            }
+          }
         }
 
         "Do you know passport details page" when {
@@ -598,7 +742,7 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
               .set(page, true).success.value
 
             navigator.nextPage(page, mode, answers)
-              .mustBe(addRts.PassportDetailsController.onPageLoad())
+              .mustBe(rts.PassportDetailsController.onPageLoad(mode))
           }
 
           "-> No -> Do you know ID card details page" in {
@@ -606,7 +750,7 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
               .set(page, false).success.value
 
             navigator.nextPage(page, mode, answers)
-              .mustBe(addRts.IdCardDetailsYesNoController.onPageLoad())
+              .mustBe(rts.IdCardDetailsYesNoController.onPageLoad(mode))
           }
         }
 
@@ -623,7 +767,7 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
               .set(page, true).success.value
 
             navigator.nextPage(page, mode, answers)
-              .mustBe(addRts.IdCardDetailsController.onPageLoad())
+              .mustBe(rts.IdCardDetailsController.onPageLoad(mode))
           }
 
           "-> No -> Has mental capacity page" in {

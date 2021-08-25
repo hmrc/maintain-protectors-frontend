@@ -14,73 +14,84 @@
  * limitations under the License.
  */
 
-package controllers.individual.amend
+package controllers.individual
 
 import base.SpecBase
 import config.annotations.IndividualProtector
-import forms.YesNoFormProvider
-import models.{Name, UserAnswers}
+import forms.PassportDetailsFormProvider
+import models.{Mode, Name, NormalMode, Passport, UserAnswers}
 import navigation.Navigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.individual.{NamePage, PassportOrIdCardDetailsYesNoPage}
-import play.api.data.Form
+import pages.individual.{NamePage, PassportDetailsPage}
 import play.api.inject.bind
+import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
-import views.html.individual.amend.PassportOrIdCardDetailsYesNoView
+import utils.InputOption
+import utils.countryOptions.CountryOptions
+import views.html.individual.PassportDetailsView
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
-class PassportOrIdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSugar {
+class PassportDetailsControllerSpec extends SpecBase with MockitoSugar {
 
-  private val formProvider: YesNoFormProvider = new YesNoFormProvider()
-  private val form: Form[Boolean] = formProvider.withPrefix("individualProtector.passportOrIdCardDetailsYesNo")
-  private val name: Name = Name("Joe", None, "Bloggs")
+  val formProvider = new PassportDetailsFormProvider()
+  private def form = formProvider.withPrefix("individualProtector")
 
-  override val emptyUserAnswers: UserAnswers = super.emptyUserAnswers
+  def onwardRoute: Call = Call("GET", "/foo")
+  val name: Name = Name("FirstName", None, "LastName")
+
+  val mode: Mode = NormalMode
+
+  override val emptyUserAnswers: UserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now())
     .set(NamePage, name).success.value
-  
-  private lazy val passportOrIdCardDetailsYesNoRoute: String = routes.PassportOrIdCardDetailsYesNoController.onPageLoad().url
 
-  "PassportOrIdCardDetailsYesNo Controller" must {
+  val passportDetailsRoute: String = routes.PassportDetailsController.onPageLoad(mode).url
+
+  val getRequest = FakeRequest(GET, passportDetailsRoute)
+
+  val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptions].options
+
+  val validData: Passport = Passport("country", "passport number", LocalDate.of(2020, 1, 1))
+
+  "PassportDetails Controller" must {
 
     "return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      val request = FakeRequest(GET, passportOrIdCardDetailsYesNoRoute)
+      val result = route(application, getRequest).value
 
-      val result = route(application, request).value
-
-      val view = application.injector.instanceOf[PassportOrIdCardDetailsYesNoView]
+      val view = application.injector.instanceOf[PassportDetailsView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, name.displayName)(request, messages).toString
+        view(form, mode, countryOptions, name.displayName)(getRequest, messages).toString
 
       application.stop()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(PassportOrIdCardDetailsYesNoPage, true).success.value
+      val userAnswers = emptyUserAnswers
+        .set(NamePage, name).success.value
+        .set(PassportDetailsPage, validData).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
-      val request = FakeRequest(GET, passportOrIdCardDetailsYesNoRoute)
+      val view = application.injector.instanceOf[PassportDetailsView]
 
-      val view = application.injector.instanceOf[PassportOrIdCardDetailsYesNoView]
-
-      val result = route(application, request).value
+      val result = route(application, getRequest).value
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), name.displayName)(request, messages).toString
+        view(form.fill(validData), mode, countryOptions, name.displayName)(getRequest, messages).toString
 
       application.stop()
     }
@@ -91,19 +102,26 @@ class PassportOrIdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSu
 
       when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-        .overrides(bind[Navigator].qualifiedWith(classOf[IndividualProtector]).toInstance(fakeNavigator))
-        .build()
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind[Navigator].qualifiedWith(classOf[IndividualProtector]).toInstance(fakeNavigator))
+          .build()
 
       val request =
-        FakeRequest(POST, passportOrIdCardDetailsYesNoRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+        FakeRequest(POST, passportDetailsRoute)
+          .withFormUrlEncodedBody(
+            "country" -> "country",
+            "number" -> "123456",
+            "expiryDate.day"   -> validData.expirationDate.getDayOfMonth.toString,
+            "expiryDate.month" -> validData.expirationDate.getMonthValue.toString,
+            "expiryDate.year"  -> validData.expirationDate.getYear.toString
+          )
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
+      redirectLocation(result).value mustEqual onwardRoute.url
 
       application.stop()
     }
@@ -113,19 +131,19 @@ class PassportOrIdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSu
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       val request =
-        FakeRequest(POST, passportOrIdCardDetailsYesNoRoute)
+        FakeRequest(POST, passportDetailsRoute)
           .withFormUrlEncodedBody(("value", ""))
 
       val boundForm = form.bind(Map("value" -> ""))
 
-      val view = application.injector.instanceOf[PassportOrIdCardDetailsYesNoView]
+      val view = application.injector.instanceOf[PassportDetailsView]
 
       val result = route(application, request).value
 
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, name.displayName)(request, messages).toString
+        view(boundForm, mode, countryOptions, name.displayName)(request, messages).toString
 
       application.stop()
     }
@@ -134,12 +152,9 @@ class PassportOrIdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSu
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, passportOrIdCardDetailsYesNoRoute)
-
-      val result = route(application, request).value
+      val result = route(application, getRequest).value
 
       status(result) mustEqual SEE_OTHER
-
       redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
 
       application.stop()
@@ -150,8 +165,14 @@ class PassportOrIdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSu
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, passportOrIdCardDetailsYesNoRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+        FakeRequest(POST, passportDetailsRoute)
+          .withFormUrlEncodedBody(
+            "country" -> "country",
+            "number" -> "123456",
+            "expiryDate.day"   -> validData.expirationDate.getDayOfMonth.toString,
+            "expiryDate.month" -> validData.expirationDate.getMonthValue.toString,
+            "expiryDate.year"  -> validData.expirationDate.getYear.toString
+          )
 
       val result = route(application, request).value
 
