@@ -58,7 +58,7 @@ class AnswerRowConverter @Inject()(checkAnswersFormatters: CheckAnswersFormatter
     def dateQuestion(query: Gettable[LocalDate],
                      labelKey: String,
                      changeUrl: String): Option[AnswerRow] = {
-      val format = (x: LocalDate) => checkAnswersFormatters.formatDate(x)
+      val format = (x: LocalDate) => HtmlFormat.escape(checkAnswersFormatters.formatDate(x))
       question(query, labelKey, format, changeUrl)
     }
 
@@ -75,7 +75,7 @@ class AnswerRowConverter @Inject()(checkAnswersFormatters: CheckAnswersFormatter
                         changeUrl: String): Option[AnswerRow] = {
       userAnswers.get(isUkQuery) flatMap {
         case false =>
-          val format = (x: String) => checkAnswersFormatters.country(x)
+          val format = (x: String) => HtmlFormat.escape(checkAnswersFormatters.country(x))
           question(query, labelKey, format, changeUrl)
         case _ =>
           None
@@ -93,14 +93,14 @@ class AnswerRowConverter @Inject()(checkAnswersFormatters: CheckAnswersFormatter
     def passportDetailsQuestion(query: Gettable[Passport],
                                 labelKey: String,
                                 changeUrl: String): Option[AnswerRow] = {
-      val format = (x: Passport) => checkAnswersFormatters.formatPassportDetails(x)
+      val format = (x: Passport) => checkAnswersFormatters.formatPassportOrIdCardDetails(x.asCombined)
       question(query, labelKey, format, changeUrl)
     }
 
     def idCardDetailsQuestion(query: Gettable[IdCard],
                               labelKey: String,
                               changeUrl: String): Option[AnswerRow] = {
-      val format = (x: IdCard) => checkAnswersFormatters.formatIdCardDetails(x)
+      val format = (x: IdCard) => checkAnswersFormatters.formatPassportOrIdCardDetails(x.asCombined)
       question(query, labelKey, format, changeUrl)
     }
 
