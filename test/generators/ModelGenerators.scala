@@ -16,12 +16,17 @@
 
 package generators
 
-import models.ProtectorType
-import org.scalacheck.Gen
+import models.DetailsType.DetailsType
+import models.{DetailsType, ProtectorType}
+import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {
 
   implicit lazy val arbitraryProtectorType: Gen[ProtectorType] =
     Gen.oneOf[ProtectorType](ProtectorType.values)
+
+  implicit lazy val arbitraryDetailsType: Arbitrary[DetailsType] = Arbitrary {
+    Gen.oneOf(DetailsType.values)
+  }
 
 }

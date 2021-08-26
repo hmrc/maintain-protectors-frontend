@@ -68,6 +68,7 @@ class PassportOrIdCardDetailsController @Inject()(
 
         value =>
           for {
+            // TODO - we could get the old answer, compare with the new answer, and if they're different set value.copy(detailsType = CombinedProvisional)
             updatedAnswers <- Future.fromTry(request.userAnswers.set(PassportOrIdCardDetailsPage, value))
             _              <- playbackRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(PassportOrIdCardDetailsPage, mode, updatedAnswers))

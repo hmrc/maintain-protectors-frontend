@@ -77,7 +77,6 @@ class IndividualProtectorExtractorSpec extends SpecBase {
           result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
           result.get(PassportOrIdCardDetailsPage) mustBe None
           result.get(StartDatePage).get mustBe startDate
-          result.get(ProvisionalIdDetailsPage) mustBe None
         }
 
         "has date of birth and NINO" in {
@@ -110,7 +109,6 @@ class IndividualProtectorExtractorSpec extends SpecBase {
           result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
           result.get(PassportOrIdCardDetailsPage) mustBe None
           result.get(StartDatePage).get mustBe startDate
-          result.get(ProvisionalIdDetailsPage) mustBe None
         }
         
         "has UK address" in {
@@ -143,7 +141,6 @@ class IndividualProtectorExtractorSpec extends SpecBase {
           result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
           result.get(PassportOrIdCardDetailsPage) mustBe None
           result.get(StartDatePage).get mustBe startDate
-          result.get(ProvisionalIdDetailsPage) mustBe None
         }
 
         "has non-UK address and passport" in {
@@ -178,7 +175,6 @@ class IndividualProtectorExtractorSpec extends SpecBase {
           result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
           result.get(PassportOrIdCardDetailsPage) mustBe None
           result.get(StartDatePage).get mustBe startDate
-          result.get(ProvisionalIdDetailsPage).get mustBe true
         }
 
         "has non-UK address and id card" in {
@@ -213,7 +209,6 @@ class IndividualProtectorExtractorSpec extends SpecBase {
           result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
           result.get(PassportOrIdCardDetailsPage) mustBe None
           result.get(StartDatePage).get mustBe startDate
-          result.get(ProvisionalIdDetailsPage).get mustBe true
         }
         
         "has non-UK address and passport/id card" in {
@@ -246,7 +241,6 @@ class IndividualProtectorExtractorSpec extends SpecBase {
           result.get(PassportOrIdCardDetailsYesNoPage).get mustBe true
           result.get(PassportOrIdCardDetailsPage).get mustBe passportOrIdCard
           result.get(StartDatePage).get mustBe startDate
-          result.get(ProvisionalIdDetailsPage).get mustBe false
         }
       }
 
@@ -296,7 +290,6 @@ class IndividualProtectorExtractorSpec extends SpecBase {
             result.get(PassportOrIdCardDetailsPage) mustBe None
             result.get(MentalCapacityYesNoPage) mustBe None
             result.get(StartDatePage).get mustBe startDate
-            result.get(ProvisionalIdDetailsPage) mustBe None
           }
         }
 
@@ -346,7 +339,6 @@ class IndividualProtectorExtractorSpec extends SpecBase {
               result.get(PassportOrIdCardDetailsPage) mustBe None
               result.get(MentalCapacityYesNoPage).get mustBe true
               result.get(StartDatePage).get mustBe startDate
-              result.get(ProvisionalIdDetailsPage) mustBe None
             }
           }
 
@@ -394,7 +386,6 @@ class IndividualProtectorExtractorSpec extends SpecBase {
               result.get(PassportOrIdCardDetailsPage) mustBe None
               result.get(MentalCapacityYesNoPage).get mustBe false
               result.get(StartDatePage).get mustBe startDate
-              result.get(ProvisionalIdDetailsPage) mustBe None
             }
           }
         }

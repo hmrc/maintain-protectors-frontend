@@ -17,7 +17,7 @@
 package extractors
 
 import models.protectors.IndividualProtector
-import models.{Address, CombinedPassportOrIdCard, IdCard, IndividualIdentification, NationalInsuranceNumber, NonUkAddress, Passport, UkAddress, UserAnswers}
+import models.{Address, CombinedPassportOrIdCard, IdCard, NationalInsuranceNumber, NonUkAddress, Passport, UkAddress, UserAnswers}
 import pages.QuestionPage
 import pages.individual._
 import play.api.libs.json.JsPath
@@ -36,7 +36,6 @@ class IndividualProtectorExtractor extends ProtectorExtractor[IndividualProtecto
       .flatMap(answers => extractAddress(individual.address, answers))
       .flatMap(answers => extractIdentification(individual, answers))
       .flatMap(_.set(MentalCapacityYesNoPage, individual.mentalCapacityYesNo))
-      .flatMap(answers => extractIfIdDetailsAreProvisional(individual.identification, answers))
   }
 
   override def countryOfResidenceYesNoPage: QuestionPage[Boolean] = CountryOfResidenceYesNoPage
@@ -110,18 +109,6 @@ class IndividualProtectorExtractor extends ProtectorExtractor[IndividualProtecto
     } else {
       Success(answers)
     }
-  }
-
-  // `identification` is an instance of CombinedPassportOrIdCard => not added in session (i.e. not provisional)
-  // `identification` is an instance of Passport or IdCard => added in session (i.e. provisional)
-  // `identification` is empty or an instance of NationalInsuranceNumber => nothing to set
-  private def extractIfIdDetailsAreProvisional(identification: Option[IndividualIdentification], answers: UserAnswers): Try[UserAnswers] = {
-    val provisional: Option[Boolean] = identification match {
-      case Some(_: CombinedPassportOrIdCard) => Some(false)
-      case Some(_: Passport) | Some(_: IdCard) => Some(true)
-      case _ => None
-    }
-    answers.set(ProvisionalIdDetailsPage, provisional)
   }
 
 }
