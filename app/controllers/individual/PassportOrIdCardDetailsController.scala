@@ -20,6 +20,7 @@ import config.annotations.IndividualProtector
 import controllers.actions._
 import controllers.actions.individual.NameRequiredAction
 import forms.CombinedPassportOrIdCardDetailsFormProvider
+import models.DetailsType.{Combined, CombinedProvisional}
 import models.{CombinedPassportOrIdCard, Mode}
 import navigation.Navigator
 import pages.individual.PassportOrIdCardDetailsPage
@@ -66,11 +67,12 @@ class PassportOrIdCardDetailsController @Inject()(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, mode, request.protectorName, countryOptions.options))),
 
-        value =>
+        newAnswer =>
           for {
-            // TODO - we could get the old answer, compare with the new answer, and if they're different set value.copy(detailsType = CombinedProvisional)
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(PassportOrIdCardDetailsPage, value))
-            _              <- playbackRepository.set(updatedAnswers)
+            oldAnswer <- Future.successful(request.userAnswers.get(PassportOrIdCardDetailsPage))
+            detailsType = if (oldAnswer.contains(newAnswer)) Combined else CombinedProvisional
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(PassportOrIdCardDetailsPage, newAnswer.copy(detailsType = detailsType)))
+            _ <- playbackRepository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(PassportOrIdCardDetailsPage, mode, updatedAnswers))
       )
   }
