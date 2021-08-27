@@ -17,7 +17,6 @@
 package navigation
 
 import controllers.individual.add.{routes => addRts}
-import controllers.individual.amend.{routes => amendRts}
 import controllers.individual.{routes => rts}
 import models.{Mode, NormalMode, UserAnswers}
 import pages.Page
@@ -39,7 +38,7 @@ class IndividualProtectorNavigator @Inject()() extends Navigator {
     case PassportDetailsPage | IdCardDetailsPage | PassportOrIdCardDetailsPage => navigateAwayFromIdentificationQuestions(mode, _)
     case MentalCapacityYesNoPage => navigateToStartDateQuestionOrCheckDetails(mode, _)
     case CountryOfResidencePage => navigateAwayFromCountryOfResidenceQuestions(mode, _)
-    case UkAddressPage | NonUkAddressPage => _ => navigateAwayFromAddressQuestions(mode)
+    case UkAddressPage | NonUkAddressPage => navigateAwayFromAddressQuestions(mode, _)
     case StartDatePage => _ => addRts.CheckDetailsController.onPageLoad()
   }
 
@@ -61,11 +60,11 @@ class IndividualProtectorNavigator @Inject()() extends Navigator {
     case LiveInTheUkYesNoPage => ua =>
       yesNoNav(ua, LiveInTheUkYesNoPage, rts.UkAddressController.onPageLoad(mode), rts.NonUkAddressController.onPageLoad(mode))
     case PassportDetailsYesNoPage => ua =>
-      yesNoNav(ua, PassportDetailsYesNoPage, addRts.PassportDetailsController.onPageLoad(), addRts.IdCardDetailsYesNoController.onPageLoad())
+      yesNoNav(ua, PassportDetailsYesNoPage, rts.PassportDetailsController.onPageLoad(mode), rts.IdCardDetailsYesNoController.onPageLoad(mode))
     case IdCardDetailsYesNoPage => ua =>
-      yesNoNav(ua, IdCardDetailsYesNoPage, addRts.IdCardDetailsController.onPageLoad(), navigateAwayFromIdentificationQuestions(mode, ua))
+      yesNoNav(ua, IdCardDetailsYesNoPage, rts.IdCardDetailsController.onPageLoad(mode), navigateAwayFromIdentificationQuestions(mode, ua))
     case PassportOrIdCardDetailsYesNoPage => ua =>
-      yesNoNav(ua, PassportOrIdCardDetailsYesNoPage, amendRts.PassportOrIdCardDetailsController.onPageLoad(), navigateAwayFromIdentificationQuestions(mode, ua))
+      yesNoNav(ua, PassportOrIdCardDetailsYesNoPage, rts.PassportOrIdCardDetailsController.onPageLoad(mode), navigateAwayFromIdentificationQuestions(mode, ua))
   }
 
   private def navigateAwayFromDateOfBirthQuestions(mode: Mode, ua: UserAnswers): Call = {
@@ -104,11 +103,11 @@ class IndividualProtectorNavigator @Inject()() extends Navigator {
     }
   }
 
-  private def navigateAwayFromAddressQuestions(mode: Mode): Call = {
-    if (mode == NormalMode) {
-      addRts.PassportDetailsYesNoController.onPageLoad()
+  private def navigateAwayFromAddressQuestions(mode: Mode, ua: UserAnswers): Call = {
+    if (ua.get(PassportOrIdCardDetailsYesNoPage).isDefined || ua.get(PassportOrIdCardDetailsPage).isDefined) {
+      rts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode)
     } else {
-      amendRts.PassportOrIdCardDetailsYesNoController.onPageLoad()
+      rts.PassportDetailsYesNoController.onPageLoad(mode)
     }
   }
 

@@ -14,44 +14,45 @@
  * limitations under the License.
  */
 
-package controllers.individual.add
-
-import java.time.LocalDate
+package controllers.individual
 
 import base.SpecBase
 import config.annotations.IndividualProtector
 import forms.YesNoFormProvider
-import models.{Name, UserAnswers}
-import navigation.{FakeNavigator, Navigator}
+import models.{Mode, Name, NormalMode, UserAnswers}
+import navigation.Navigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.individual.{NamePage, PassportDetailsYesNoPage}
+import pages.individual.{IdCardDetailsYesNoPage, NamePage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
-import views.html.individual.add.PassportDetailsYesNoView
+import views.html.individual.IdCardDetailsYesNoView
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
-class PassportDetailsYesNoControllerSpec extends SpecBase with MockitoSugar {
+class IdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new YesNoFormProvider()
-  private def form = formProvider.withPrefix("individualProtector.passportDetailsYesNo")
+  private def form = formProvider.withPrefix("individualProtector.idCardDetailsYesNo")
 
   def onwardRoute: Call = Call("GET", "/foo")
   val name: Name = Name("FirstName", None, "LastName")
 
+  val mode: Mode = NormalMode
+
   override val emptyUserAnswers: UserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now())
     .set(NamePage, name).success.value
 
-  val passportDetailsYesNoRoute: String = routes.PassportDetailsYesNoController.onPageLoad().url
+  val idCardDetailsYesNoRoute: String = routes.IdCardDetailsYesNoController.onPageLoad(mode).url
 
-  val getRequest = FakeRequest(GET, passportDetailsYesNoRoute)
+  val getRequest = FakeRequest(GET, idCardDetailsYesNoRoute)
 
-  "PassportDetailsYesNo Controller" must {
+  "IdCardDetailsYesNo Controller" must {
 
     "return OK and the correct view for a GET" in {
 
@@ -59,12 +60,12 @@ class PassportDetailsYesNoControllerSpec extends SpecBase with MockitoSugar {
 
       val result = route(application, getRequest).value
 
-      val view = application.injector.instanceOf[PassportDetailsYesNoView]
+      val view = application.injector.instanceOf[IdCardDetailsYesNoView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, name.displayName)(getRequest, messages).toString
+        view(form, mode, name.displayName)(getRequest, messages).toString
 
       application.stop()
     }
@@ -73,18 +74,18 @@ class PassportDetailsYesNoControllerSpec extends SpecBase with MockitoSugar {
 
       val userAnswers = emptyUserAnswers
         .set(NamePage, name).success.value
-        .set(PassportDetailsYesNoPage, true).success.value
+        .set(IdCardDetailsYesNoPage, true).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
-      val view = application.injector.instanceOf[PassportDetailsYesNoView]
+      val view = application.injector.instanceOf[IdCardDetailsYesNoView]
 
       val result = route(application, getRequest).value
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), name.displayName)(getRequest, messages).toString
+        view(form.fill(true), mode, name.displayName)(getRequest, messages).toString
 
       application.stop()
     }
@@ -97,13 +98,12 @@ class PassportDetailsYesNoControllerSpec extends SpecBase with MockitoSugar {
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[Navigator].qualifiedWith(classOf[IndividualProtector]).toInstance(new FakeNavigator(onwardRoute))
-          )
+          .overrides(bind[Navigator].qualifiedWith(classOf[IndividualProtector]).toInstance(fakeNavigator))
+
           .build()
 
       val request =
-        FakeRequest(POST, passportDetailsYesNoRoute)
+        FakeRequest(POST, idCardDetailsYesNoRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
@@ -120,19 +120,19 @@ class PassportDetailsYesNoControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       val request =
-        FakeRequest(POST, passportDetailsYesNoRoute)
+        FakeRequest(POST, idCardDetailsYesNoRoute)
           .withFormUrlEncodedBody(("value", ""))
 
       val boundForm = form.bind(Map("value" -> ""))
 
-      val view = application.injector.instanceOf[PassportDetailsYesNoView]
+      val view = application.injector.instanceOf[IdCardDetailsYesNoView]
 
       val result = route(application, request).value
 
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, name.displayName)(request, messages).toString
+        view(boundForm, mode, name.displayName)(request, messages).toString
 
       application.stop()
     }
@@ -154,7 +154,7 @@ class PassportDetailsYesNoControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, passportDetailsYesNoRoute)
+        FakeRequest(POST, idCardDetailsYesNoRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value

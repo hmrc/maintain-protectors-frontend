@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,26 +12,22 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package pages.individual
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 
-import models.UserAnswers
-import pages.QuestionPage
-import play.api.libs.json.JsPath
+@this(
+    govukInput: GovukInput
+)
 
-import scala.util.Try
+@(
+    field: Field,
+    defaultValue: Option[String] = None
+)(implicit messages: Messages)
 
-case object PassportOrIdCardDetailsYesNoPage extends QuestionPage[Boolean] {
-
-  override def path: JsPath = basePath \ toString
-
-  override def toString: String = "passportOrIdCardDetailsYesNo"
-
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
-    value match {
-      case Some(false) => userAnswers.remove(PassportOrIdCardDetailsPage)
-      case _ => super.cleanup(value, userAnswers)
-    }
-  }
-}
+@govukInput(
+    Input(
+        inputType = "hidden",
+        value = field.value.orElse(defaultValue)
+    ).withFormField(field)
+)

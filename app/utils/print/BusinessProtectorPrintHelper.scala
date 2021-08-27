@@ -25,7 +25,7 @@ import viewmodels.{AnswerRow, AnswerSection}
 
 class BusinessProtectorPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
 
-  def apply(userAnswers: UserAnswers, provisional: Boolean, protectorName: String)(implicit messages: Messages): AnswerSection = {
+  def apply(userAnswers: UserAnswers, adding: Boolean, protectorName: String)(implicit messages: Messages): AnswerSection = {
 
     val bound = answerRowConverter.bind(userAnswers, protectorName)
 
@@ -51,7 +51,7 @@ class BusinessProtectorPrintHelper @Inject()(answerRowConverter: AnswerRowConver
 
     AnswerSection(
       None,
-      if (provisional) add else amend
+      if (adding) add else amend
     )
   }
 }

@@ -119,7 +119,7 @@ class IndividualProtectorMapperSpec extends SpecBase {
 
         result.name mustBe name
         result.dateOfBirth mustBe Some(dateOfBirth)
-        result.identification mustBe Some(passport)
+        result.identification mustBe Some(passport.asCombined)
         result.address mustBe Some(nonUkAddress)
         result.entityStart mustBe startDate
       }
@@ -144,7 +144,7 @@ class IndividualProtectorMapperSpec extends SpecBase {
 
         result.name mustBe name
         result.dateOfBirth mustBe Some(dateOfBirth)
-        result.identification mustBe Some(idcard)
+        result.identification mustBe Some(idcard.asCombined)
         result.address mustBe Some(ukAddress)
         result.entityStart mustBe startDate
       }

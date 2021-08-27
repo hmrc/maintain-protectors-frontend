@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package controllers.individual.amend
+package controllers.individual
 
 import base.SpecBase
 import config.annotations.IndividualProtector
 import forms.YesNoFormProvider
-import models.{Name, UserAnswers}
+import models.{CheckMode, Mode, Name, UserAnswers}
 import navigation.Navigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -30,7 +30,7 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
-import views.html.individual.amend.PassportOrIdCardDetailsYesNoView
+import views.html.individual.PassportOrIdCardDetailsYesNoView
 
 import scala.concurrent.Future
 
@@ -40,10 +40,12 @@ class PassportOrIdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSu
   private val form: Form[Boolean] = formProvider.withPrefix("individualProtector.passportOrIdCardDetailsYesNo")
   private val name: Name = Name("Joe", None, "Bloggs")
 
+  private val mode: Mode = CheckMode
+
   override val emptyUserAnswers: UserAnswers = super.emptyUserAnswers
     .set(NamePage, name).success.value
   
-  private lazy val passportOrIdCardDetailsYesNoRoute: String = routes.PassportOrIdCardDetailsYesNoController.onPageLoad().url
+  private lazy val passportOrIdCardDetailsYesNoRoute: String = routes.PassportOrIdCardDetailsYesNoController.onPageLoad(mode).url
 
   "PassportOrIdCardDetailsYesNo Controller" must {
 
@@ -60,7 +62,7 @@ class PassportOrIdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSu
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, name.displayName)(request, messages).toString
+        view(form, mode, name.displayName)(request, messages).toString
 
       application.stop()
     }
@@ -80,7 +82,7 @@ class PassportOrIdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSu
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), name.displayName)(request, messages).toString
+        view(form.fill(true), mode, name.displayName)(request, messages).toString
 
       application.stop()
     }
@@ -125,7 +127,7 @@ class PassportOrIdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSu
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, name.displayName)(request, messages).toString
+        view(boundForm, mode, name.displayName)(request, messages).toString
 
       application.stop()
     }

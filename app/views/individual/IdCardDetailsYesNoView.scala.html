@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.individual.add.routes._
+@import controllers.individual.routes._
 @import views.html.components.{ErrorSummary, InputYesNo, SubmitButton}
 
 @this(
@@ -25,20 +25,20 @@
     submitButton: SubmitButton
 )
 
-@(form: Form[_], name: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, name: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)}${messages("individualProtector.passportDetailsYesNo.title")}",
+    title = s"${errorPrefix(form)}${messages("individualProtector.idCardDetailsYesNo.title")}",
     showBackLink = true
 ) {
 
-    @formHelper(action = PassportDetailsYesNoController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = IdCardDetailsYesNoController.onSubmit(mode), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 
         @inputYesNo(
             field = form("value"),
-            label = messages("individualProtector.passportDetailsYesNo.heading", name)
+            label = messages("individualProtector.idCardDetailsYesNo.heading", name)
         )
 
         @submitButton()

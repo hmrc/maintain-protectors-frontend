@@ -18,7 +18,6 @@ package utils.print
 
 import com.google.inject.Inject
 import controllers.individual.add.{routes => addRts}
-import controllers.individual.amend.{routes => amendRts}
 import controllers.individual.{routes => rts}
 import models.{CheckMode, Mode, NormalMode, UserAnswers}
 import pages.individual._
@@ -27,12 +26,12 @@ import viewmodels.{AnswerRow, AnswerSection}
 
 class IndividualProtectorPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
 
-  def apply(userAnswers: UserAnswers, provisional: Boolean, protectorName: String)(implicit messages: Messages): AnswerSection = {
+  def apply(userAnswers: UserAnswers, adding: Boolean, protectorName: String)(implicit messages: Messages): AnswerSection = {
 
     val bound = answerRowConverter.bind(userAnswers, protectorName)
 
     def answerRows: Seq[AnswerRow] = {
-      val mode: Mode = if (provisional) NormalMode else CheckMode
+      val mode: Mode = if (adding) NormalMode else CheckMode
       Seq(
         bound.nameQuestion(NamePage, "individualProtector.name", rts.NameController.onPageLoad(mode).url),
         bound.yesNoQuestion(DateOfBirthYesNoPage, "individualProtector.dateOfBirthYesNo", rts.DateOfBirthYesNoController.onPageLoad(mode).url),
@@ -49,14 +48,14 @@ class IndividualProtectorPrintHelper @Inject()(answerRowConverter: AnswerRowConv
         bound.yesNoQuestion(LiveInTheUkYesNoPage, "individualProtector.liveInTheUkYesNo", rts.LiveInTheUkYesNoController.onPageLoad(mode).url),
         bound.addressQuestion(UkAddressPage, "individualProtector.ukAddress", rts.UkAddressController.onPageLoad(mode).url),
         bound.addressQuestion(NonUkAddressPage, "individualProtector.nonUkAddress", rts.NonUkAddressController.onPageLoad(mode).url),
-        if (mode == NormalMode) bound.yesNoQuestion(PassportDetailsYesNoPage, "individualProtector.passportDetailsYesNo", addRts.PassportDetailsYesNoController.onPageLoad().url) else None,
-        if (mode == NormalMode) bound.passportDetailsQuestion(PassportDetailsPage, "individualProtector.passportDetails", addRts.PassportDetailsController.onPageLoad().url) else None,
-        if (mode == NormalMode) bound.yesNoQuestion(IdCardDetailsYesNoPage, "individualProtector.idCardDetailsYesNo", addRts.IdCardDetailsYesNoController.onPageLoad().url) else None,
-        if (mode == NormalMode) bound.idCardDetailsQuestion(IdCardDetailsPage, "individualProtector.idCardDetails", addRts.IdCardDetailsController.onPageLoad().url) else None,
-        if (mode == CheckMode) bound.yesNoQuestion(PassportOrIdCardDetailsYesNoPage, "individualProtector.passportOrIdCardDetailsYesNo", amendRts.PassportOrIdCardDetailsYesNoController.onPageLoad().url) else None,
-        if (mode == CheckMode) bound.passportOrIdCardDetailsQuestion(PassportOrIdCardDetailsPage, "individualProtector.passportOrIdCardDetails", amendRts.PassportOrIdCardDetailsController.onPageLoad().url) else None,
+        bound.yesNoQuestion(PassportDetailsYesNoPage, "individualProtector.passportDetailsYesNo", rts.PassportDetailsYesNoController.onPageLoad(mode).url),
+        bound.passportDetailsQuestion(PassportDetailsPage, "individualProtector.passportDetails", rts.PassportDetailsController.onPageLoad(mode).url),
+        bound.yesNoQuestion(IdCardDetailsYesNoPage, "individualProtector.idCardDetailsYesNo", rts.IdCardDetailsYesNoController.onPageLoad(mode).url),
+        bound.idCardDetailsQuestion(IdCardDetailsPage, "individualProtector.idCardDetails", rts.IdCardDetailsController.onPageLoad(mode).url),
+        bound.yesNoQuestion(PassportOrIdCardDetailsYesNoPage, "individualProtector.passportOrIdCardDetailsYesNo", rts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode).url),
+        bound.passportOrIdCardDetailsQuestion(PassportOrIdCardDetailsPage, "individualProtector.passportOrIdCardDetails", rts.PassportOrIdCardDetailsController.onPageLoad(mode).url),
         bound.yesNoQuestion(MentalCapacityYesNoPage, "individualProtector.mentalCapacityYesNo", rts.MentalCapacityYesNoController.onPageLoad(mode).url),
-        if (mode == NormalMode) bound.dateQuestion(StartDatePage, "individualProtector.startDate", addRts.StartDateController.onPageLoad().url) else None
+        if (adding) bound.dateQuestion(StartDatePage, "individualProtector.startDate", addRts.StartDateController.onPageLoad().url) else None
       ).flatten
     }
 

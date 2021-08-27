@@ -53,7 +53,7 @@ class BusinessProtectorPrintHelperSpec extends SpecBase {
 
       val mode = NormalMode
 
-      val result = helper(userAnswers, provisional = true, name)
+      val result = helper(userAnswers, adding = true, name)
 
       result mustBe AnswerSection(
         headingKey = None,
@@ -77,7 +77,7 @@ class BusinessProtectorPrintHelperSpec extends SpecBase {
 
       val mode = CheckMode
 
-      val result = helper(userAnswers, provisional = false, name)
+      val result = helper(userAnswers, adding = false, name)
 
       result mustBe AnswerSection(
         headingKey = None,

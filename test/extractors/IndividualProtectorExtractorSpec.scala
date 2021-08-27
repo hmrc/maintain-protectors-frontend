@@ -19,7 +19,7 @@ package extractors
 import base.SpecBase
 import models.Constant.GB
 import models.protectors.IndividualProtector
-import models.{CombinedPassportOrIdCard, Name, NationalInsuranceNumber, NonUkAddress, UkAddress, UserAnswers}
+import models.{CombinedPassportOrIdCard, IdCard, Name, NationalInsuranceNumber, NonUkAddress, Passport, UkAddress, UserAnswers}
 import pages.individual._
 
 import java.time.LocalDate
@@ -70,6 +70,10 @@ class IndividualProtectorExtractorSpec extends SpecBase {
           result.get(LiveInTheUkYesNoPage) mustBe None
           result.get(UkAddressPage) mustBe None
           result.get(NonUkAddressPage) mustBe None
+          result.get(PassportDetailsYesNoPage) mustBe None
+          result.get(PassportDetailsPage) mustBe None
+          result.get(IdCardDetailsYesNoPage) mustBe None
+          result.get(IdCardDetailsPage) mustBe None
           result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
           result.get(PassportOrIdCardDetailsPage) mustBe None
           result.get(StartDatePage).get mustBe startDate
@@ -98,6 +102,10 @@ class IndividualProtectorExtractorSpec extends SpecBase {
           result.get(LiveInTheUkYesNoPage) mustBe None
           result.get(UkAddressPage) mustBe None
           result.get(NonUkAddressPage) mustBe None
+          result.get(PassportDetailsYesNoPage) mustBe None
+          result.get(PassportDetailsPage) mustBe None
+          result.get(IdCardDetailsYesNoPage) mustBe None
+          result.get(IdCardDetailsPage) mustBe None
           result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
           result.get(PassportOrIdCardDetailsPage) mustBe None
           result.get(StartDatePage).get mustBe startDate
@@ -126,12 +134,84 @@ class IndividualProtectorExtractorSpec extends SpecBase {
           result.get(LiveInTheUkYesNoPage).get mustBe true
           result.get(UkAddressPage).get mustBe ukAddress
           result.get(NonUkAddressPage) mustBe None
-          result.get(PassportOrIdCardDetailsYesNoPage).get mustBe false
+          result.get(PassportDetailsYesNoPage).get mustBe false
+          result.get(PassportDetailsPage) mustBe None
+          result.get(IdCardDetailsYesNoPage).get mustBe false
+          result.get(IdCardDetailsPage) mustBe None
+          result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
+          result.get(PassportOrIdCardDetailsPage) mustBe None
+          result.get(StartDatePage).get mustBe startDate
+        }
+
+        "has non-UK address and passport" in {
+
+          val passport = Passport(country, "1234567890", LocalDate.parse("2020-12-25"))
+
+          val protector = IndividualProtector(
+            name = name,
+            dateOfBirth = None,
+            identification = Some(passport),
+            address = Some(nonUkAddress),
+            entityStart = startDate,
+            provisional = true
+          )
+
+          val result = extractor(baseAnswers, protector, index).get
+
+          result.get(IndexPage).get mustBe index
+          result.get(NamePage).get mustBe name
+          result.get(DateOfBirthYesNoPage).get mustBe false
+          result.get(DateOfBirthPage) mustBe None
+          result.get(NationalInsuranceNumberYesNoPage).get mustBe false
+          result.get(NationalInsuranceNumberPage) mustBe None
+          result.get(AddressYesNoPage).get mustBe true
+          result.get(LiveInTheUkYesNoPage).get mustBe false
+          result.get(UkAddressPage) mustBe None
+          result.get(NonUkAddressPage).get mustBe nonUkAddress
+          result.get(PassportDetailsYesNoPage).get mustBe true
+          result.get(PassportDetailsPage).get mustBe passport
+          result.get(IdCardDetailsYesNoPage) mustBe None
+          result.get(IdCardDetailsPage) mustBe None
+          result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
+          result.get(PassportOrIdCardDetailsPage) mustBe None
+          result.get(StartDatePage).get mustBe startDate
+        }
+
+        "has non-UK address and id card" in {
+
+          val idCard = IdCard(country, "1234567890", LocalDate.parse("2020-12-25"))
+
+          val protector = IndividualProtector(
+            name = name,
+            dateOfBirth = None,
+            identification = Some(idCard),
+            address = Some(nonUkAddress),
+            entityStart = startDate,
+            provisional = true
+          )
+
+          val result = extractor(baseAnswers, protector, index).get
+
+          result.get(IndexPage).get mustBe index
+          result.get(NamePage).get mustBe name
+          result.get(DateOfBirthYesNoPage).get mustBe false
+          result.get(DateOfBirthPage) mustBe None
+          result.get(NationalInsuranceNumberYesNoPage).get mustBe false
+          result.get(NationalInsuranceNumberPage) mustBe None
+          result.get(AddressYesNoPage).get mustBe true
+          result.get(LiveInTheUkYesNoPage).get mustBe false
+          result.get(UkAddressPage) mustBe None
+          result.get(NonUkAddressPage).get mustBe nonUkAddress
+          result.get(PassportDetailsYesNoPage).get mustBe false
+          result.get(PassportDetailsPage) mustBe None
+          result.get(IdCardDetailsYesNoPage).get mustBe true
+          result.get(IdCardDetailsPage).get mustBe idCard
+          result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
           result.get(PassportOrIdCardDetailsPage) mustBe None
           result.get(StartDatePage).get mustBe startDate
         }
         
-        "has non-UK address and passport" in {
+        "has non-UK address and passport/id card" in {
 
           val protector = IndividualProtector(
             name = name,
@@ -154,6 +234,10 @@ class IndividualProtectorExtractorSpec extends SpecBase {
           result.get(LiveInTheUkYesNoPage).get mustBe false
           result.get(UkAddressPage) mustBe None
           result.get(NonUkAddressPage).get mustBe nonUkAddress
+          result.get(PassportDetailsYesNoPage) mustBe None
+          result.get(PassportDetailsPage) mustBe None
+          result.get(IdCardDetailsYesNoPage) mustBe None
+          result.get(IdCardDetailsPage) mustBe None
           result.get(PassportOrIdCardDetailsYesNoPage).get mustBe true
           result.get(PassportOrIdCardDetailsPage).get mustBe passportOrIdCard
           result.get(StartDatePage).get mustBe startDate
@@ -198,6 +282,10 @@ class IndividualProtectorExtractorSpec extends SpecBase {
             result.get(LiveInTheUkYesNoPage) mustBe None
             result.get(UkAddressPage) mustBe None
             result.get(NonUkAddressPage) mustBe None
+            result.get(PassportDetailsYesNoPage) mustBe None
+            result.get(PassportDetailsPage) mustBe None
+            result.get(IdCardDetailsYesNoPage) mustBe None
+            result.get(IdCardDetailsPage) mustBe None
             result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
             result.get(PassportOrIdCardDetailsPage) mustBe None
             result.get(MentalCapacityYesNoPage) mustBe None
@@ -243,6 +331,10 @@ class IndividualProtectorExtractorSpec extends SpecBase {
               result.get(LiveInTheUkYesNoPage) mustBe None
               result.get(UkAddressPage) mustBe None
               result.get(NonUkAddressPage) mustBe None
+              result.get(PassportDetailsYesNoPage) mustBe None
+              result.get(PassportDetailsPage) mustBe None
+              result.get(IdCardDetailsYesNoPage) mustBe None
+              result.get(IdCardDetailsPage) mustBe None
               result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
               result.get(PassportOrIdCardDetailsPage) mustBe None
               result.get(MentalCapacityYesNoPage).get mustBe true
@@ -286,6 +378,10 @@ class IndividualProtectorExtractorSpec extends SpecBase {
               result.get(LiveInTheUkYesNoPage) mustBe None
               result.get(UkAddressPage) mustBe None
               result.get(NonUkAddressPage) mustBe None
+              result.get(PassportDetailsYesNoPage) mustBe None
+              result.get(PassportDetailsPage) mustBe None
+              result.get(IdCardDetailsYesNoPage) mustBe None
+              result.get(IdCardDetailsPage) mustBe None
               result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
               result.get(PassportOrIdCardDetailsPage) mustBe None
               result.get(MentalCapacityYesNoPage).get mustBe false

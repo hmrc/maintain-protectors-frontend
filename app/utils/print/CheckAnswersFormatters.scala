@@ -16,7 +16,7 @@
 
 package utils.print
 
-import models.{Address, CombinedPassportOrIdCard, IdCard, NonUkAddress, Passport, UkAddress}
+import models.{Address, CombinedPassportOrIdCard, NonUkAddress, UkAddress}
 import play.api.i18n.Messages
 import play.twirl.api.Html
 import play.twirl.api.HtmlFormat.escape
@@ -31,8 +31,8 @@ import scala.util.Try
 class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils,
                                        countryOptions: CountryOptions) {
 
-  def formatDate(date: LocalDate)(implicit messages: Messages): Html = {
-    escape(languageUtils.Dates.formatDate(date))
+  def formatDate(date: LocalDate)(implicit messages: Messages): String = {
+    languageUtils.Dates.formatDate(date)
   }
 
   def yesOrNo(answer: Boolean)(implicit messages: Messages): Html = {
@@ -58,11 +58,11 @@ class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils,
   private def formatUkAddress(address: UkAddress): Html = {
     val lines =
       Seq(
-        Some(escape(address.line1)),
-        Some(escape(address.line2)),
-        address.line3.map(escape),
-        address.line4.map(escape),
-        Some(escape(address.postcode))
+        Some(address.line1),
+        Some(address.line2),
+        address.line3,
+        address.line4,
+        Some(address.postcode)
       ).flatten
 
     breakLines(lines)
@@ -71,39 +71,38 @@ class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils,
   private def formatNonUkAddress(address: NonUkAddress)(implicit messages: Messages): Html = {
     val lines =
       Seq(
-        Some(escape(address.line1)),
-        Some(escape(address.line2)),
-        address.line3.map(escape),
+        Some(address.line1),
+        Some(address.line2),
+        address.line3,
         Some(country(address.country))
       ).flatten
 
     breakLines(lines)
   }
 
-  def country(code: String)(implicit messages: Messages): Html =
-    escape(countryOptions.options.find(_.value.equals(code)).map(_.label).getOrElse(""))
-
-  def formatPassportDetails(passport: Passport)(implicit messages: Messages): Html = {
-    formatPassportOrIdCardDetails(passport.asCombined)
-  }
-
-  def formatIdCardDetails(idCard: IdCard)(implicit messages: Messages): Html = {
-    formatPassportOrIdCardDetails(idCard.asCombined)
-  }
+  def country(code: String)(implicit messages: Messages): String =
+    countryOptions.options.find(_.value.equals(code)).map(_.label).getOrElse("")
 
   def formatPassportOrIdCardDetails(passportOrIdCard: CombinedPassportOrIdCard)(implicit messages: Messages): Html = {
+
+    def formatNumber(number: String): String = if (passportOrIdCard.detailsType.isProvisional) {
+      number
+    } else {
+      messages("site.number-ending", number.takeRight(4))
+    }
+
     val lines =
       Seq(
         Some(country(passportOrIdCard.countryOfIssue)),
-        Some(escape(passportOrIdCard.number)),
+        Some(formatNumber(passportOrIdCard.number)),
         Some(formatDate(passportOrIdCard.expirationDate))
       ).flatten
 
     breakLines(lines)
   }
 
-  private def breakLines(lines: Seq[Html]): Html = {
-    Html(lines.mkString("<br />"))
+  private def breakLines(lines: Seq[String]): Html = {
+    Html(lines.map(escape).mkString("<br />"))
   }
 
 }

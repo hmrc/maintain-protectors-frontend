@@ -106,6 +106,7 @@ site.error=Gwall:
 site.sign_in=Mewngofnodi
 site.cannotRemove=Ni allwch dynnu
 site.cannotRemove-hidden=Ni allwch dynnu {0}
+site.number-ending = Rhif sy’n gorffen gyda {0}
 
 timeout.title=Bydd eich cais yn dod i ben cyn hir
 timeout.keep-alive-button=Yn eich blaen â’r cais

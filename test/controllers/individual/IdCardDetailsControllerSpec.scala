@@ -14,44 +14,51 @@
  * limitations under the License.
  */
 
-package controllers.individual.add
-
-import java.time.LocalDate
+package controllers.individual
 
 import base.SpecBase
 import config.annotations.IndividualProtector
-import forms.YesNoFormProvider
-import models.{Name, UserAnswers}
+import forms.IdCardDetailsFormProvider
+import models.{IdCard, Mode, Name, NormalMode, UserAnswers}
 import navigation.Navigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.individual.{IdCardDetailsYesNoPage, NamePage}
+import pages.individual.{IdCardDetailsPage, NamePage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
-import views.html.individual.add.IdCardDetailsYesNoView
+import utils.InputOption
+import utils.countryOptions.CountryOptions
+import views.html.individual.IdCardDetailsView
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
-class IdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSugar {
+class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new YesNoFormProvider()
-  private def form = formProvider.withPrefix("individualProtector.idCardDetailsYesNo")
+  val formProvider = new IdCardDetailsFormProvider()
+  private def form = formProvider.withPrefix("individualProtector")
 
   def onwardRoute: Call = Call("GET", "/foo")
   val name: Name = Name("FirstName", None, "LastName")
 
+  val mode: Mode = NormalMode
+
   override val emptyUserAnswers: UserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now())
     .set(NamePage, name).success.value
 
-  val idCardDetailsYesNoRoute: String = routes.IdCardDetailsYesNoController.onPageLoad().url
+  val idCardDetailsRoute: String = routes.IdCardDetailsController.onPageLoad(mode).url
 
-  val getRequest = FakeRequest(GET, idCardDetailsYesNoRoute)
+  val getRequest = FakeRequest(GET, idCardDetailsRoute)
 
-  "IdCardDetailsYesNo Controller" must {
+  val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptions].options
+
+  val validData: IdCard = IdCard("country", "card number", LocalDate.of(2020, 1, 1))
+
+  "IdCardDetails Controller" must {
 
     "return OK and the correct view for a GET" in {
 
@@ -59,12 +66,12 @@ class IdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSugar {
 
       val result = route(application, getRequest).value
 
-      val view = application.injector.instanceOf[IdCardDetailsYesNoView]
+      val view = application.injector.instanceOf[IdCardDetailsView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, name.displayName)(getRequest, messages).toString
+        view(form, mode, countryOptions, name.displayName)(getRequest, messages).toString
 
       application.stop()
     }
@@ -73,18 +80,18 @@ class IdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSugar {
 
       val userAnswers = emptyUserAnswers
         .set(NamePage, name).success.value
-        .set(IdCardDetailsYesNoPage, true).success.value
+        .set(IdCardDetailsPage, validData).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
-      val view = application.injector.instanceOf[IdCardDetailsYesNoView]
+      val view = application.injector.instanceOf[IdCardDetailsView]
 
       val result = route(application, getRequest).value
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), name.displayName)(getRequest, messages).toString
+        view(form.fill(validData), mode, countryOptions, name.displayName)(getRequest, messages).toString
 
       application.stop()
     }
@@ -102,8 +109,14 @@ class IdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSugar {
           .build()
 
       val request =
-        FakeRequest(POST, idCardDetailsYesNoRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+        FakeRequest(POST, idCardDetailsRoute)
+          .withFormUrlEncodedBody(
+            "country" -> "country",
+            "number" -> "123456",
+            "expiryDate.day"   -> validData.expirationDate.getDayOfMonth.toString,
+            "expiryDate.month" -> validData.expirationDate.getMonthValue.toString,
+            "expiryDate.year"  -> validData.expirationDate.getYear.toString
+          )
 
       val result = route(application, request).value
 
@@ -119,19 +132,19 @@ class IdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       val request =
-        FakeRequest(POST, idCardDetailsYesNoRoute)
+        FakeRequest(POST, idCardDetailsRoute)
           .withFormUrlEncodedBody(("value", ""))
 
       val boundForm = form.bind(Map("value" -> ""))
 
-      val view = application.injector.instanceOf[IdCardDetailsYesNoView]
+      val view = application.injector.instanceOf[IdCardDetailsView]
 
       val result = route(application, request).value
 
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, name.displayName)(request, messages).toString
+        view(boundForm, mode, countryOptions, name.displayName)(request, messages).toString
 
       application.stop()
     }
@@ -153,8 +166,14 @@ class IdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, idCardDetailsYesNoRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+        FakeRequest(POST, idCardDetailsRoute)
+          .withFormUrlEncodedBody(
+            "country" -> "country",
+            "number" -> "123456",
+            "expiryDate.day"   -> validData.expirationDate.getDayOfMonth.toString,
+            "expiryDate.month" -> validData.expirationDate.getMonthValue.toString,
+            "expiryDate.year"  -> validData.expirationDate.getYear.toString
+          )
 
       val result = route(application, request).value
 
