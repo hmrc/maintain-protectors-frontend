@@ -34,8 +34,6 @@ class BusinessProtectorMapperSpec extends SpecBase {
 
     val mapper = injector.instanceOf[BusinessProtectorMapper]
 
-    "4mld" must {
-
       "generate business protector model with no utr and no address" in {
 
         val userAnswers = emptyUserAnswers
@@ -103,9 +101,6 @@ class BusinessProtectorMapperSpec extends SpecBase {
         result.address mustBe Some(nonUkAddress)
         result.entityStart mustBe startDate
       }
-    }
-
-    "5mld" when {
 
       "taxable" must {
 
@@ -149,6 +144,7 @@ class BusinessProtectorMapperSpec extends SpecBase {
           result.entityStart mustBe startDate
         }
       }
-    }
+
   }
+
 }

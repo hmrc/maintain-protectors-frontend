@@ -43,212 +43,9 @@ class IndividualProtectorExtractorSpec extends SpecBase {
 
     "Populate user answers" when {
 
-      "4mld" when {
-
-        val baseAnswers: UserAnswers = emptyUserAnswers.copy(is5mldEnabled = false, isTaxable = true, isUnderlyingData5mld = false)
-
-        "has minimal data" in {
-
-          val protector = IndividualProtector(
-            name = name,
-            dateOfBirth = None,
-            identification = None,
-            address = None,
-            entityStart = startDate,
-            provisional = true
-          )
-
-          val result = extractor(baseAnswers, protector, index).get
-
-          result.get(IndexPage).get mustBe index
-          result.get(NamePage).get mustBe name
-          result.get(DateOfBirthYesNoPage).get mustBe false
-          result.get(DateOfBirthPage) mustBe None
-          result.get(NationalInsuranceNumberYesNoPage).get mustBe false
-          result.get(NationalInsuranceNumberPage) mustBe None
-          result.get(AddressYesNoPage).get mustBe false
-          result.get(LiveInTheUkYesNoPage) mustBe None
-          result.get(UkAddressPage) mustBe None
-          result.get(NonUkAddressPage) mustBe None
-          result.get(PassportDetailsYesNoPage) mustBe None
-          result.get(PassportDetailsPage) mustBe None
-          result.get(IdCardDetailsYesNoPage) mustBe None
-          result.get(IdCardDetailsPage) mustBe None
-          result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
-          result.get(PassportOrIdCardDetailsPage) mustBe None
-          result.get(StartDatePage).get mustBe startDate
-        }
-
-        "has date of birth and NINO" in {
-
-          val protector = IndividualProtector(
-            name = name,
-            dateOfBirth = Some(dateOfBirth),
-            identification = Some(NationalInsuranceNumber(nino)),
-            address = None,
-            entityStart = startDate,
-            provisional = true
-          )
-
-          val result = extractor(baseAnswers, protector, index).get
-
-          result.get(IndexPage).get mustBe index
-          result.get(NamePage).get mustBe name
-          result.get(DateOfBirthYesNoPage).get mustBe true
-          result.get(DateOfBirthPage).get mustBe dateOfBirth
-          result.get(NationalInsuranceNumberYesNoPage).get mustBe true
-          result.get(NationalInsuranceNumberPage).get mustBe nino
-          result.get(AddressYesNoPage) mustBe None
-          result.get(LiveInTheUkYesNoPage) mustBe None
-          result.get(UkAddressPage) mustBe None
-          result.get(NonUkAddressPage) mustBe None
-          result.get(PassportDetailsYesNoPage) mustBe None
-          result.get(PassportDetailsPage) mustBe None
-          result.get(IdCardDetailsYesNoPage) mustBe None
-          result.get(IdCardDetailsPage) mustBe None
-          result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
-          result.get(PassportOrIdCardDetailsPage) mustBe None
-          result.get(StartDatePage).get mustBe startDate
-        }
-        
-        "has UK address" in {
-
-          val protector = IndividualProtector(
-            name = name,
-            dateOfBirth = None,
-            identification = None,
-            address = Some(ukAddress),
-            entityStart = startDate,
-            provisional = true
-          )
-
-          val result = extractor(baseAnswers, protector, index).get
-
-          result.get(IndexPage).get mustBe index
-          result.get(NamePage).get mustBe name
-          result.get(DateOfBirthYesNoPage).get mustBe false
-          result.get(DateOfBirthPage) mustBe None
-          result.get(NationalInsuranceNumberYesNoPage).get mustBe false
-          result.get(NationalInsuranceNumberPage) mustBe None
-          result.get(AddressYesNoPage).get mustBe true
-          result.get(LiveInTheUkYesNoPage).get mustBe true
-          result.get(UkAddressPage).get mustBe ukAddress
-          result.get(NonUkAddressPage) mustBe None
-          result.get(PassportDetailsYesNoPage).get mustBe false
-          result.get(PassportDetailsPage) mustBe None
-          result.get(IdCardDetailsYesNoPage).get mustBe false
-          result.get(IdCardDetailsPage) mustBe None
-          result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
-          result.get(PassportOrIdCardDetailsPage) mustBe None
-          result.get(StartDatePage).get mustBe startDate
-        }
-
-        "has non-UK address and passport" in {
-
-          val passport = Passport(country, "1234567890", LocalDate.parse("2020-12-25"))
-
-          val protector = IndividualProtector(
-            name = name,
-            dateOfBirth = None,
-            identification = Some(passport),
-            address = Some(nonUkAddress),
-            entityStart = startDate,
-            provisional = true
-          )
-
-          val result = extractor(baseAnswers, protector, index).get
-
-          result.get(IndexPage).get mustBe index
-          result.get(NamePage).get mustBe name
-          result.get(DateOfBirthYesNoPage).get mustBe false
-          result.get(DateOfBirthPage) mustBe None
-          result.get(NationalInsuranceNumberYesNoPage).get mustBe false
-          result.get(NationalInsuranceNumberPage) mustBe None
-          result.get(AddressYesNoPage).get mustBe true
-          result.get(LiveInTheUkYesNoPage).get mustBe false
-          result.get(UkAddressPage) mustBe None
-          result.get(NonUkAddressPage).get mustBe nonUkAddress
-          result.get(PassportDetailsYesNoPage).get mustBe true
-          result.get(PassportDetailsPage).get mustBe passport
-          result.get(IdCardDetailsYesNoPage) mustBe None
-          result.get(IdCardDetailsPage) mustBe None
-          result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
-          result.get(PassportOrIdCardDetailsPage) mustBe None
-          result.get(StartDatePage).get mustBe startDate
-        }
-
-        "has non-UK address and id card" in {
-
-          val idCard = IdCard(country, "1234567890", LocalDate.parse("2020-12-25"))
-
-          val protector = IndividualProtector(
-            name = name,
-            dateOfBirth = None,
-            identification = Some(idCard),
-            address = Some(nonUkAddress),
-            entityStart = startDate,
-            provisional = true
-          )
-
-          val result = extractor(baseAnswers, protector, index).get
-
-          result.get(IndexPage).get mustBe index
-          result.get(NamePage).get mustBe name
-          result.get(DateOfBirthYesNoPage).get mustBe false
-          result.get(DateOfBirthPage) mustBe None
-          result.get(NationalInsuranceNumberYesNoPage).get mustBe false
-          result.get(NationalInsuranceNumberPage) mustBe None
-          result.get(AddressYesNoPage).get mustBe true
-          result.get(LiveInTheUkYesNoPage).get mustBe false
-          result.get(UkAddressPage) mustBe None
-          result.get(NonUkAddressPage).get mustBe nonUkAddress
-          result.get(PassportDetailsYesNoPage).get mustBe false
-          result.get(PassportDetailsPage) mustBe None
-          result.get(IdCardDetailsYesNoPage).get mustBe true
-          result.get(IdCardDetailsPage).get mustBe idCard
-          result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
-          result.get(PassportOrIdCardDetailsPage) mustBe None
-          result.get(StartDatePage).get mustBe startDate
-        }
-        
-        "has non-UK address and passport/id card" in {
-
-          val protector = IndividualProtector(
-            name = name,
-            dateOfBirth = None,
-            identification = Some(passportOrIdCard),
-            address = Some(nonUkAddress),
-            entityStart = startDate,
-            provisional = true
-          )
-
-          val result = extractor(baseAnswers, protector, index).get
-
-          result.get(IndexPage).get mustBe index
-          result.get(NamePage).get mustBe name
-          result.get(DateOfBirthYesNoPage).get mustBe false
-          result.get(DateOfBirthPage) mustBe None
-          result.get(NationalInsuranceNumberYesNoPage).get mustBe false
-          result.get(NationalInsuranceNumberPage) mustBe None
-          result.get(AddressYesNoPage).get mustBe true
-          result.get(LiveInTheUkYesNoPage).get mustBe false
-          result.get(UkAddressPage) mustBe None
-          result.get(NonUkAddressPage).get mustBe nonUkAddress
-          result.get(PassportDetailsYesNoPage) mustBe None
-          result.get(PassportDetailsPage) mustBe None
-          result.get(IdCardDetailsYesNoPage) mustBe None
-          result.get(IdCardDetailsPage) mustBe None
-          result.get(PassportOrIdCardDetailsYesNoPage).get mustBe true
-          result.get(PassportOrIdCardDetailsPage).get mustBe passportOrIdCard
-          result.get(StartDatePage).get mustBe startDate
-        }
-      }
-
-      "5mld" when {
-
         "underlying data is 4mld" when {
 
-          val baseAnswers: UserAnswers = emptyUserAnswers.copy(is5mldEnabled = true, isTaxable = true, isUnderlyingData5mld = false)
+          val baseAnswers: UserAnswers = emptyUserAnswers.copy(isTaxable = true, isUnderlyingData5mld = false)
 
           "has minimal data" in {
 
@@ -291,13 +88,178 @@ class IndividualProtectorExtractorSpec extends SpecBase {
             result.get(MentalCapacityYesNoPage) mustBe None
             result.get(StartDatePage).get mustBe startDate
           }
+
+          "has date of birth and NINO" in {
+
+            val protector = IndividualProtector(
+              name = name,
+              dateOfBirth = Some(dateOfBirth),
+              identification = Some(NationalInsuranceNumber(nino)),
+              address = None,
+              entityStart = startDate,
+              provisional = true
+            )
+
+            val result = extractor(baseAnswers, protector, index).get
+
+            result.get(IndexPage).get mustBe index
+            result.get(NamePage).get mustBe name
+            result.get(DateOfBirthYesNoPage).get mustBe true
+            result.get(DateOfBirthPage).get mustBe dateOfBirth
+            result.get(NationalInsuranceNumberYesNoPage).get mustBe true
+            result.get(NationalInsuranceNumberPage).get mustBe nino
+            result.get(AddressYesNoPage) mustBe None
+            result.get(LiveInTheUkYesNoPage) mustBe None
+            result.get(UkAddressPage) mustBe None
+            result.get(NonUkAddressPage) mustBe None
+            result.get(PassportDetailsYesNoPage) mustBe None
+            result.get(PassportDetailsPage) mustBe None
+            result.get(IdCardDetailsYesNoPage) mustBe None
+            result.get(IdCardDetailsPage) mustBe None
+            result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
+            result.get(PassportOrIdCardDetailsPage) mustBe None
+            result.get(StartDatePage).get mustBe startDate
+          }
+
+          "has UK address" in {
+
+            val protector = IndividualProtector(
+              name = name,
+              dateOfBirth = None,
+              identification = None,
+              address = Some(ukAddress),
+              entityStart = startDate,
+              provisional = true
+            )
+
+            val result = extractor(baseAnswers, protector, index).get
+
+            result.get(IndexPage).get mustBe index
+            result.get(NamePage).get mustBe name
+            result.get(DateOfBirthYesNoPage).get mustBe false
+            result.get(DateOfBirthPage) mustBe None
+            result.get(NationalInsuranceNumberYesNoPage).get mustBe false
+            result.get(NationalInsuranceNumberPage) mustBe None
+            result.get(AddressYesNoPage).get mustBe true
+            result.get(LiveInTheUkYesNoPage).get mustBe true
+            result.get(UkAddressPage).get mustBe ukAddress
+            result.get(NonUkAddressPage) mustBe None
+            result.get(PassportDetailsYesNoPage).get mustBe false
+            result.get(PassportDetailsPage) mustBe None
+            result.get(IdCardDetailsYesNoPage).get mustBe false
+            result.get(IdCardDetailsPage) mustBe None
+            result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
+            result.get(PassportOrIdCardDetailsPage) mustBe None
+            result.get(StartDatePage).get mustBe startDate
+          }
+
+          "has non-UK address and passport" in {
+
+            val passport = Passport(country, "1234567890", LocalDate.parse("2020-12-25"))
+
+            val protector = IndividualProtector(
+              name = name,
+              dateOfBirth = None,
+              identification = Some(passport),
+              address = Some(nonUkAddress),
+              entityStart = startDate,
+              provisional = true
+            )
+
+            val result = extractor(baseAnswers, protector, index).get
+
+            result.get(IndexPage).get mustBe index
+            result.get(NamePage).get mustBe name
+            result.get(DateOfBirthYesNoPage).get mustBe false
+            result.get(DateOfBirthPage) mustBe None
+            result.get(NationalInsuranceNumberYesNoPage).get mustBe false
+            result.get(NationalInsuranceNumberPage) mustBe None
+            result.get(AddressYesNoPage).get mustBe true
+            result.get(LiveInTheUkYesNoPage).get mustBe false
+            result.get(UkAddressPage) mustBe None
+            result.get(NonUkAddressPage).get mustBe nonUkAddress
+            result.get(PassportDetailsYesNoPage).get mustBe true
+            result.get(PassportDetailsPage).get mustBe passport
+            result.get(IdCardDetailsYesNoPage) mustBe None
+            result.get(IdCardDetailsPage) mustBe None
+            result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
+            result.get(PassportOrIdCardDetailsPage) mustBe None
+            result.get(StartDatePage).get mustBe startDate
+          }
+
+          "has non-UK address and id card" in {
+
+            val idCard = IdCard(country, "1234567890", LocalDate.parse("2020-12-25"))
+
+            val protector = IndividualProtector(
+              name = name,
+              dateOfBirth = None,
+              identification = Some(idCard),
+              address = Some(nonUkAddress),
+              entityStart = startDate,
+              provisional = true
+            )
+
+            val result = extractor(baseAnswers, protector, index).get
+
+            result.get(IndexPage).get mustBe index
+            result.get(NamePage).get mustBe name
+            result.get(DateOfBirthYesNoPage).get mustBe false
+            result.get(DateOfBirthPage) mustBe None
+            result.get(NationalInsuranceNumberYesNoPage).get mustBe false
+            result.get(NationalInsuranceNumberPage) mustBe None
+            result.get(AddressYesNoPage).get mustBe true
+            result.get(LiveInTheUkYesNoPage).get mustBe false
+            result.get(UkAddressPage) mustBe None
+            result.get(NonUkAddressPage).get mustBe nonUkAddress
+            result.get(PassportDetailsYesNoPage).get mustBe false
+            result.get(PassportDetailsPage) mustBe None
+            result.get(IdCardDetailsYesNoPage).get mustBe true
+            result.get(IdCardDetailsPage).get mustBe idCard
+            result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
+            result.get(PassportOrIdCardDetailsPage) mustBe None
+            result.get(StartDatePage).get mustBe startDate
+          }
+
+          "has non-UK address and passport/id card" in {
+
+            val protector = IndividualProtector(
+              name = name,
+              dateOfBirth = None,
+              identification = Some(passportOrIdCard),
+              address = Some(nonUkAddress),
+              entityStart = startDate,
+              provisional = true
+            )
+
+            val result = extractor(baseAnswers, protector, index).get
+
+            result.get(IndexPage).get mustBe index
+            result.get(NamePage).get mustBe name
+            result.get(DateOfBirthYesNoPage).get mustBe false
+            result.get(DateOfBirthPage) mustBe None
+            result.get(NationalInsuranceNumberYesNoPage).get mustBe false
+            result.get(NationalInsuranceNumberPage) mustBe None
+            result.get(AddressYesNoPage).get mustBe true
+            result.get(LiveInTheUkYesNoPage).get mustBe false
+            result.get(UkAddressPage) mustBe None
+            result.get(NonUkAddressPage).get mustBe nonUkAddress
+            result.get(PassportDetailsYesNoPage) mustBe None
+            result.get(PassportDetailsPage) mustBe None
+            result.get(IdCardDetailsYesNoPage) mustBe None
+            result.get(IdCardDetailsPage) mustBe None
+            result.get(PassportOrIdCardDetailsYesNoPage).get mustBe true
+            result.get(PassportOrIdCardDetailsPage).get mustBe passportOrIdCard
+            result.get(StartDatePage).get mustBe startDate
+          }
+
         }
 
         "underlying data is 5mld" when {
 
           "taxable" when {
 
-            val baseAnswers: UserAnswers = emptyUserAnswers.copy(is5mldEnabled = true, isTaxable = true, isUnderlyingData5mld = true)
+            val baseAnswers: UserAnswers = emptyUserAnswers.copy(isTaxable = true, isUnderlyingData5mld = true)
 
             "has UK nationality, UK residency and is legally capable" in {
 
@@ -344,7 +306,7 @@ class IndividualProtectorExtractorSpec extends SpecBase {
 
           "non-taxable" when {
 
-            val baseAnswers: UserAnswers = emptyUserAnswers.copy(is5mldEnabled = true, isTaxable = false, isUnderlyingData5mld = true)
+            val baseAnswers: UserAnswers = emptyUserAnswers.copy(isTaxable = false, isUnderlyingData5mld = true)
 
             "has non-UK nationality, non-UK residency and is legally incapable" in {
 
@@ -389,7 +351,6 @@ class IndividualProtectorExtractorSpec extends SpecBase {
             }
           }
         }
-      }
     }
   }
 }

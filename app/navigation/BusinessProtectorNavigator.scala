@@ -31,7 +31,7 @@ class BusinessProtectorNavigator @Inject()() extends Navigator {
 
   private def simpleNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
     case NamePage => ua => navigateAwayFromNamePage(mode, ua)
-    case UtrPage => ua => navigateAwayFromUtrPages(mode, ua)
+    case UtrPage => _ => rts.CountryOfResidenceYesNoController.onPageLoad(mode)
     case CountryOfResidencePage => ua => navigateAwayFromResidencePages(mode, ua)
     case UkAddressPage | NonUkAddressPage => ua => navigateToStartDateOrCheckDetails(mode, ua)
     case StartDatePage => _ => controllers.business.add.routes.CheckDetailsController.onPageLoad()
@@ -39,7 +39,7 @@ class BusinessProtectorNavigator @Inject()() extends Navigator {
 
   private def yesNoNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
     case UtrYesNoPage => ua =>
-      yesNoNav(ua, UtrYesNoPage, rts.UtrController.onPageLoad(mode), navigateAwayFromUtrPages(mode, ua))
+      yesNoNav(ua, UtrYesNoPage, rts.UtrController.onPageLoad(mode), rts.CountryOfResidenceYesNoController.onPageLoad(mode))
     case CountryOfResidenceYesNoPage => ua =>
       yesNoNav(ua, CountryOfResidenceYesNoPage, rts.CountryOfResidenceUkYesNoController.onPageLoad(mode), navigateAwayFromResidencePages(mode, ua))
     case CountryOfResidenceUkYesNoPage => ua =>
@@ -51,25 +51,17 @@ class BusinessProtectorNavigator @Inject()() extends Navigator {
   }
 
   private def navigateAwayFromNamePage(mode: Mode, answers: UserAnswers): Call = {
-    if (answers.is5mldEnabled && !answers.isTaxable) {
+    if (!answers.isTaxable) {
       rts.CountryOfResidenceYesNoController.onPageLoad(mode)
     } else {
       rts.UtrYesNoController.onPageLoad(mode)
     }
   }
 
-  private def navigateAwayFromUtrPages(mode: Mode, answers: UserAnswers): Call = {
-    (answers.is5mldEnabled, isUtrDefined(answers)) match {
-      case (true, _) => rts.CountryOfResidenceYesNoController.onPageLoad(mode)
-      case (false, true) => navigateToStartDateOrCheckDetails(mode, answers)
-      case (false, _) => rts.AddressYesNoController.onPageLoad(mode)
-    }
-  }
-
   private def navigateAwayFromResidencePages(mode: Mode, answers: UserAnswers): Call = {
-    val isNonTaxable5mld = answers.is5mldEnabled && !answers.isTaxable
+    val isNonTaxable = !answers.isTaxable
 
-    if (isNonTaxable5mld || isUtrDefined(answers)){
+    if (isNonTaxable || isUtrDefined(answers)){
       navigateToStartDateOrCheckDetails(mode, answers)
     } else {
       rts.AddressYesNoController.onPageLoad(mode)
