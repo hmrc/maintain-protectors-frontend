@@ -45,12 +45,10 @@ class IndexController @Inject()(
         s" user has started to maintain protectors")
       for {
         details <- trustsConnector.getTrustDetails(identifier)
-        is5mldEnabled <- trustsStoreService.is5mldEnabled()
         isUnderlyingData5mld <- trustsConnector.isTrust5mld(identifier)
         ua <- Future.successful(
           request.userAnswers match {
             case Some(userAnswers) => userAnswers.copy(
-              is5mldEnabled = is5mldEnabled,
               isTaxable = details.isTaxable,
               isUnderlyingData5mld = isUnderlyingData5mld
             )
@@ -58,7 +56,6 @@ class IndexController @Inject()(
               internalId = request.user.internalId,
               identifier = identifier,
               whenTrustSetup = details.startDate,
-              is5mldEnabled = is5mldEnabled,
               isTaxable = details.isTaxable,
               isUnderlyingData5mld = isUnderlyingData5mld
             )

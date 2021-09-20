@@ -36,8 +36,6 @@ class IndividualProtectorMapperSpec extends SpecBase {
 
   "IndividualProtectorMapper" when {
 
-    "4mld" must {
-
       "generate individual model with nino" in {
 
         val userAnswers = emptyUserAnswers
@@ -190,9 +188,6 @@ class IndividualProtectorMapperSpec extends SpecBase {
         result.address mustBe Some(ukAddress)
         result.entityStart mustBe startDate
       }
-    }
-
-    "5mld" when {
 
       "taxable" when {
 
@@ -257,6 +252,7 @@ class IndividualProtectorMapperSpec extends SpecBase {
           )
         }
       }
-    }
+
   }
+
 }
