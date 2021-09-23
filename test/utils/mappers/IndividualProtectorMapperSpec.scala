@@ -16,12 +16,14 @@
 
 package utils.mappers
 
-import java.time.LocalDate
 import base.SpecBase
 import models.Constant.GB
+import models.YesNoDontKnow.{No, Yes}
 import models.protectors.IndividualProtector
 import models.{CombinedPassportOrIdCard, IdCard, Name, NationalInsuranceNumber, NonUkAddress, Passport, UkAddress}
 import pages.individual._
+
+import java.time.LocalDate
 
 class IndividualProtectorMapperSpec extends SpecBase {
 
@@ -202,7 +204,7 @@ class IndividualProtectorMapperSpec extends SpecBase {
             .set(NationalInsuranceNumberPage, nino).success.value
             .set(CountryOfResidenceYesNoPage, true).success.value
             .set(CountryOfResidenceUkYesNoPage, true).success.value
-            .set(MentalCapacityYesNoPage, false).success.value
+            .set(MentalCapacityYesNoPage, No).success.value
             .set(StartDatePage, startDate).success.value
 
           val result = mapper(userAnswers).get
@@ -214,7 +216,7 @@ class IndividualProtectorMapperSpec extends SpecBase {
             identification = Some(NationalInsuranceNumber(nino)),
             countryOfResidence = Some(GB),
             address = None,
-            mentalCapacityYesNo = Some(false),
+            mentalCapacityYesNo = Some(No),
             entityStart = startDate,
             provisional = true
           )
@@ -234,7 +236,7 @@ class IndividualProtectorMapperSpec extends SpecBase {
             .set(CountryOfResidenceYesNoPage, true).success.value
             .set(CountryOfResidenceUkYesNoPage, false).success.value
             .set(CountryOfResidencePage, "FR").success.value
-            .set(MentalCapacityYesNoPage, true).success.value
+            .set(MentalCapacityYesNoPage, Yes).success.value
             .set(StartDatePage, startDate).success.value
 
           val result = mapper(userAnswers).get
@@ -246,7 +248,7 @@ class IndividualProtectorMapperSpec extends SpecBase {
             identification = None,
             countryOfResidence = Some("FR"),
             address = None,
-            mentalCapacityYesNo = Some(true),
+            mentalCapacityYesNo = Some(Yes),
             entityStart = startDate,
             provisional = true
           )
