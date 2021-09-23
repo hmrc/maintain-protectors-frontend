@@ -15,7 +15,7 @@
  *@
 
 @import controllers.individual.routes._
-@import views.html.components.{Heading, ErrorSummary, BulletList, InputYesNo, SubmitButton}
+@import views.html.components.{Heading, ErrorSummary, BulletList, InputYesNoDontKnow, SubmitButton}
 
 @this(
     main_template: MainTemplate,
@@ -23,7 +23,7 @@
     errorSummary: ErrorSummary,
     heading: Heading,
     bulletList: BulletList,
-    inputYesNo: InputYesNo,
+        inputYesNoDontKnow: InputYesNoDontKnow,
     submitButton: SubmitButton
 )
 
@@ -41,10 +41,18 @@
         @heading("individualProtector.mentalCapacityYesNo.heading", Some(name))
 
         <p>@messages("individualProtector.mentalCapacityYesNo.p1")</p>
+        <p>@messages("individualProtector.mentalCapacityYesNo.p2")</p>
 
         @bulletList("individualProtector.mentalCapacityYesNo", Seq("bulletpoint1", "bulletpoint2", "bulletpoint3", "bulletpoint4"))
 
-        @inputYesNo(
+        <p>@messages("individualProtector.mentalCapacityYesNo.p3")</p>
+        <p>@messages("individualProtector.mentalCapacityYesNo.p4")</p>
+
+        <h2>@messages("individualProtector.mentalCapacityYesNo.heading2")</h2>
+        <p>@messages("individualProtector.mentalCapacityYesNo.p5")</p>
+        <p>@messages("individualProtector.mentalCapacityYesNo.p6")</p>
+
+        @inputYesNoDontKnow(
             field = form("value"),
             label = messages("individualProtector.mentalCapacityYesNo.heading", name),
             legendClass = Some("govuk-visually-hidden"),

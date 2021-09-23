@@ -54,7 +54,7 @@ class IndividualProtectorPrintHelper @Inject()(answerRowConverter: AnswerRowConv
         bound.idCardDetailsQuestion(IdCardDetailsPage, "individualProtector.idCardDetails", rts.IdCardDetailsController.onPageLoad(mode).url),
         bound.yesNoQuestion(PassportOrIdCardDetailsYesNoPage, "individualProtector.passportOrIdCardDetailsYesNo", rts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode).url),
         bound.passportOrIdCardDetailsQuestion(PassportOrIdCardDetailsPage, "individualProtector.passportOrIdCardDetails", rts.PassportOrIdCardDetailsController.onPageLoad(mode).url),
-        bound.yesNoQuestion(MentalCapacityYesNoPage, "individualProtector.mentalCapacityYesNo", rts.MentalCapacityYesNoController.onPageLoad(mode).url),
+        bound.enumQuestion(MentalCapacityYesNoPage, "individualProtector.mentalCapacityYesNo", rts.MentalCapacityYesNoController.onPageLoad(mode).url, "site"),
         if (adding) bound.dateQuestion(StartDatePage, "individualProtector.startDate", addRts.StartDateController.onPageLoad().url) else None
       ).flatten
     }
