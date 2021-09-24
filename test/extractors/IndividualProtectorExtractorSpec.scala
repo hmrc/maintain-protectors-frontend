@@ -18,6 +18,7 @@ package extractors
 
 import base.SpecBase
 import models.Constant.GB
+import models.YesNoDontKnow.{DontKnow, No, Yes}
 import models.protectors.IndividualProtector
 import models.{CombinedPassportOrIdCard, IdCard, Name, NationalInsuranceNumber, NonUkAddress, Passport, UkAddress, UserAnswers}
 import pages.individual._
@@ -270,7 +271,7 @@ class IndividualProtectorExtractorSpec extends SpecBase {
                 identification = None,
                 countryOfResidence = Some(GB),
                 address = None,
-                mentalCapacityYesNo = Some(true),
+                mentalCapacityYesNo = Some(Yes),
                 entityStart = startDate,
                 provisional = true
               )
@@ -299,7 +300,49 @@ class IndividualProtectorExtractorSpec extends SpecBase {
               result.get(IdCardDetailsPage) mustBe None
               result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
               result.get(PassportOrIdCardDetailsPage) mustBe None
-              result.get(MentalCapacityYesNoPage).get mustBe true
+              result.get(MentalCapacityYesNoPage).get mustBe Yes
+              result.get(StartDatePage).get mustBe startDate
+            }
+
+            "has UK nationality, UK residency and unknown mental capacity" in {
+
+              val protector = IndividualProtector(
+                name = name,
+                dateOfBirth = None,
+                countryOfNationality = Some(GB),
+                identification = None,
+                countryOfResidence = Some(GB),
+                address = None,
+                mentalCapacityYesNo = Some(DontKnow),
+                entityStart = startDate,
+                provisional = true
+              )
+
+              val result = extractor(baseAnswers, protector, index).get
+
+              result.get(IndexPage).get mustBe index
+              result.get(NamePage).get mustBe name
+              result.get(DateOfBirthYesNoPage).get mustBe false
+              result.get(DateOfBirthPage) mustBe None
+              result.get(CountryOfNationalityYesNoPage).get mustBe true
+              result.get(CountryOfNationalityUkYesNoPage).get mustBe true
+              result.get(CountryOfNationalityPage).get mustBe GB
+              result.get(NationalInsuranceNumberYesNoPage).get mustBe false
+              result.get(NationalInsuranceNumberPage) mustBe None
+              result.get(CountryOfResidenceYesNoPage).get mustBe true
+              result.get(CountryOfResidenceUkYesNoPage).get mustBe true
+              result.get(CountryOfResidencePage).get mustBe GB
+              result.get(AddressYesNoPage).get mustBe false
+              result.get(LiveInTheUkYesNoPage) mustBe None
+              result.get(UkAddressPage) mustBe None
+              result.get(NonUkAddressPage) mustBe None
+              result.get(PassportDetailsYesNoPage) mustBe None
+              result.get(PassportDetailsPage) mustBe None
+              result.get(IdCardDetailsYesNoPage) mustBe None
+              result.get(IdCardDetailsPage) mustBe None
+              result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
+              result.get(PassportOrIdCardDetailsPage) mustBe None
+              result.get(MentalCapacityYesNoPage).get mustBe DontKnow
               result.get(StartDatePage).get mustBe startDate
             }
           }
@@ -317,7 +360,7 @@ class IndividualProtectorExtractorSpec extends SpecBase {
                 identification = None,
                 countryOfResidence = Some(country),
                 address = None,
-                mentalCapacityYesNo = Some(false),
+                mentalCapacityYesNo = Some(No),
                 entityStart = startDate,
                 provisional = true
               )
@@ -346,7 +389,7 @@ class IndividualProtectorExtractorSpec extends SpecBase {
               result.get(IdCardDetailsPage) mustBe None
               result.get(PassportOrIdCardDetailsYesNoPage) mustBe None
               result.get(PassportOrIdCardDetailsPage) mustBe None
-              result.get(MentalCapacityYesNoPage).get mustBe false
+              result.get(MentalCapacityYesNoPage).get mustBe No
               result.get(StartDatePage).get mustBe startDate
             }
           }

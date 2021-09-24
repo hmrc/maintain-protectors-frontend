@@ -19,8 +19,8 @@ package controllers.individual
 import config.annotations.IndividualProtector
 import controllers.actions._
 import controllers.actions.individual.NameRequiredAction
-import forms.YesNoFormProvider
-import models.Mode
+import forms.YesNoDontKnowFormProvider
+import models.{Mode, YesNoDontKnow}
 import navigation.Navigator
 import pages.individual.MentalCapacityYesNoPage
 import play.api.data.Form
@@ -39,11 +39,11 @@ class MentalCapacityYesNoController @Inject()(
                                                @IndividualProtector navigator: Navigator,
                                                standardActionSets: StandardActionSets,
                                                nameAction: NameRequiredAction,
-                                               formProvider: YesNoFormProvider,
+                                               formProvider: YesNoDontKnowFormProvider,
                                                view: MentalCapacityYesNoView
                                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val form: Form[Boolean] = formProvider.withPrefix("individualProtector.mentalCapacityYesNo")
+  private val form: Form[YesNoDontKnow] = formProvider.withPrefix("individualProtector.mentalCapacityYesNo")
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.andThen(nameAction) {
     implicit request =>

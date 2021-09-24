@@ -19,6 +19,7 @@ package utils.print
 import base.SpecBase
 import controllers.individual.add.{routes => addRts}
 import controllers.individual.{routes => rts}
+import models.YesNoDontKnow.{DontKnow, Yes}
 import models.{CheckMode, CombinedPassportOrIdCard, IdCard, Mode, Name, NonUkAddress, NormalMode, Passport, UkAddress, UserAnswers}
 import pages.individual._
 import play.twirl.api.Html
@@ -51,7 +52,7 @@ class IndividualProtectorPrintHelperSpec extends SpecBase {
     .set(LiveInTheUkYesNoPage, true).success.value
     .set(UkAddressPage, ukAddress).success.value
     .set(NonUkAddressPage, nonUkAddress).success.value
-    .set(MentalCapacityYesNoPage, true).success.value
+    .set(MentalCapacityYesNoPage, Yes).success.value
     .set(StartDatePage, LocalDate.of(2020, 1, 1)).success.value
 
   "IndividualProtectorPrintHelper" must {
@@ -131,5 +132,38 @@ class IndividualProtectorPrintHelperSpec extends SpecBase {
         )
       }
     }
+
+    "adding with unknown mental capacity data must show `I don’t know or not provided`" in {
+
+        val userAnswers = emptyUserAnswers
+          .set(NamePage, name).success.value
+          .set(MentalCapacityYesNoPage, DontKnow).success.value
+
+        val result = helper(userAnswers, adding = true, name.displayName)
+        result mustBe AnswerSection(
+          headingKey = None,
+          rows = Seq(
+            AnswerRow(label = messages("individualProtector.name.checkYourAnswersLabel"), answer = Html("First Middle Last"), changeUrl = Some(rts.NameController.onPageLoad(NormalMode).url)),
+            AnswerRow(label = messages("individualProtector.mentalCapacityYesNo.checkYourAnswersLabel", name.displayName), answer = Html("I don’t know or not provided"), changeUrl = Some(rts.MentalCapacityYesNoController.onPageLoad(NormalMode).url)),
+          )
+        )
+      }
+
+    "amending with unknown mental capacity data must show `I don’t know or not provided`" in {
+
+      val userAnswers = emptyUserAnswers
+        .set(NamePage, name).success.value
+        .set(MentalCapacityYesNoPage, DontKnow).success.value
+
+      val result = helper(userAnswers, adding = false, name.displayName)
+      result mustBe AnswerSection(
+        headingKey = None,
+        rows = Seq(
+          AnswerRow(label = messages("individualProtector.name.checkYourAnswersLabel"), answer = Html("First Middle Last"), changeUrl = Some(rts.NameController.onPageLoad(CheckMode).url)),
+          AnswerRow(label = messages("individualProtector.mentalCapacityYesNo.checkYourAnswersLabel", name.displayName), answer = Html("I don’t know or not provided"), changeUrl = Some(rts.MentalCapacityYesNoController.onPageLoad(CheckMode).url)),
+        )
+      )
+    }
+
   }
 }

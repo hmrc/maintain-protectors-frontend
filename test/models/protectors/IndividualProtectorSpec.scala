@@ -19,6 +19,7 @@ package models.protectors
 import base.SpecBase
 import models.Constant.GB
 import models.Name
+import models.YesNoDontKnow.{DontKnow, No, Yes}
 import play.api.libs.json.Json
 
 import java.time.LocalDate
@@ -61,7 +62,7 @@ class IndividualProtectorSpec extends SpecBase {
           identification = None,
           countryOfResidence = Some(GB),
           address = None,
-          mentalCapacityYesNo = Some(false),
+          mentalCapacityYesNo = Some(No),
           entityStart = LocalDate.parse(date),
           provisional = false
         )
@@ -98,7 +99,7 @@ class IndividualProtectorSpec extends SpecBase {
           identification = None,
           countryOfResidence = Some(GB),
           address = None,
-          mentalCapacityYesNo = Some(true),
+          mentalCapacityYesNo = Some(Yes),
           entityStart = LocalDate.parse(date),
           provisional = false
         )
@@ -107,6 +108,44 @@ class IndividualProtectorSpec extends SpecBase {
 
         serialised mustEqual json
       }
+
+      "legally capable not known" in {
+
+        val json = Json.parse(
+          s"""
+             |{
+             |  "name": {
+             |    "firstName": "$firstName",
+             |    "lastName": "$lastName"
+             |  },
+             |  "nationality": "$GB",
+             |  "countryOfResidence": "$GB",
+             |  "legallyIncapable": null,
+             |  "entityStart": "$date",
+             |  "provisional": false
+             |}
+             |""".stripMargin
+        )
+
+        val deserialised = json.as[IndividualProtector]
+
+        deserialised mustBe IndividualProtector(
+          name = name,
+          dateOfBirth = None,
+          countryOfNationality = Some(GB),
+          identification = None,
+          countryOfResidence = Some(GB),
+          address = None,
+          mentalCapacityYesNo = Some(DontKnow),
+          entityStart = LocalDate.parse(date),
+          provisional = false
+        )
+
+        val serialised = Json.toJson(deserialised)
+
+        serialised mustEqual json
+      }
+
     }
   }
 }

@@ -101,6 +101,10 @@ class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils,
     breakLines(lines)
   }
 
+  def formatEnum[T](key: String, answer: T)(implicit messages: Messages): Html = {
+    escape(messages(s"$key.$answer"))
+  }
+
   private def breakLines(lines: Seq[String]): Html = {
     Html(lines.map(escape).mkString("<br />"))
   }

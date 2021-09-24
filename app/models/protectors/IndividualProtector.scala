@@ -16,7 +16,8 @@
 
 package models.protectors
 
-import models.{Address, IndividualIdentification, Name}
+import models.YesNoDontKnow.{No, Yes}
+import models.{Address, IndividualIdentification, Name, YesNoDontKnow}
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
@@ -28,11 +29,22 @@ final case class IndividualProtector(name: Name,
                                      identification: Option[IndividualIdentification],
                                      countryOfResidence: Option[String] = None,
                                      address: Option[Address],
-                                     mentalCapacityYesNo: Option[Boolean] = None,
+                                     mentalCapacityYesNo: Option[YesNoDontKnow] = None,
                                      entityStart: LocalDate,
                                      provisional: Boolean) extends Protector
 
 object IndividualProtector extends ProtectorReads {
+
+  def readMentalCapacity: Reads[Option[YesNoDontKnow]] =
+    (__ \ 'legallyIncapable).readNullable[Boolean].flatMap[Option[YesNoDontKnow]] { x: Option[Boolean] =>
+      Reads(_ => JsSuccess(YesNoDontKnow.fromBoolean(x)))
+    }
+
+  def legallyIncapableWrites: Writes[YesNoDontKnow] = {
+    case Yes => JsBoolean(false)
+    case No  => JsBoolean(true)
+    case _   => JsNull
+  }
 
   implicit val reads: Reads[IndividualProtector] = (
     (__ \ 'name).read[Name] and
@@ -41,7 +53,7 @@ object IndividualProtector extends ProtectorReads {
       __.lazyRead(readNullableAtSubPath[IndividualIdentification](__ \ 'identification)) and
       (__ \ 'countryOfResidence).readNullable[String] and
       __.lazyRead(readNullableAtSubPath[Address](__ \ 'identification \ 'address)) and
-      (__ \ 'legallyIncapable).readNullable[Boolean].map(_.map(!_)) and
+      readMentalCapacity and
       (__ \ "entityStart").read[LocalDate] and
       (__ \ "provisional").readWithDefault(false)
     )(IndividualProtector.apply _)
@@ -53,7 +65,7 @@ object IndividualProtector extends ProtectorReads {
       (__ \ 'identification).writeNullable[IndividualIdentification] and
       (__ \ 'countryOfResidence).writeNullable[String] and
       (__ \ 'identification \ 'address).writeNullable[Address] and
-      (__ \ 'legallyIncapable).writeNullable[Boolean](x => JsBoolean(!x)) and
+      (__ \ 'legallyIncapable).writeNullable[YesNoDontKnow](legallyIncapableWrites) and
       (__ \ "entityStart").write[LocalDate] and
       (__ \ "provisional").write[Boolean]
     )(unlift(IndividualProtector.unapply))

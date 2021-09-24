@@ -21,6 +21,7 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import generators.Generators
+import models.YesNoDontKnow.DontKnow
 import models.protectors.{BusinessProtector, IndividualProtector, Protectors}
 import models.{Name, ProtectorType, RemoveProtector, TrustDetails, TypeOfTrust}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -76,7 +77,8 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
     identification = None,
     address = None,
     entityStart = date,
-    provisional = false
+    provisional = false,
+    mentalCapacityYesNo = Some(DontKnow),
   )
 
   private val business = BusinessProtector(
