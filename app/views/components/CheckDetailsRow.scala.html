@@ -16,7 +16,7 @@
 
 @import viewmodels.AnswerRow
 
-@this()
+@this(govukTag: GovukTag)
 
 @(row: AnswerRow)(implicit messages: Messages)
 
@@ -29,10 +29,17 @@
     </dd>
     @if(row.canEdit) {
         <dd class="govuk-summary-list__actions">
-            <a class="govuk-link" href="@row.changeUrl">
-                <span aria-hidden="true">@messages("site.edit")</span>
-                <span class="govuk-visually-hidden">@messages("site.hidden-edit", row.label)</span>
-            </a>
+            @row.changeUrl.map{ changeUrl =>
+                <a class="govuk-link" href="@changeUrl">
+                    <span aria-hidden="true">@messages("site.edit")</span>
+                    <span class="govuk-visually-hidden">@messages("site.hidden-edit", row.label)</span>
+                </a>
+            }.getOrElse{
+                @govukTag(Tag(
+                    content = Text(messages("site.cannot.change")),
+                    classes = "govuk-tag--grey"
+                ))
+            }
         </dd>
     } else if(row.isVerified) {
         @* Add Verified Tag *@

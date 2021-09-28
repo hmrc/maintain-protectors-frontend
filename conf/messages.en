@@ -56,6 +56,7 @@ site.complete = Completed
 site.date.hint = For example, 31 3 1980.
 site.error = Error:
 site.cannotRemove = Cannot remove
+site.cannot.change = Cannot change
 site.cannotRemove-hidden = Cannot remove {0}
 site.number-ending = Number ending {0}
 

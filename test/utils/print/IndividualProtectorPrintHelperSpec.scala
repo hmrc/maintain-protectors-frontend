@@ -98,6 +98,45 @@ class IndividualProtectorPrintHelperSpec extends SpecBase {
         )
       }
 
+      // AnswerRow(What is the name of the protector?,First Middle Last,Some(/maintain-a-trust/protectors/individual/change-name),,true,false),
+      // AnswerRow(Do you know First Last’s date of birth?,Yes,Some(/maintain-a-trust/protectors/individual/change-know-date-of-birth),,true,false),
+      // AnswerRow(What is First Last’s date of birth?,10 October 2010,Some(/maintain-a-trust/protectors/individual/change-date-of-birth),,true,false),
+      // AnswerRow(Do you know First Last’s country of nationality?,Yes,Some(/maintain-a-trust/protectors/individual/change-do-you-know-country-of-nationality),,true,false),
+      // AnswerRow(Does First Last have UK nationality?,No,Some(/maintain-a-trust/protectors/individual/change-has-uk-country-of-nationality),,true,false),
+      // AnswerRow(What is First Last’s country of nationality?,Germany,Some(/maintain-a-trust/protectors/individual/change-country-of-nationality),,true,false),
+      // AnswerRow(Do you know First Last’s National Insurance number?,Yes,Some(/maintain-a-trust/protectors/individual/change-has-national-insurance-number),,true,false),
+      // AnswerRow(What is First Last’s National Insurance number?,AA 00 00 00 A,Some(/maintain-a-trust/protectors/individual/change-national-insurance-number),,true,false),
+      // AnswerRow(Do you know First Last’s country of residence?,Yes,Some(/maintain-a-trust/protectors/individual/change-do-you-know-country-of-residence),,true,false),
+      // AnswerRow(Does First Last have UK residency?,No,Some(/maintain-a-trust/protectors/individual/change-has-uk-country-of-residence),,true,false),
+      // AnswerRow(What is First Last’s country of residence?,Germany,Some(/maintain-a-trust/protectors/individual/change-country-of-residence),,true,false),
+      // AnswerRow(Do you know First Last’s address?,Yes,Some(/maintain-a-trust/protectors/individual/change-has-address),,true,false),
+      // AnswerRow(Does First Last live in the UK?,Yes,Some(/maintain-a-trust/protectors/individual/change-has-uk-address),,true,false),
+      // AnswerRow(What is First Last’s address?,value 1<br />value 2<br />AB1 1AB,Some(/maintain-a-trust/protectors/individual/change-uk-address),,true,false),
+      // AnswerRow(What is First Last’s address?,value 1<br />value 2<br />Germany,Some(/maintain-a-trust/protectors/individual/change-non-uk-address),,true,false),
+      // AnswerRow(Do you know First Last’s passport or ID card details?,Yes,Some(/maintain-a-trust/protectors/individual/has-passport-or-id-card),,true,false),
+      // AnswerRow(What are First Last’s passport or ID card details?,United Kingdom<br />Number ending 7890<br />10 October 2030,None,,true,false),
+      // AnswerRow(Does First Last have mental capacity at the time of registration?,Yes,Some(/maintain-a-trust/protectors/individual/change-legally-capable),,true,false)))
+
+
+      // AnswerRow(What is the name of the protector?,First Middle Last,Some(/maintain-a-trust/protectors/individual/change-name),,true,false),
+      // AnswerRow(Do you know First Last’s date of birth?,Yes,Some(/maintain-a-trust/protectors/individual/change-know-date-of-birth),,true,false),
+      // AnswerRow(What is First Last’s date of birth?,10 October 2010,Some(/maintain-a-trust/protectors/individual/change-date-of-birth),,true,false),
+      // AnswerRow(Do you know First Last’s country of nationality?,Yes,Some(/maintain-a-trust/protectors/individual/change-do-you-know-country-of-nationality),,true,false),
+      // AnswerRow(Does First Last have UK nationality?,No,Some(/maintain-a-trust/protectors/individual/change-has-uk-country-of-nationality),,true,false),
+      // AnswerRow(What is First Last’s country of nationality?,Germany,Some(/maintain-a-trust/protectors/individual/change-country-of-nationality),,true,false),
+      // AnswerRow(Do you know First Last’s National Insurance number?,Yes,Some(/maintain-a-trust/protectors/individual/change-has-national-insurance-number),,true,false),
+      // AnswerRow(What is First Last’s National Insurance number?,AA 00 00 00 A,Some(/maintain-a-trust/protectors/individual/change-national-insurance-number),,true,false),
+      // AnswerRow(Do you know First Last’s country of residence?,Yes,Some(/maintain-a-trust/protectors/individual/change-do-you-know-country-of-residence),,true,false),
+      // AnswerRow(Does First Last have UK residency?,No,Some(/maintain-a-trust/protectors/individual/change-has-uk-country-of-residence),,true,false),
+      // AnswerRow(What is First Last’s country of residence?,Germany,Some(/maintain-a-trust/protectors/individual/change-country-of-residence),,true,false),
+      // AnswerRow(Do you know First Last’s address?,Yes,Some(/maintain-a-trust/protectors/individual/change-has-address),,true,false),
+      // AnswerRow(Does First Last live in the UK?,Yes,Some(/maintain-a-trust/protectors/individual/change-has-uk-address),,true,false),
+      // AnswerRow(What is First Last’s address?,value 1<br />value 2<br />AB1 1AB,Some(/maintain-a-trust/protectors/individual/change-uk-address),,true,false),
+      // AnswerRow(What is First Last’s address?,value 1<br />value 2<br />Germany,Some(/maintain-a-trust/protectors/individual/change-non-uk-address),,true,false),
+      // AnswerRow(Do you know First Last’s passport or ID card details?,Yes,None,,true,false),
+      // AnswerRow(What are First Last’s passport or ID card details?,United Kingdom<br />Number ending 7890<br />10 October 2030,None,,true,false),
+      // AnswerRow(Does First Last have mental capacity at the time of registration?,Yes,Some(/maintain-a-trust/protectors/individual/change-legally-capable),,true,false)))
+
       "amending" in {
 
         val mode: Mode = CheckMode
@@ -125,7 +164,7 @@ class IndividualProtectorPrintHelperSpec extends SpecBase {
             AnswerRow(label = messages("individualProtector.liveInTheUkYesNo.checkYourAnswersLabel", name.displayName), answer = Html("Yes"), changeUrl = Some(rts.LiveInTheUkYesNoController.onPageLoad(mode).url)),
             AnswerRow(label = messages("individualProtector.ukAddress.checkYourAnswersLabel", name.displayName), answer = Html("value 1<br />value 2<br />AB1 1AB"), changeUrl = Some(rts.UkAddressController.onPageLoad(mode).url)),
             AnswerRow(label = messages("individualProtector.nonUkAddress.checkYourAnswersLabel", name.displayName), answer = Html("value 1<br />value 2<br />Germany"), changeUrl = Some(rts.NonUkAddressController.onPageLoad(mode).url)),
-            AnswerRow(label = messages("individualProtector.passportOrIdCardDetailsYesNo.checkYourAnswersLabel", name.displayName), answer = Html("Yes"), changeUrl = None),
+            AnswerRow(label = messages("individualProtector.passportOrIdCardDetailsYesNo.checkYourAnswersLabel", name.displayName), answer = Html("Yes"), changeUrl = Some(rts.PassportOrIdCardDetailsYesNoController.onPageLoad().url)),
             AnswerRow(label = messages("individualProtector.passportOrIdCardDetails.checkYourAnswersLabel", name.displayName), answer = Html("United Kingdom<br />Number ending 7890<br />10 October 2030"), changeUrl = None),
             AnswerRow(label = messages("individualProtector.mentalCapacityYesNo.checkYourAnswersLabel", name.displayName), answer = Html("Yes"), changeUrl = Some(rts.MentalCapacityYesNoController.onPageLoad(mode).url))
           )
