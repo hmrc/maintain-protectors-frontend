@@ -94,15 +94,11 @@ POST       /id-card                                         controllers.individu
 GET        /change-id-card                                  controllers.individual.IdCardDetailsController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-id-card                                  controllers.individual.IdCardDetailsController.onSubmit(mode: Mode = CheckMode)
 
-GET        /has-passport-or-id-card                         controllers.individual.PassportOrIdCardDetailsYesNoController.onPageLoad(mode: Mode = NormalMode)
-POST       /has-passport-or-id-card                         controllers.individual.PassportOrIdCardDetailsYesNoController.onSubmit(mode: Mode = NormalMode)
-GET        /change-has-passport-or-id-card                  controllers.individual.PassportOrIdCardDetailsYesNoController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-has-passport-or-id-card                  controllers.individual.PassportOrIdCardDetailsYesNoController.onSubmit(mode: Mode = CheckMode)
+GET        /has-passport-or-id-card                         controllers.individual.PassportOrIdCardDetailsYesNoController.onPageLoad()
+POST       /has-passport-or-id-card                         controllers.individual.PassportOrIdCardDetailsYesNoController.onSubmit()
 
-GET        /passport-or-id-card                             controllers.individual.PassportOrIdCardDetailsController.onPageLoad(mode: Mode = NormalMode)
-POST       /passport-or-id-card                             controllers.individual.PassportOrIdCardDetailsController.onSubmit(mode: Mode = NormalMode)
-GET        /change-passport-or-id-card                      controllers.individual.PassportOrIdCardDetailsController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-passport-or-id-card                      controllers.individual.PassportOrIdCardDetailsController.onSubmit(mode: Mode = CheckMode)
+GET        /passport-or-id-card                             controllers.individual.PassportOrIdCardDetailsController.onPageLoad()
+POST       /passport-or-id-card                             controllers.individual.PassportOrIdCardDetailsController.onSubmit()
 
 GET        /legally-capable                                 controllers.individual.MentalCapacityYesNoController.onPageLoad(mode: Mode = NormalMode)
 POST       /legally-capable                                 controllers.individual.MentalCapacityYesNoController.onSubmit(mode: Mode = NormalMode)

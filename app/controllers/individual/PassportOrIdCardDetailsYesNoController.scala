@@ -16,59 +16,38 @@
 
 package controllers.individual
 
-import config.annotations.IndividualProtector
-import controllers.actions.StandardActionSets
+import controllers.actions.{ProtectorNameRequest, StandardActionSets}
 import controllers.actions.individual.NameRequiredAction
-import forms.YesNoFormProvider
-import models.Mode
-import navigation.Navigator
-import pages.individual.PassportOrIdCardDetailsYesNoPage
-import play.api.data.Form
+import pages.individual.IndexPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.individual.PassportOrIdCardDetailsYesNoView
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class PassportOrIdCardDetailsYesNoController @Inject()(
                                                         override val messagesApi: MessagesApi,
-                                                        sessionRepository: PlaybackRepository,
-                                                        @IndividualProtector navigator: Navigator,
                                                         standardActionSets: StandardActionSets,
                                                         nameAction: NameRequiredAction,
-                                                        formProvider: YesNoFormProvider,
-                                                        val controllerComponents: MessagesControllerComponents,
-                                                        view: PassportOrIdCardDetailsYesNoView
+                                                        val controllerComponents: MessagesControllerComponents
                                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val form: Form[Boolean] = formProvider.withPrefix("individualProtector.passportOrIdCardDetailsYesNo")
+  private def route()(implicit request: ProtectorNameRequest[AnyContent]) =
+    request.userAnswers.get(IndexPage) match {
+      case Some(index) =>
+        Redirect(amend.routes.CheckDetailsController.renderFromUserAnswers(index))
+      case None =>
+        Redirect(controllers.routes.SessionExpiredController.onPageLoad())
+    }
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.andThen(nameAction) {
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.andThen(nameAction) {
     implicit request =>
-
-      val preparedForm = request.userAnswers.get(PassportOrIdCardDetailsYesNoPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      Ok(view(preparedForm, mode, request.protectorName))
+      route()
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.andThen(nameAction).async {
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.andThen(nameAction) {
     implicit request =>
-
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, request.protectorName))),
-
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(PassportOrIdCardDetailsYesNoPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(PassportOrIdCardDetailsYesNoPage, mode, updatedAnswers))
-      )
+      route()
   }
 }

@@ -32,7 +32,7 @@
     showBackLink = true
 ) {
 
-    @formHelper(action = PassportOrIdCardDetailsYesNoController.onSubmit(mode), 'autoComplete -> "off") {
+    @formHelper(action = PassportOrIdCardDetailsYesNoController.onSubmit(), 'autoComplete -> "off") {
 
         @errorSummary(form.errors)
 

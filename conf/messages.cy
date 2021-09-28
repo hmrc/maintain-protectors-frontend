@@ -1,6 +1,10 @@
 service.name=Cofrestru Ymddiriedolaeth a’i Chynnal
 
 timeout.message=Byddwn yn eich allgofnodi os na fyddwch yn ymateb ymhen
+
+individualProtector.cannotChange.p1 = Does dim modd newid peth o’r wybodaeth rydym yn gofyn amdani ynghylch y setlwr.
+individualProtector.cannotChange.p2 = Os oes angen i chi ddiweddaru manylion y setlwr, bydd yn rhaid i chi ei dynnu ac yna ei ychwanegu fel setlwr newydd.
+
 individualProtector.countryOfNationalityYesNo.title=A ydych yn gwybod gwlad cenedligrwydd yr amddiffynnydd unigol?
 individualProtector.countryOfNationalityYesNo.heading=A ydych yn gwybod gwlad cenedligrwydd {0}?
 individualProtector.countryOfNationalityYesNo.checkYourAnswersLabel=A ydych yn gwybod gwlad cenedligrwydd {0}?

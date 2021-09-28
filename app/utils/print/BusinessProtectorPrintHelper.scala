@@ -30,21 +30,21 @@ class BusinessProtectorPrintHelper @Inject()(answerRowConverter: AnswerRowConver
     val bound = answerRowConverter.bind(userAnswers, protectorName)
 
     def answerRows(mode: Mode): Seq[Option[AnswerRow]] = Seq(
-      bound.stringQuestion(NamePage, "businessProtector.name", rts.NameController.onPageLoad(mode).url),
-      bound.yesNoQuestion(UtrYesNoPage, "businessProtector.utrYesNo", rts.UtrYesNoController.onPageLoad(mode).url),
-      bound.stringQuestion(UtrPage, "businessProtector.utr", rts.UtrController.onPageLoad(mode).url),
-      bound.yesNoQuestion(CountryOfResidenceYesNoPage, "businessProtector.countryOfResidenceYesNo", rts.CountryOfResidenceYesNoController.onPageLoad(mode).url),
-      bound.yesNoQuestion(CountryOfResidenceUkYesNoPage, "businessProtector.countryOfResidenceUkYesNo", rts.CountryOfResidenceUkYesNoController.onPageLoad(mode).url),
-      bound.countryQuestion(CountryOfResidenceUkYesNoPage, CountryOfResidencePage, "businessProtector.countryOfResidence", rts.CountryOfResidenceController.onPageLoad(mode).url),
-      bound.yesNoQuestion(AddressYesNoPage, "businessProtector.addressYesNo", rts.AddressYesNoController.onPageLoad(mode).url),
-      bound.yesNoQuestion(AddressUkYesNoPage, "businessProtector.addressUkYesNo", rts.AddressUkYesNoController.onPageLoad(mode).url),
-      bound.addressQuestion(UkAddressPage, "businessProtector.ukAddress", rts.UkAddressController.onPageLoad(mode).url),
-      bound.addressQuestion(NonUkAddressPage, "businessProtector.nonUkAddress", rts.NonUkAddressController.onPageLoad(mode).url)
+      bound.stringQuestion(NamePage, "businessProtector.name", Some(rts.NameController.onPageLoad(mode).url)),
+      bound.yesNoQuestion(UtrYesNoPage, "businessProtector.utrYesNo", Some(rts.UtrYesNoController.onPageLoad(mode).url)),
+      bound.stringQuestion(UtrPage, "businessProtector.utr", Some(rts.UtrController.onPageLoad(mode).url)),
+      bound.yesNoQuestion(CountryOfResidenceYesNoPage, "businessProtector.countryOfResidenceYesNo", Some(rts.CountryOfResidenceYesNoController.onPageLoad(mode).url)),
+      bound.yesNoQuestion(CountryOfResidenceUkYesNoPage, "businessProtector.countryOfResidenceUkYesNo", Some(rts.CountryOfResidenceUkYesNoController.onPageLoad(mode).url)),
+      bound.countryQuestion(CountryOfResidenceUkYesNoPage, CountryOfResidencePage, "businessProtector.countryOfResidence", Some(rts.CountryOfResidenceController.onPageLoad(mode).url)),
+      bound.yesNoQuestion(AddressYesNoPage, "businessProtector.addressYesNo", Some(rts.AddressYesNoController.onPageLoad(mode).url)),
+      bound.yesNoQuestion(AddressUkYesNoPage, "businessProtector.addressUkYesNo", Some(rts.AddressUkYesNoController.onPageLoad(mode).url)),
+      bound.addressQuestion(UkAddressPage, "businessProtector.ukAddress", Some(rts.UkAddressController.onPageLoad(mode).url)),
+      bound.addressQuestion(NonUkAddressPage, "businessProtector.nonUkAddress", Some(rts.NonUkAddressController.onPageLoad(mode).url))
     )
 
     lazy val add: Seq[AnswerRow] = (
       answerRows(NormalMode) :+
-        bound.dateQuestion(StartDatePage, "businessProtector.startDate", rts.StartDateController.onPageLoad().url)
+        bound.dateQuestion(StartDatePage, "businessProtector.startDate", Some(rts.StartDateController.onPageLoad().url))
       ).flatten
 
     val amend: Seq[AnswerRow] = answerRows(CheckMode).flatten

@@ -167,6 +167,9 @@ entities.protector = Protectors
 entities.protector.individual = Individual protector
 entities.protector.business = Business protector
 
+individualProtector.cannotChange.p1 = Some of the information we ask about the settlor cannot be changed.
+individualProtector.cannotChange.p2 = If you need to update the settlor’s details, you will need to remove them, then add them as a new settlor.
+
 individualProtector.name.default = the individual protector
 
 individualProtector.name.checkYourAnswersLabel = What is the name of the protector?
