@@ -379,6 +379,8 @@ individualProtector.startDate.error.past = The date the protector was added to t
 
 individualProtector.checkDetails.title = Check individual protector details
 individualProtector.checkDetails.heading = Check individual protector details
+individualProtector.cannotChange.p1 = Some of the information we ask about the protector cannot be changed.
+individualProtector.cannotChange.p2 = If you need to update the protector’s details, you will need to remove them, then add them as a new protector.
 
 removeIndividualProtectorYesNo.title = Are you sure you want to remove the individual protector?
 removeIndividualProtectorYesNo.heading = Are you sure you want to remove {0}?

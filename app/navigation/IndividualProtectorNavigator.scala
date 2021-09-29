@@ -64,27 +64,7 @@ class IndividualProtectorNavigator @Inject()() extends Navigator {
     case IdCardDetailsYesNoPage => ua =>
       yesNoNav(ua, IdCardDetailsYesNoPage, rts.IdCardDetailsController.onPageLoad(mode), rts.MentalCapacityYesNoController.onPageLoad(mode))
     case PassportOrIdCardDetailsYesNoPage => ua =>
-      navigateFromPassportOrIdCardDetailsYesNo(mode, ua)
-  }
-
-  private def navigateToPassportDetails(mode: Mode, answers: UserAnswers): Call = {
-    if (answers.get(PassportOrIdCardDetailsYesNoPage).isDefined || answers.get(PassportOrIdCardDetailsPage).isDefined) {
-      if (mode == NormalMode) {
-        rts.PassportOrIdCardDetailsYesNoController.onPageLoad()
-      } else {
-        rts.MentalCapacityYesNoController.onPageLoad(mode)
-      }
-    } else {
-      rts.PassportDetailsYesNoController.onPageLoad(mode)
-    }
-  }
-
-  private def navigateFromPassportOrIdCardDetailsYesNo(mode: Mode, ua: UserAnswers): Call = {
-    if (mode == NormalMode) {
       yesNoNav(ua, PassportOrIdCardDetailsYesNoPage, rts.PassportOrIdCardDetailsController.onPageLoad(), rts.MentalCapacityYesNoController.onPageLoad(mode))
-    } else {
-      rts.MentalCapacityYesNoController.onPageLoad(mode)
-    }
   }
 
   private def navigateAwayFromCountryOfNationalityQuestions(mode: Mode, ua: UserAnswers): Call = {
@@ -112,10 +92,14 @@ class IndividualProtectorNavigator @Inject()() extends Navigator {
   }
 
   private def navigateAwayFromAddressQuestions(mode: Mode, ua: UserAnswers): Call = {
-    if (ua.get(PassportOrIdCardDetailsYesNoPage).isDefined || ua.get(PassportOrIdCardDetailsPage).isDefined) {
-      navigateToPassportDetails(mode, ua)
+    if(mode == NormalMode) {
+      if (ua.get(PassportOrIdCardDetailsYesNoPage).isDefined || ua.get(PassportOrIdCardDetailsPage).isDefined) {
+        rts.PassportOrIdCardDetailsYesNoController.onPageLoad()
+      } else {
+        rts.PassportDetailsYesNoController.onPageLoad(mode)
+      }
     } else {
-      rts.PassportDetailsYesNoController.onPageLoad(mode)
+      rts.MentalCapacityYesNoController.onPageLoad(mode)
     }
   }
 
