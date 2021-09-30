@@ -35,10 +35,8 @@
                     <span class="govuk-visually-hidden">@messages("site.hidden-edit", row.label)</span>
                 </a>
             }.getOrElse{
-                @govukTag(Tag(
-                    content = Text(messages("site.cannot.change")),
-                    classes = "govuk-tag--grey"
-                ))
+                <strong class="govuk-tag govuk-tag--grey">@messages("site.cannot.change")
+                    <span class="govuk-visually-hidden">.@row.label</span></strong>
             }
         </dd>
     } else if(row.isVerified) {
