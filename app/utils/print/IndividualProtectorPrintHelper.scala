@@ -31,12 +31,8 @@ class IndividualProtectorPrintHelper @Inject()(answerRowConverter: AnswerRowConv
 
     val bound = answerRowConverter.bind(userAnswers, protectorName)
 
-    def allowChange(userAnswers: UserAnswers, page: QuestionPage[Boolean]): Boolean = {
-      userAnswers.get(page) match {
-        case Some(false) | None => true
-        case _ => false
-      }
-    }
+    val changeLinkOrNone: (Boolean, String) => Option[String] =
+      (adding: Boolean, route: String) => if(adding) Some(route) else None
 
     def answerRows: Seq[AnswerRow] = {
 
@@ -58,12 +54,12 @@ class IndividualProtectorPrintHelper @Inject()(answerRowConverter: AnswerRowConv
         bound.yesNoQuestion(LiveInTheUkYesNoPage, "individualProtector.liveInTheUkYesNo", Some(rts.LiveInTheUkYesNoController.onPageLoad(mode).url)),
         bound.addressQuestion(UkAddressPage, "individualProtector.ukAddress", Some(rts.UkAddressController.onPageLoad(mode).url)),
         bound.addressQuestion(NonUkAddressPage, "individualProtector.nonUkAddress", Some(rts.NonUkAddressController.onPageLoad(mode).url)),
-        bound.yesNoQuestion(PassportDetailsYesNoPage, "individualProtector.passportDetailsYesNo", if(adding || allowChange(userAnswers, PassportDetailsYesNoPage)) Some(rts.PassportDetailsYesNoController.onPageLoad(mode).url) else None),
-        bound.passportDetailsQuestion(PassportDetailsPage, "individualProtector.passportDetails", if(adding) Some(rts.PassportDetailsController.onPageLoad(mode).url) else None),
-        bound.yesNoQuestion(IdCardDetailsYesNoPage, "individualProtector.idCardDetailsYesNo", if(adding || allowChange(userAnswers, IdCardDetailsYesNoPage)) Some(rts.IdCardDetailsYesNoController.onPageLoad(mode).url) else None),
-        bound.idCardDetailsQuestion(IdCardDetailsPage, "individualProtector.idCardDetails", if(adding) Some(rts.IdCardDetailsController.onPageLoad(mode).url) else None),
-        bound.yesNoQuestion(PassportOrIdCardDetailsYesNoPage, "individualProtector.passportOrIdCardDetailsYesNo", if(adding || allowChange(userAnswers, PassportOrIdCardDetailsYesNoPage)) Some(rts.PassportOrIdCardDetailsYesNoController.onPageLoad().url) else None),
-        bound.passportOrIdCardDetailsQuestion(PassportOrIdCardDetailsPage, "individualProtector.passportOrIdCardDetails", if(adding) Some(rts.PassportOrIdCardDetailsController.onPageLoad().url) else None),
+        bound.yesNoQuestion(PassportDetailsYesNoPage, "individualProtector.passportDetailsYesNo", changeLinkOrNone(adding, rts.PassportDetailsYesNoController.onPageLoad(mode).url)),
+        bound.passportDetailsQuestion(PassportDetailsPage, "individualProtector.passportDetails", changeLinkOrNone(adding, rts.PassportDetailsController.onPageLoad(mode).url)),
+        bound.yesNoQuestion(IdCardDetailsYesNoPage, "individualProtector.idCardDetailsYesNo", changeLinkOrNone(adding, rts.IdCardDetailsYesNoController.onPageLoad(mode).url)),
+        bound.idCardDetailsQuestion(IdCardDetailsPage, "individualProtector.idCardDetails", changeLinkOrNone(adding, rts.IdCardDetailsController.onPageLoad(mode).url)),
+        bound.yesNoQuestion(PassportOrIdCardDetailsYesNoPage, "individualProtector.passportOrIdCardDetailsYesNo", changeLinkOrNone(adding, rts.PassportOrIdCardDetailsYesNoController.onPageLoad().url)),
+        bound.passportOrIdCardDetailsQuestion(PassportOrIdCardDetailsPage, "individualProtector.passportOrIdCardDetails", changeLinkOrNone(adding, rts.PassportOrIdCardDetailsController.onPageLoad().url)),
         bound.enumQuestion(MentalCapacityYesNoPage, "individualProtector.mentalCapacityYesNo", Some(rts.MentalCapacityYesNoController.onPageLoad(mode).url), "site"),
         if (adding) bound.dateQuestion(StartDatePage, "individualProtector.startDate", Some(addRts.StartDateController.onPageLoad().url)) else None
       ).flatten
