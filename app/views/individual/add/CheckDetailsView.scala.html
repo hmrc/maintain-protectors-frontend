@@ -16,18 +16,19 @@
 
 @import viewmodels.AnswerSection
 @import controllers.individual.add.routes._
+@import utils.SectionFormatter.formatSections
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
-@import views.html.components.{Heading, CheckDetailsList, SubmitButton}
+@import views.html.components.{Heading, SubmitButton}
 
 @this(
     main_template: MainTemplate,
     formHelper: FormWithCSRF,
     heading: Heading,
     submitButton: SubmitButton,
-    checkDetailsList: CheckDetailsList
+    govukSummaryList: GovukSummaryList
 )
 
-@(answersSection: AnswerSection)(implicit request: Request[_], messages: Messages)
+@(answersSection: Seq[AnswerSection])(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("individualProtector.checkDetails.title"),
@@ -38,7 +39,7 @@
 
         @heading("individualProtector.checkDetails.heading")
 
-        @checkDetailsList(answersSection = answersSection)
+        @govukSummaryList(SummaryList(rows = formatSections(answersSection)))
 
         @submitButton()
     }
