@@ -2,9 +2,6 @@ service.name=Cofrestru Ymddiriedolaeth a’i Chynnal
 
 timeout.message=Byddwn yn eich allgofnodi os na fyddwch yn ymateb ymhen
 
-individualProtector.cannotChange.p1 = Does dim modd newid peth o’r wybodaeth rydym yn gofyn amdani ynghylch y setlwr.
-individualProtector.cannotChange.p2 = Os oes angen i chi ddiweddaru manylion y setlwr, bydd yn rhaid i chi ei dynnu ac yna ei ychwanegu fel setlwr newydd.
-
 individualProtector.countryOfNationalityYesNo.title=A ydych yn gwybod gwlad cenedligrwydd yr amddiffynnydd unigol?
 individualProtector.countryOfNationalityYesNo.heading=A ydych yn gwybod gwlad cenedligrwydd {0}?
 individualProtector.countryOfNationalityYesNo.checkYourAnswersLabel=A ydych yn gwybod gwlad cenedligrwydd {0}?
@@ -328,8 +325,12 @@ individualProtector.startDate.error.required=Mae’n rhaid i’r dyddiad yr ychw
 individualProtector.startDate.error.invalid=Nodwch ddyddiad go iawn
 individualProtector.startDate.error.future=Mae’n rhaid i’r dyddiad yr ychwanegwyd yr amddiffynnydd at yr ymddiriedolaeth fod heddiw neu yn y gorffennol
 individualProtector.startDate.error.past=Ni all y dyddiad yr ychwanegwyd yr amddiffynnydd at yr ymddiriedolaeth fod cyn dyddiad dechrau’r ymddiriedolaeth
+
 individualProtector.checkDetails.title=Gwirio manylion amddiffynnydd sy’n unigolyn
 individualProtector.checkDetails.heading=Gwirio manylion amddiffynnydd sy’n unigolyn
+individualProtector.cannotChange.p1 = Does dim modd newid  peth o’r wybodaeth rydym yn gofyn amdani ynghylch yr amddiffynnydd.
+individualProtector.cannotChange.p2 = Os oes angen i chi ddiweddaru manylion yr amddiffynnydd, bydd yn rhaid i chi ei dynnu ac yna ei ychwanegu fel amddiffynnydd newydd.
+
 removeIndividualProtectorYesNo.title=A ydych yn siŵr eich bod am dynnu amddiffynnydd yr unigolyn?
 removeIndividualProtectorYesNo.heading=A ydych yn siŵr eich bod am dynnu {0}?
 removeIndividualProtectorYesNo.error.required=Dewiswch ‘Iawn’ os ydych am dynnu’r amddiffynnydd sy’n unigolyn
