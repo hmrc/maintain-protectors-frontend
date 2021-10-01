@@ -14,17 +14,82 @@
 * limitations under the License.
 *@
 
-@import viewmodels.AnswerSection
-@import views.html.components.CheckDetailsRow
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.govukfrontend.views.html.components.{toClasses => ToClasses}
+@import uk.gov.hmrc.govukfrontend.views.html.components.{toAttributes => ToAttributes}
+
 
 @this(
-    checkDetailsRow: CheckDetailsRow
+        govukTag: GovukTag
 )
 
-@(answersSection: AnswerSection)(implicit messages: Messages)
+@(params: SummaryList)(implicit messages: Messages)
 
-<dl class="govuk-summary-list">
-    @for(row <- answersSection.rows){
-        @checkDetailsRow(row)
-    }
+@import params._
+
+<dl class="@ToClasses("govuk-summary-list", classes)"@ToAttributes(attributes)>
+@for(row <- rows) {
+    <div class="@ToClasses("govuk-summary-list__row", row.classes)">
+        <dt class="@ToClasses("govuk-summary-list__key", row.key.classes)">
+        @row.key.content.asHtml
+        </dt>
+        <dd class="@ToClasses("govuk-summary-list__value", row.value.classes)">
+        @row.value.content.asHtml
+        </dd>
+        @if(row.actions.exists(_.items.length > 0)) {
+            <dd class="@ToClasses("govuk-summary-list__actions", row.actions.map(_.classes).getOrElse(""))">
+            @if(row.actions.exists(_.items.length == 1)) {
+                @row.actions.map { actions => @actionLink(actions.items.head) }
+            } else {
+                <ul class="govuk-summary-list__actions-list">
+                @row.actions.map { actions =>
+                    @for(action <- actions.items) {
+                        <li class="govuk-summary-list__actions-list-item">
+                        @actionLink(action)
+                        </li>
+                    }
+                }
+                </ul>
+            }
+            </dd>
+        } else {
+            @if(anyRowHasActions) {
+                @* Add dummy column to extend border *@
+                <span class="govuk-summary-list__actions"></span>
+            }
+        }
+    </div>
+}
 </dl>
+
+@actionLink(action: ActionItem) = {
+@action.href match {
+    case "" => {
+        @govukTag(Tag(
+            content = HtmlContent(tagContent(action)),
+            classes = "govuk-tag--grey"
+        ))
+    }
+    case _ => {
+        <a class="@ToClasses("govuk-link", action.classes)" href="@action.href" @ToAttributes(action.attributes)>
+        @actionContent(action)
+        </a>
+    }
+}
+}
+
+@tagContent(action: ActionItem) = {
+    <span>@{action.content.asHtml}<span class="govuk-visually-hidden">.</span></span>
+@action.visuallyHiddenText.mapNonEmpty { visuallyHiddenText =>
+    <span class="govuk-visually-hidden"> @visuallyHiddenText</span>
+}
+}
+
+@actionContent(action: ActionItem) = {
+@action.content.asHtml
+@action.visuallyHiddenText.mapNonEmpty { visuallyHiddenText =>
+    <span class="govuk-visually-hidden"> @visuallyHiddenText</span>
+}
+}
+
+@anyRowHasActions = @{rows.exists(_.actions.fold(false)(_.items.nonEmpty))}

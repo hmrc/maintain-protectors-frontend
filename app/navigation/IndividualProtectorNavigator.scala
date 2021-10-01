@@ -64,7 +64,7 @@ class IndividualProtectorNavigator @Inject()() extends Navigator {
     case IdCardDetailsYesNoPage => ua =>
       yesNoNav(ua, IdCardDetailsYesNoPage, rts.IdCardDetailsController.onPageLoad(mode), rts.MentalCapacityYesNoController.onPageLoad(mode))
     case PassportOrIdCardDetailsYesNoPage => ua =>
-      yesNoNav(ua, PassportOrIdCardDetailsYesNoPage, rts.PassportOrIdCardDetailsController.onPageLoad(mode), rts.MentalCapacityYesNoController.onPageLoad(mode))
+      yesNoNav(ua, PassportOrIdCardDetailsYesNoPage, rts.PassportOrIdCardDetailsController.onPageLoad(), rts.MentalCapacityYesNoController.onPageLoad(mode))
   }
 
   private def navigateAwayFromCountryOfNationalityQuestions(mode: Mode, ua: UserAnswers): Call = {
@@ -93,7 +93,11 @@ class IndividualProtectorNavigator @Inject()() extends Navigator {
 
   private def navigateAwayFromAddressQuestions(mode: Mode, ua: UserAnswers): Call = {
     if (ua.get(PassportOrIdCardDetailsYesNoPage).isDefined || ua.get(PassportOrIdCardDetailsPage).isDefined) {
-      rts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode)
+      if (mode == NormalMode) {
+        rts.PassportOrIdCardDetailsYesNoController.onPageLoad()
+      } else {
+        rts.MentalCapacityYesNoController.onPageLoad(mode)
+      }
     } else {
       rts.PassportDetailsYesNoController.onPageLoad(mode)
     }

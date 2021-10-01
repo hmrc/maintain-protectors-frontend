@@ -285,7 +285,7 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
                   .set(PassportOrIdCardDetailsYesNoPage, false).success.value
 
                 navigator.nextPage(UkAddressPage, mode, answers)
-                  .mustBe(rts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode))
+                  .mustBe(rts.PassportOrIdCardDetailsYesNoController.onPageLoad())
               }
             }
 
@@ -295,7 +295,7 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
                   .set(PassportOrIdCardDetailsPage, passportOrId).success.value
 
                 navigator.nextPage(UkAddressPage, mode, answers)
-                  .mustBe(rts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode))
+                  .mustBe(rts.PassportOrIdCardDetailsYesNoController.onPageLoad())
               }
             }
           }
@@ -314,7 +314,7 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
                   .set(PassportOrIdCardDetailsYesNoPage, false).success.value
 
                 navigator.nextPage(NonUkAddressPage, mode, answers)
-                  .mustBe(rts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode))
+                  .mustBe(rts.PassportOrIdCardDetailsYesNoController.onPageLoad())
               }
             }
 
@@ -324,7 +324,7 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
                   .set(PassportOrIdCardDetailsPage, passportOrId).success.value
 
                 navigator.nextPage(NonUkAddressPage, mode, answers)
-                  .mustBe(rts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode))
+                  .mustBe(rts.PassportOrIdCardDetailsYesNoController.onPageLoad())
               }
             }
           }
@@ -635,22 +635,22 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
             }
 
             "combined passport/id card details yes/no present" must {
-              "-> Do you know passport or ID card details yes/no page" in {
+              "-> Mental Capacity yes/no page" in {
                 val answers = baseAnswers
                   .set(PassportOrIdCardDetailsYesNoPage, false).success.value
 
                 navigator.nextPage(UkAddressPage, mode, answers)
-                  .mustBe(rts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode))
+                  .mustBe(rts.MentalCapacityYesNoController.onPageLoad(mode))
               }
             }
 
             "combined passport/id card details present" must {
-              "-> Do you know passport or ID card details yes/no page" in {
+              "-> Mental Capacity yes/no page" in {
                 val answers = baseAnswers
                   .set(PassportOrIdCardDetailsPage, passportOrId).success.value
 
                 navigator.nextPage(UkAddressPage, mode, answers)
-                  .mustBe(rts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode))
+                  .mustBe(rts.MentalCapacityYesNoController.onPageLoad(mode))
               }
             }
           }
@@ -664,22 +664,22 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
             }
 
             "combined passport/id card details yes/no present" must {
-              "-> Do you know passport or ID card details yes/no page" in {
+              "-> Mental Capacity yes/no page" in {
                 val answers = baseAnswers
                   .set(PassportOrIdCardDetailsYesNoPage, false).success.value
 
                 navigator.nextPage(NonUkAddressPage, mode, answers)
-                  .mustBe(rts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode))
+                  .mustBe(rts.MentalCapacityYesNoController.onPageLoad(mode))
               }
             }
 
             "combined passport/id card details present" must {
-              "-> Do you know passport or ID card details yes/no page" in {
+              "-> Mental Capacity yes/no page" in {
                 val answers = baseAnswers
                   .set(PassportOrIdCardDetailsPage, passportOrId).success.value
 
                 navigator.nextPage(NonUkAddressPage, mode, answers)
-                  .mustBe(rts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode))
+                  .mustBe(rts.MentalCapacityYesNoController.onPageLoad(mode))
               }
             }
           }

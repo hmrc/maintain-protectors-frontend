@@ -20,6 +20,7 @@ import com.google.inject.Inject
 import controllers.individual.add.{routes => addRts}
 import controllers.individual.{routes => rts}
 import models.{CheckMode, Mode, NormalMode, UserAnswers}
+import pages.QuestionPage
 import pages.individual._
 import play.api.i18n.Messages
 import viewmodels.{AnswerRow, AnswerSection}
@@ -30,32 +31,37 @@ class IndividualProtectorPrintHelper @Inject()(answerRowConverter: AnswerRowConv
 
     val bound = answerRowConverter.bind(userAnswers, protectorName)
 
+    val changeLinkOrNone: (Boolean, String) => Option[String] =
+      (adding: Boolean, route: String) => if(adding) Some(route) else None
+
     def answerRows: Seq[AnswerRow] = {
+
       val mode: Mode = if (adding) NormalMode else CheckMode
+
       Seq(
-        bound.nameQuestion(NamePage, "individualProtector.name", rts.NameController.onPageLoad(mode).url),
-        bound.yesNoQuestion(DateOfBirthYesNoPage, "individualProtector.dateOfBirthYesNo", rts.DateOfBirthYesNoController.onPageLoad(mode).url),
-        bound.dateQuestion(DateOfBirthPage, "individualProtector.dateOfBirth", rts.DateOfBirthController.onPageLoad(mode).url),
-        bound.yesNoQuestion(CountryOfNationalityYesNoPage, "individualProtector.countryOfNationalityYesNo", rts.CountryOfNationalityYesNoController.onPageLoad(mode).url),
-        bound.yesNoQuestion(CountryOfNationalityUkYesNoPage, "individualProtector.countryOfNationalityUkYesNo", rts.CountryOfNationalityUkYesNoController.onPageLoad(mode).url),
-        bound.countryQuestion(CountryOfNationalityUkYesNoPage, CountryOfNationalityPage, "individualProtector.countryOfNationality", rts.CountryOfNationalityController.onPageLoad(mode).url),
-        bound.yesNoQuestion(NationalInsuranceNumberYesNoPage, "individualProtector.nationalInsuranceNumberYesNo", rts.NationalInsuranceNumberYesNoController.onPageLoad(mode).url),
-        bound.ninoQuestion(NationalInsuranceNumberPage, "individualProtector.nationalInsuranceNumber", rts.NationalInsuranceNumberController.onPageLoad(mode).url),
-        bound.yesNoQuestion(CountryOfResidenceYesNoPage, "individualProtector.countryOfResidenceYesNo", rts.CountryOfResidenceYesNoController.onPageLoad(mode).url),
-        bound.yesNoQuestion(CountryOfResidenceUkYesNoPage, "individualProtector.countryOfResidenceUkYesNo", rts.CountryOfResidenceUkYesNoController.onPageLoad(mode).url),
-        bound.countryQuestion(CountryOfResidenceUkYesNoPage, CountryOfResidencePage, "individualProtector.countryOfResidence", rts.CountryOfResidenceController.onPageLoad(mode).url),
-        bound.yesNoQuestion(AddressYesNoPage, "individualProtector.addressYesNo", rts.AddressYesNoController.onPageLoad(mode).url),
-        bound.yesNoQuestion(LiveInTheUkYesNoPage, "individualProtector.liveInTheUkYesNo", rts.LiveInTheUkYesNoController.onPageLoad(mode).url),
-        bound.addressQuestion(UkAddressPage, "individualProtector.ukAddress", rts.UkAddressController.onPageLoad(mode).url),
-        bound.addressQuestion(NonUkAddressPage, "individualProtector.nonUkAddress", rts.NonUkAddressController.onPageLoad(mode).url),
-        bound.yesNoQuestion(PassportDetailsYesNoPage, "individualProtector.passportDetailsYesNo", rts.PassportDetailsYesNoController.onPageLoad(mode).url),
-        bound.passportDetailsQuestion(PassportDetailsPage, "individualProtector.passportDetails", rts.PassportDetailsController.onPageLoad(mode).url),
-        bound.yesNoQuestion(IdCardDetailsYesNoPage, "individualProtector.idCardDetailsYesNo", rts.IdCardDetailsYesNoController.onPageLoad(mode).url),
-        bound.idCardDetailsQuestion(IdCardDetailsPage, "individualProtector.idCardDetails", rts.IdCardDetailsController.onPageLoad(mode).url),
-        bound.yesNoQuestion(PassportOrIdCardDetailsYesNoPage, "individualProtector.passportOrIdCardDetailsYesNo", rts.PassportOrIdCardDetailsYesNoController.onPageLoad(mode).url),
-        bound.passportOrIdCardDetailsQuestion(PassportOrIdCardDetailsPage, "individualProtector.passportOrIdCardDetails", rts.PassportOrIdCardDetailsController.onPageLoad(mode).url),
-        bound.enumQuestion(MentalCapacityYesNoPage, "individualProtector.mentalCapacityYesNo", rts.MentalCapacityYesNoController.onPageLoad(mode).url, "site"),
-        if (adding) bound.dateQuestion(StartDatePage, "individualProtector.startDate", addRts.StartDateController.onPageLoad().url) else None
+        bound.nameQuestion(NamePage, "individualProtector.name", Some(rts.NameController.onPageLoad(mode).url)),
+        bound.yesNoQuestion(DateOfBirthYesNoPage, "individualProtector.dateOfBirthYesNo", Some(rts.DateOfBirthYesNoController.onPageLoad(mode).url)),
+        bound.dateQuestion(DateOfBirthPage, "individualProtector.dateOfBirth", Some(rts.DateOfBirthController.onPageLoad(mode).url)),
+        bound.yesNoQuestion(CountryOfNationalityYesNoPage, "individualProtector.countryOfNationalityYesNo", Some(rts.CountryOfNationalityYesNoController.onPageLoad(mode).url)),
+        bound.yesNoQuestion(CountryOfNationalityUkYesNoPage, "individualProtector.countryOfNationalityUkYesNo", Some(rts.CountryOfNationalityUkYesNoController.onPageLoad(mode).url)),
+        bound.countryQuestion(CountryOfNationalityUkYesNoPage, CountryOfNationalityPage, "individualProtector.countryOfNationality", Some(rts.CountryOfNationalityController.onPageLoad(mode).url)),
+        bound.yesNoQuestion(NationalInsuranceNumberYesNoPage, "individualProtector.nationalInsuranceNumberYesNo", Some(rts.NationalInsuranceNumberYesNoController.onPageLoad(mode).url)),
+        bound.ninoQuestion(NationalInsuranceNumberPage, "individualProtector.nationalInsuranceNumber", Some(rts.NationalInsuranceNumberController.onPageLoad(mode).url)),
+        bound.yesNoQuestion(CountryOfResidenceYesNoPage, "individualProtector.countryOfResidenceYesNo", Some(rts.CountryOfResidenceYesNoController.onPageLoad(mode).url)),
+        bound.yesNoQuestion(CountryOfResidenceUkYesNoPage, "individualProtector.countryOfResidenceUkYesNo", Some(rts.CountryOfResidenceUkYesNoController.onPageLoad(mode).url)),
+        bound.countryQuestion(CountryOfResidenceUkYesNoPage, CountryOfResidencePage, "individualProtector.countryOfResidence", Some(rts.CountryOfResidenceController.onPageLoad(mode).url)),
+        bound.yesNoQuestion(AddressYesNoPage, "individualProtector.addressYesNo", Some(rts.AddressYesNoController.onPageLoad(mode).url)),
+        bound.yesNoQuestion(LiveInTheUkYesNoPage, "individualProtector.liveInTheUkYesNo", Some(rts.LiveInTheUkYesNoController.onPageLoad(mode).url)),
+        bound.addressQuestion(UkAddressPage, "individualProtector.ukAddress", Some(rts.UkAddressController.onPageLoad(mode).url)),
+        bound.addressQuestion(NonUkAddressPage, "individualProtector.nonUkAddress", Some(rts.NonUkAddressController.onPageLoad(mode).url)),
+        bound.yesNoQuestion(PassportDetailsYesNoPage, "individualProtector.passportDetailsYesNo", Some(rts.PassportDetailsYesNoController.onPageLoad(mode).url)),
+        bound.passportDetailsQuestion(PassportDetailsPage, "individualProtector.passportDetails", Some(rts.PassportDetailsController.onPageLoad(mode).url)),
+        bound.yesNoQuestion(IdCardDetailsYesNoPage, "individualProtector.idCardDetailsYesNo", Some(rts.IdCardDetailsYesNoController.onPageLoad(mode).url)),
+        bound.idCardDetailsQuestion(IdCardDetailsPage, "individualProtector.idCardDetails", Some(rts.IdCardDetailsController.onPageLoad(mode).url)),
+        bound.yesNoQuestion(PassportOrIdCardDetailsYesNoPage, "individualProtector.passportOrIdCardDetailsYesNo", changeLinkOrNone(adding, rts.PassportOrIdCardDetailsYesNoController.onPageLoad().url)),
+        bound.passportOrIdCardDetailsQuestion(PassportOrIdCardDetailsPage, "individualProtector.passportOrIdCardDetails", changeLinkOrNone(adding, rts.PassportOrIdCardDetailsController.onPageLoad().url)),
+        bound.enumQuestion(MentalCapacityYesNoPage, "individualProtector.mentalCapacityYesNo", Some(rts.MentalCapacityYesNoController.onPageLoad(mode).url), "site"),
+        if (adding) bound.dateQuestion(StartDatePage, "individualProtector.startDate", Some(addRts.StartDateController.onPageLoad().url)) else None
       ).flatten
     }
 

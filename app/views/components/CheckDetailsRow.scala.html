@@ -29,10 +29,16 @@
     </dd>
     @if(row.canEdit) {
         <dd class="govuk-summary-list__actions">
-            <a class="govuk-link" href="@row.changeUrl">
-                <span aria-hidden="true">@messages("site.edit")</span>
-                <span class="govuk-visually-hidden">@messages("site.hidden-edit", row.label)</span>
-            </a>
+            @row.changeUrl.map{ changeUrl =>
+                <a class="govuk-link" href="@changeUrl">
+                    <span aria-hidden="true">@messages("site.edit")</span>
+                    <span class="govuk-visually-hidden">@messages("site.hidden-edit", row.label)</span>
+                </a>
+            }.getOrElse{
+                <strong class="govuk-tag govuk-tag--grey">@messages("site.cannot.change")
+                    <span class="govuk-visually-hidden">.@row.label</span>
+                </strong>
+            }
         </dd>
     } else if(row.isVerified) {
         @* Add Verified Tag *@

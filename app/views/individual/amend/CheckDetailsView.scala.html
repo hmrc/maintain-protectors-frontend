@@ -16,6 +16,7 @@
 
 @import viewmodels.AnswerSection
 @import controllers.individual.amend.routes._
+@import utils.SectionFormatter.formatSections
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
 @import views.html.components.{Heading, CheckDetailsList, SubmitButton}
 
@@ -27,7 +28,7 @@
     checkDetailsList: CheckDetailsList
 )
 
-@(answersSection: AnswerSection, index: Int)(implicit request: Request[_], messages: Messages)
+@(answersSection: Seq[AnswerSection], index: Int)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("individualProtector.checkDetails.title"),
@@ -38,7 +39,10 @@
 
         @heading("individualProtector.checkDetails.heading")
 
-        @checkDetailsList(answersSection = answersSection)
+        <p>@messages("individualProtector.cannotChange.p1")</p>
+        <p>@messages("individualProtector.cannotChange.p2")</p>
+
+        @checkDetailsList(SummaryList(rows = formatSections(answersSection)))
 
         @submitButton()
     }

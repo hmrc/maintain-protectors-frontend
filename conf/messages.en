@@ -56,6 +56,7 @@ site.complete = Completed
 site.date.hint = For example, 31 3 1980.
 site.error = Error:
 site.cannotRemove = Cannot remove
+site.cannot.change = Cannot change
 site.cannotRemove-hidden = Cannot remove {0}
 site.number-ending = Number ending {0}
 
@@ -375,6 +376,8 @@ individualProtector.startDate.error.past = The date the protector was added to t
 
 individualProtector.checkDetails.title = Check individual protector details
 individualProtector.checkDetails.heading = Check individual protector details
+individualProtector.cannotChange.p1 = Some of the information we ask about the protector cannot be changed.
+individualProtector.cannotChange.p2 = If you need to update the protector’s details, you will need to remove them, then add them as a new protector.
 
 removeIndividualProtectorYesNo.title = Are you sure you want to remove the individual protector?
 removeIndividualProtectorYesNo.heading = Are you sure you want to remove {0}?
