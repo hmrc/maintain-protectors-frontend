@@ -18,6 +18,7 @@ package controllers.individual
 
 import controllers.actions._
 import controllers.actions.individual.NameRequiredAction
+import models.Mode
 import pages.individual.IndexPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

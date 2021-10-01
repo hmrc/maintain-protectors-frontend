@@ -628,9 +628,9 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
 
           "UK address page" when {
             "combined passport/id card details not present" must {
-              "-> Mental Cap yes/no page" in {
+              "-> Do you know passport details yes/no page" in {
                 navigator.nextPage(UkAddressPage, mode, baseAnswers)
-                  .mustBe(rts.MentalCapacityYesNoController.onPageLoad(mode))
+                  .mustBe(rts.PassportDetailsYesNoController.onPageLoad(mode))
               }
             }
 
@@ -657,9 +657,9 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
 
           "Non-UK address page" when {
             "combined passport/id card details not present" must {
-              "-> Mental Cap yes/no page" in {
+              "-> Do you know passport details yes/no page" in {
                 navigator.nextPage(NonUkAddressPage, mode, baseAnswers)
-                  .mustBe(rts.MentalCapacityYesNoController.onPageLoad(mode))
+                  .mustBe(rts.PassportDetailsYesNoController.onPageLoad(mode))
               }
             }
 

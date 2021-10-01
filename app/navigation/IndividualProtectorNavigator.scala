@@ -92,14 +92,14 @@ class IndividualProtectorNavigator @Inject()() extends Navigator {
   }
 
   private def navigateAwayFromAddressQuestions(mode: Mode, ua: UserAnswers): Call = {
-    if(mode == NormalMode) {
-      if (ua.get(PassportOrIdCardDetailsYesNoPage).isDefined || ua.get(PassportOrIdCardDetailsPage).isDefined) {
+    if (ua.get(PassportOrIdCardDetailsYesNoPage).isDefined || ua.get(PassportOrIdCardDetailsPage).isDefined) {
+      if (mode == NormalMode) {
         rts.PassportOrIdCardDetailsYesNoController.onPageLoad()
       } else {
-        rts.PassportDetailsYesNoController.onPageLoad(mode)
+        rts.MentalCapacityYesNoController.onPageLoad(mode)
       }
     } else {
-      rts.MentalCapacityYesNoController.onPageLoad(mode)
+      rts.PassportDetailsYesNoController.onPageLoad(mode)
     }
   }
 
