@@ -100,6 +100,7 @@ site.edit=Newid
 site.hidden-delete=Tynnu {0}
 site.hidden-edit=Newid {0}
 site.hidden-cannot-edit=Ni allwch newid {0}
+site.cannot.change = Dim modd newid
 site.change.details=Newid manylion
 site.no=Na
 site.yes=Iawn
