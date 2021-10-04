@@ -137,12 +137,12 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
             }
           }
 
-          "NINO page -> Has mental capacity page" in {
+          "NINO page -> Do you know country of residence page" in {
             val answers = baseAnswers
               .set(NationalInsuranceNumberPage, nino).success.value
 
             navigator.nextPage(NationalInsuranceNumberPage, mode, answers)
-              .mustBe(rts.MentalCapacityYesNoController.onPageLoad(mode))
+              .mustBe(rts.CountryOfResidenceYesNoController.onPageLoad(mode))
           }
 
           "Do you know country of residence page" when {
@@ -492,12 +492,12 @@ class IndividualProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyC
             }
           }
 
-          "NINO page -> Has mental capacity page" in {
+          "NINO page -> Do you know country of residence page" in {
             val answers = baseAnswers
               .set(NationalInsuranceNumberPage, nino).success.value
 
             navigator.nextPage(NationalInsuranceNumberPage, mode, answers)
-              .mustBe(rts.MentalCapacityYesNoController.onPageLoad(mode))
+              .mustBe(rts.CountryOfResidenceYesNoController.onPageLoad(mode))
           }
 
           "Do you know country of residence page" when {
