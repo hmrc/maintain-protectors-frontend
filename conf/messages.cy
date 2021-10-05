@@ -46,8 +46,8 @@ individualProtector.mentalCapacityYesNo.bulletpoint4=methu â chyfathrebu
 individualProtector.mentalCapacityYesNo.p3=Bydd CThEM yn cymryd bod gan yr ymddiriedolwr alluedd meddyliol, oni roddwch wybod i CThEM nad oes ganddo alluedd meddyliol.
 individualProtector.mentalCapacityYesNo.p4=Os nad ydych yn siŵr a oes gan yr ymddiriedolwr alluedd meddyliol, dewiswch ‘Nid wyf yn gwybod’.
 individualProtector.mentalCapacityYesNo.heading2=Pam mae CThEM yn gofyn y cwestiwn hwn
-individualProtector.mentalCapacityYesNo.p5=Fel arfer, caiff CThEM rannu data person o dan Reoliadau Gwyngalchu Arian ac Ariannu Terfysgaeth (Diwygiad) 2020.
-individualProtector.mentalCapacityYesNo.p6=Pan nad oes gan berson alluedd meddyliol, mae gofyn i CThEM beidio â rhannu data personol y person hwnnw.
+individualProtector.mentalCapacityYesNo.p5=O dan amgylchiadau cyfyngedig penodol, caiff CThEM rannu data personol o dan Reoliadau Gwyngalchu Arian ac Ariannu Terfysgaeth (Diwygiad) 2020.
+individualProtector.mentalCapacityYesNo.p6=Pan nad oes gan berson alluedd meddyliol, ni fydd CThEM yn rhannu data personol y person hwnnw.
 
 businessProtector.countryOfResidenceYesNo.title=A ydych yn gwybod gwlad breswyl yr amddiffynnydd?
 businessProtector.countryOfResidenceYesNo.heading=A ydych yn gwybod gwlad breswyl {0}?
