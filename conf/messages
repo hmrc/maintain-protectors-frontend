@@ -360,8 +360,8 @@ individualProtector.mentalCapacityYesNo.bulletpoint4 = being unable to communica
 individualProtector.mentalCapacityYesNo.p3 = HMRC will assume that the protector does have mental capacity, unless you tell HMRC that they do not have mental capacity.
 individualProtector.mentalCapacityYesNo.p4 = If you are not certain whether the protector has mental capacity, select ‘I don’t know’.
 individualProtector.mentalCapacityYesNo.heading2 = Why HMRC are asking this question
-individualProtector.mentalCapacityYesNo.p5 = Normally, HMRC can share a person’s data under the Money Laundering and Terrorist Financing (Amendment) Regulations 2020.
-individualProtector.mentalCapacityYesNo.p6 = Where a person does not have mental capacity, HMRC are required to not share their personal data.
+individualProtector.mentalCapacityYesNo.p5 = Under certain limited circumstances, HMRC can share personal data under the Money Laundering and Terrorist Financing (Amendment) Regulations 2020.
+individualProtector.mentalCapacityYesNo.p6 = Where a person does not have mental capacity, HMRC will not share their personal data.
 
 individualProtector.startDate.checkYourAnswersLabel = When was {0} added as a protector?
 individualProtector.startDate.title = When was the protector added to the trust?
