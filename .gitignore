@@ -1,3 +1,6 @@
+project/metals.sbt
+.metals/
+.vscode/
 .cache
 /.classpath
 db
