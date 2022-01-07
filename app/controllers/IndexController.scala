@@ -55,6 +55,7 @@ class IndexController @Inject()(
             case None => UserAnswers(
               internalId = request.user.internalId,
               identifier = identifier,
+              sessionId = Session.id(hc),
               whenTrustSetup = details.startDate,
               isTaxable = details.isTaxable,
               isUnderlyingData5mld = isUnderlyingData5mld

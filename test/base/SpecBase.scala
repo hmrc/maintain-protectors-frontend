@@ -19,6 +19,7 @@ package base
 import java.time.LocalDate
 
 import controllers.actions._
+import models.UserAnswers
 import navigation.FakeNavigator
 import org.scalatest.{BeforeAndAfter, TestSuite, TryValues}
 import org.scalatestplus.play.PlaySpec
@@ -37,8 +38,9 @@ trait SpecBaseHelpers extends GuiceOneAppPerSuite with TryValues with Mocked wit
 
   lazy val draftId = "id"
   lazy val userInternalId = "internalId"
+  lazy val userSessionId = "sessionId"
 
-  def emptyUserAnswers = models.UserAnswers(userInternalId, "UTRUTRUTR", LocalDate.now())
+  def emptyUserAnswers: UserAnswers = UserAnswers(userInternalId, "UTRUTRUTR", userSessionId, LocalDate.now())
 
   val bodyParsers = injector.instanceOf[BodyParsers.Default]
 

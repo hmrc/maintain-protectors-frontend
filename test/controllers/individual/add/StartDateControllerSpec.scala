@@ -51,8 +51,7 @@ class StartDateControllerSpec extends SpecBase with MockitoSugar {
 
   private val name = Name("New", None, "Protector")
 
-  override val emptyUserAnswers: UserAnswers = UserAnswers("id", "UTRUTRUTR", date)
-    .set(NamePage, name)
+  val baseAnswers: UserAnswers = emptyUserAnswers.set(NamePage, name)
     .success.value
 
   private def getRequest(): FakeRequest[AnyContentAsEmpty.type] =
@@ -70,7 +69,7 @@ class StartDateControllerSpec extends SpecBase with MockitoSugar {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
 
       val result = route(application, getRequest()).value
 
@@ -86,7 +85,7 @@ class StartDateControllerSpec extends SpecBase with MockitoSugar {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers
+      val userAnswers = baseAnswers
         .set(StartDatePage, validAnswer).success.value
         .set(NamePage, name).success.value
 
@@ -111,7 +110,7 @@ class StartDateControllerSpec extends SpecBase with MockitoSugar {
       when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = Some(baseAnswers))
           .overrides(
             bind[Navigator].qualifiedWith(classOf[IndividualProtector]).toInstance(new FakeNavigator(onwardRoute))
           )
@@ -128,7 +127,7 @@ class StartDateControllerSpec extends SpecBase with MockitoSugar {
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
 
       val request =
         FakeRequest(POST, startDateRoute)

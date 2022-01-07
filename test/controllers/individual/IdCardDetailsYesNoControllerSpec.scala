@@ -32,7 +32,6 @@ import play.api.test.Helpers._
 import repositories.PlaybackRepository
 import views.html.individual.IdCardDetailsYesNoView
 
-import java.time.LocalDate
 import scala.concurrent.Future
 
 class IdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSugar {
@@ -45,8 +44,7 @@ class IdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSugar {
 
   val mode: Mode = NormalMode
 
-  override val emptyUserAnswers: UserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now())
-    .set(NamePage, name).success.value
+  val baseAnswers: UserAnswers = emptyUserAnswers.set(NamePage, name).success.value
 
   val idCardDetailsYesNoRoute: String = routes.IdCardDetailsYesNoController.onPageLoad(mode).url
 
@@ -56,7 +54,7 @@ class IdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSugar {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
 
       val result = route(application, getRequest).value
 
@@ -72,7 +70,7 @@ class IdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSugar {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers
+      val userAnswers = baseAnswers
         .set(NamePage, name).success.value
         .set(IdCardDetailsYesNoPage, true).success.value
 
@@ -97,7 +95,7 @@ class IdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSugar {
       when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = Some(baseAnswers))
           .overrides(bind[Navigator].qualifiedWith(classOf[IndividualProtector]).toInstance(fakeNavigator))
 
           .build()
@@ -117,7 +115,7 @@ class IdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSugar {
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
 
       val request =
         FakeRequest(POST, idCardDetailsYesNoRoute)

@@ -19,7 +19,7 @@ package controllers.individual
 import base.SpecBase
 import config.annotations.IndividualProtector
 import forms.YesNoFormProvider
-import models.{Name, NormalMode}
+import models.{Name, NormalMode, UserAnswers}
 import navigation.Navigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -42,14 +42,13 @@ class DateOfBirthYesNoControllerSpec extends SpecBase with MockitoSugar {
 
   val name = Name("New", None, "Protector")
 
-  override val emptyUserAnswers = super.emptyUserAnswers
-    .set(NamePage, name).success.value
+  val baseAnswers: UserAnswers = emptyUserAnswers.set(NamePage, name).success.value
 
   "Individual Protector DateOfBirthYesNoPage Controller" must {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
 
       val request = FakeRequest(GET, dateOfBirthYesNoRoute)
 
@@ -67,7 +66,7 @@ class DateOfBirthYesNoControllerSpec extends SpecBase with MockitoSugar {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(DateOfBirthYesNoPage, true).success.value
+      val userAnswers = baseAnswers.set(DateOfBirthYesNoPage, true).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -92,7 +91,7 @@ class DateOfBirthYesNoControllerSpec extends SpecBase with MockitoSugar {
       when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = Some(baseAnswers))
           .overrides(bind[Navigator].qualifiedWith(classOf[IndividualProtector]).toInstance(fakeNavigator))
           .build()
 
@@ -111,7 +110,7 @@ class DateOfBirthYesNoControllerSpec extends SpecBase with MockitoSugar {
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
 
       val request =
         FakeRequest(POST, dateOfBirthYesNoRoute)

@@ -31,8 +31,7 @@ class PassportOrIdCardDetailsControllerSpec extends SpecBase with MockitoSugar w
 
   val index = 0
 
-  override val emptyUserAnswers: UserAnswers = super.emptyUserAnswers
-    .set(IndexPage, index).success.value
+  val baseAnswers: UserAnswers = emptyUserAnswers.set(IndexPage, index).success.value
 
   private lazy val passportOrIdCardDetailsRoute: String = routes.PassportOrIdCardDetailsController.onPageLoad().url
 
@@ -45,7 +44,7 @@ class PassportOrIdCardDetailsControllerSpec extends SpecBase with MockitoSugar w
 
     "redirect to Check Details for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
 
       val request = FakeRequest(GET, passportOrIdCardDetailsRoute)
 
@@ -60,7 +59,7 @@ class PassportOrIdCardDetailsControllerSpec extends SpecBase with MockitoSugar w
 
     "redirect to Check Details for a POST" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
 
       val request =
         FakeRequest(POST, passportOrIdCardDetailsRoute)

@@ -20,7 +20,6 @@ import com.google.inject.Inject
 import controllers.individual.add.{routes => addRts}
 import controllers.individual.{routes => rts}
 import models.{CheckMode, Mode, NormalMode, UserAnswers}
-import pages.QuestionPage
 import pages.individual._
 import play.api.i18n.Messages
 import viewmodels.{AnswerRow, AnswerSection}
