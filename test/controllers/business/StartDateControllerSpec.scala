@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,8 +51,7 @@ class StartDateControllerSpec extends SpecBase with MockitoSugar {
 
   val name = "Name"
 
-  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", date)
-    .set(NamePage, name).success.value
+  val baseAnswers: UserAnswers = emptyUserAnswers.set(NamePage, name).success.value
 
   def getRequest(): FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(GET, startDateRoute)
@@ -69,7 +68,7 @@ class StartDateControllerSpec extends SpecBase with MockitoSugar {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
 
       val result = route(application, getRequest()).value
 
@@ -85,7 +84,7 @@ class StartDateControllerSpec extends SpecBase with MockitoSugar {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers
+      val userAnswers = baseAnswers
         .set(StartDatePage, validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
@@ -109,7 +108,7 @@ class StartDateControllerSpec extends SpecBase with MockitoSugar {
       when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = Some(baseAnswers))
           .overrides(
             bind[Navigator].qualifiedWith(classOf[BusinessProtector]).toInstance(new FakeNavigator(onwardRoute))
           )
@@ -126,7 +125,7 @@ class StartDateControllerSpec extends SpecBase with MockitoSugar {
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
 
       val request =
         FakeRequest(POST, startDateRoute)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,21 +18,19 @@ package controllers.individual
 
 import controllers.actions.{ProtectorNameRequest, StandardActionSets}
 import controllers.actions.individual.NameRequiredAction
-import models.Mode
 import pages.individual.IndexPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
 
 class PassportOrIdCardDetailsYesNoController @Inject()(
                                                         override val messagesApi: MessagesApi,
                                                         standardActionSets: StandardActionSets,
                                                         nameAction: NameRequiredAction,
                                                         val controllerComponents: MessagesControllerComponents
-                                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                      ) extends FrontendBaseController with I18nSupport {
 
   private def route()(implicit request: ProtectorNameRequest[AnyContent]) =
     request.userAnswers.get(IndexPage) match {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,6 @@ import repositories.PlaybackRepository
 import services.TrustServiceImpl
 import views.html.business.UtrView
 
-import java.time.LocalDate
 import scala.concurrent.Future
 
 class UtrControllerSpec extends SpecBase with MockitoSugar {
@@ -44,8 +43,7 @@ class UtrControllerSpec extends SpecBase with MockitoSugar {
 
   val validAnswer = "1234567890"
 
-  override val emptyUserAnswers: UserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now())
-    .set(NamePage, name).success.value
+  val baseAnswers: UserAnswers = emptyUserAnswers.set(NamePage, name).success.value
 
   lazy val utrRoute: String = routes.UtrController.onPageLoad(NormalMode).url
 
@@ -57,7 +55,7 @@ class UtrControllerSpec extends SpecBase with MockitoSugar {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+      val application = applicationBuilder(userAnswers = Some(baseAnswers))
         .overrides(bind[TrustServiceImpl].toInstance(mockTrustsService))
         .build()
 
@@ -77,7 +75,7 @@ class UtrControllerSpec extends SpecBase with MockitoSugar {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val ua = emptyUserAnswers.set(UtrPage, validAnswer)
+      val ua = baseAnswers.set(UtrPage, validAnswer)
 
       val application = applicationBuilder(userAnswers = Some(ua.success.value))
         .overrides(bind[TrustServiceImpl].toInstance(mockTrustsService))
@@ -103,7 +101,7 @@ class UtrControllerSpec extends SpecBase with MockitoSugar {
 
       when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.set(UtrPage, validAnswer).success.value))
+      val application = applicationBuilder(userAnswers = Some(baseAnswers.set(UtrPage, validAnswer).success.value))
         .overrides(
           bind[Navigator].qualifiedWith(classOf[BusinessProtector]).toInstance(fakeNavigator),
           bind[TrustServiceImpl].toInstance(mockTrustsService)
@@ -123,7 +121,7 @@ class UtrControllerSpec extends SpecBase with MockitoSugar {
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+      val application = applicationBuilder(userAnswers = Some(baseAnswers))
         .overrides(bind[TrustServiceImpl].toInstance(mockTrustsService))
         .build()
 

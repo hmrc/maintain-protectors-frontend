@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,6 @@
 
 package controllers.business
 
-import java.time.LocalDate
-
 import base.SpecBase
 import config.annotations.BusinessProtector
 import forms.YesNoFormProvider
@@ -32,6 +30,7 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
+import uk.gov.hmrc.http.HeaderCarrier
 import views.html.business.AddressUkYesNoView
 
 import scala.concurrent.Future
@@ -44,9 +43,9 @@ class AddressUkYesNoControllerSpec extends SpecBase with MockitoSugar {
   val form = formProvider.withPrefix("businessProtector.addressUkYesNo")
   val name = "Name"
 
+  implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  override val emptyUserAnswers = UserAnswers("id", "UTRUTRUTR", LocalDate.now())
-    .set(NamePage, name).success.value
+  val baseAnswers: UserAnswers = emptyUserAnswers.set(NamePage, name).success.value
 
   lazy val addressUkYesNoControllerRoute = routes.AddressUkYesNoController.onPageLoad(NormalMode).url
 
@@ -54,7 +53,7 @@ class AddressUkYesNoControllerSpec extends SpecBase with MockitoSugar {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
 
       val request = FakeRequest(GET, addressUkYesNoControllerRoute)
 
@@ -72,7 +71,7 @@ class AddressUkYesNoControllerSpec extends SpecBase with MockitoSugar {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(AddressUkYesNoPage, true).success.value
+      val userAnswers = baseAnswers.set(AddressUkYesNoPage, true).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -97,7 +96,7 @@ class AddressUkYesNoControllerSpec extends SpecBase with MockitoSugar {
       when(mockPlaybackRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = Some(baseAnswers))
           .overrides(bind[Navigator].qualifiedWith(classOf[BusinessProtector]).toInstance(fakeNavigator))
           .build()
 
@@ -116,7 +115,7 @@ class AddressUkYesNoControllerSpec extends SpecBase with MockitoSugar {
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
 
       val request =
         FakeRequest(POST, addressUkYesNoControllerRoute)

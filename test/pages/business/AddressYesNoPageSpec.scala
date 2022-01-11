@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ class AddressYesNoPageSpec extends PageBehaviours {
     beRemovable[Boolean](AddressYesNoPage)
 
     "implement cleanup logic when NO selected" in {
-      val userAnswers = UserAnswers("id", "utr", LocalDate.now)
+      val userAnswers = UserAnswers("id", "utr", "sessionId", LocalDate.now)
         .set(AddressUkYesNoPage, true)
         .flatMap(_.set(UkAddressPage, UkAddress("line1", "line2", None, None, "postcode")))
         .flatMap(_.set(AddressYesNoPage, false))

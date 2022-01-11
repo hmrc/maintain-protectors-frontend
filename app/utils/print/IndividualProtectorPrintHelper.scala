@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import com.google.inject.Inject
 import controllers.individual.add.{routes => addRts}
 import controllers.individual.{routes => rts}
 import models.{CheckMode, Mode, NormalMode, UserAnswers}
-import pages.QuestionPage
 import pages.individual._
 import play.api.i18n.Messages
 import viewmodels.{AnswerRow, AnswerSection}
