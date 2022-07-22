@@ -20,8 +20,8 @@ GET        /assets/*file                                controllers.Assets.versi
 
 GET        /language/:lang                              controllers.LanguageSwitchController.switchToLanguage(lang: String)
 
-GET        /this-service-has-been-reset                 controllers.SessionExpiredController.onPageLoad
-POST       /this-service-has-been-reset                 controllers.SessionExpiredController.onSubmit
+GET        /this-service-has-been-reset                 controllers.SessionExpiredController.onPageLoad()
+POST       /this-service-has-been-reset                 controllers.SessionExpiredController.onSubmit()
 
 GET        /feature-not-available                       controllers.FeatureNotAvailableController.onPageLoad()
 
@@ -30,10 +30,10 @@ POST       /what-kind                                   controllers.AddNowContro
 
 GET        /logout                                      controllers.LogoutController.logout()
 
-GET        /unauthorised                                controllers.UnauthorisedController.onPageLoad
+GET        /unauthorised                                controllers.UnauthorisedController.onPageLoad()
 
-GET        /keep-alive                                  controllers.SessionTimeoutController.keepAlive
+GET        /keep-alive                                  controllers.SessionTimeoutController.keepAlive()
 
-GET        /timeout                                     controllers.SessionTimeoutController.timeout
+GET        /timeout                                     controllers.SessionTimeoutController.timeout()
 
 GET        /:utr                                        controllers.IndexController.onPageLoad(utr: String)
