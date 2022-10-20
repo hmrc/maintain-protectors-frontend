@@ -23,6 +23,11 @@ import java.time.LocalDate
 
 class CountryOfResidenceInTheUkYesNoPageSpec extends PageBehaviours {
 
+  private val internalId = "id"
+  private val identifier = "identifier"
+  private val sessionId = "sessionId"
+  private val newId = s"$internalId-$identifier-$sessionId"
+
   "CountryOfResidenceInTheUkYesNoPage" must {
 
     beRetrievable[Boolean](CountryOfResidenceYesNoPage)
@@ -32,7 +37,7 @@ class CountryOfResidenceInTheUkYesNoPageSpec extends PageBehaviours {
     beRemovable[Boolean](CountryOfResidenceYesNoPage)
 
     "implement cleanup logic when YES selected" in {
-      val userAnswers = UserAnswers("id", "identifier", "sessionId", LocalDate.now)
+      val userAnswers = UserAnswers(internalId, identifier, sessionId, newId, LocalDate.now)
         .set(CountryOfResidencePage, "FR").success.value
 
       val result = userAnswers.set(CountryOfResidenceUkYesNoPage, true).success.value

@@ -32,14 +32,14 @@ class DateOfBirthViewSpec extends QuestionViewBehaviours[LocalDate] {
 
   override val form: Form[LocalDate] = new DateOfBirthFormProvider().withPrefix(messageKeyPrefix)
 
-  "DateOfBirth view" must {
+  "DateOfBirth view" should {
 
     val view = viewFor[DateOfBirthView](Some(emptyUserAnswers))
 
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
       view.apply(form, name.displayName, NormalMode)(fakeRequest, messages)
-    
+
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name.displayName)
 
     behave like pageWithBackLink(applyView(form))

@@ -78,7 +78,7 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
     address = None,
     entityStart = date,
     provisional = false,
-    mentalCapacityYesNo = Some(DontKnow),
+    mentalCapacityYesNo = Some(DontKnow)
   )
 
   private val business = BusinessProtector(

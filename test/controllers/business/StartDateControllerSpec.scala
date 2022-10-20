@@ -23,7 +23,7 @@ import config.annotations.BusinessProtector
 import forms.DateAddedToTrustFormProvider
 import models.UserAnswers
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.business.{NamePage, StartDatePage}
@@ -39,24 +39,24 @@ import scala.concurrent.Future
 
 class StartDateControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new DateAddedToTrustFormProvider()
+  private val formProvider = new DateAddedToTrustFormProvider()
   private val date: LocalDate = LocalDate.parse("2019-02-03")
   private def form: Form[LocalDate] = formProvider.withPrefixAndTrustStartDate("businessProtector.startDate", date)
 
-  def onwardRoute = Call("GET", "/foo")
+  private def onwardRoute = Call("GET", "/foo")
 
-  val validAnswer = LocalDate.now(ZoneOffset.UTC)
+  private val validAnswer = LocalDate.now(ZoneOffset.UTC)
 
-  lazy val startDateRoute = routes.StartDateController.onPageLoad().url
+  private lazy val startDateRoute = routes.StartDateController.onPageLoad().url
 
-  val name = "Name"
+  private val name = "Name"
 
-  val baseAnswers: UserAnswers = emptyUserAnswers.set(NamePage, name).success.value
+  private val baseAnswers: UserAnswers = emptyUserAnswers.set(NamePage, name).success.value
 
-  def getRequest(): FakeRequest[AnyContentAsEmpty.type] =
+  private def getRequest: FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(GET, startDateRoute)
 
-  def postRequest(): FakeRequest[AnyContentAsFormUrlEncoded] =
+  private def postRequest(): FakeRequest[AnyContentAsFormUrlEncoded] =
     FakeRequest(POST, startDateRoute)
       .withFormUrlEncodedBody(
         "value.day"   -> validAnswer.getDayOfMonth.toString,
@@ -70,7 +70,7 @@ class StartDateControllerSpec extends SpecBase with MockitoSugar {
 
       val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
 
-      val result = route(application, getRequest()).value
+      val result = route(application, getRequest).value
 
       val view = application.injector.instanceOf[StartDateView]
 
@@ -91,12 +91,12 @@ class StartDateControllerSpec extends SpecBase with MockitoSugar {
 
       val view = application.injector.instanceOf[StartDateView]
 
-      val result = route(application, getRequest()).value
+      val result = route(application, getRequest).value
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), name)(getRequest(), messages).toString
+        view(form.fill(validAnswer), name)(getRequest, messages).toString
 
       application.stop()
     }
@@ -149,7 +149,7 @@ class StartDateControllerSpec extends SpecBase with MockitoSugar {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val result = route(application, getRequest()).value
+      val result = route(application, getRequest).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url

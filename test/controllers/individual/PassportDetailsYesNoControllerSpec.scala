@@ -21,7 +21,7 @@ import config.annotations.IndividualProtector
 import forms.YesNoFormProvider
 import models.{Mode, Name, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.individual.{NamePage, PassportDetailsYesNoPage}
@@ -36,19 +36,19 @@ import scala.concurrent.Future
 
 class PassportDetailsYesNoControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new YesNoFormProvider()
+  private val formProvider = new YesNoFormProvider()
   private def form = formProvider.withPrefix("individualProtector.passportDetailsYesNo")
 
-  def onwardRoute: Call = Call("GET", "/foo")
-  val name: Name = Name("FirstName", None, "LastName")
+  private def onwardRoute: Call = Call("GET", "/foo")
+  private val name: Name = Name("FirstName", None, "LastName")
 
-  val mode: Mode = NormalMode
+  private val mode: Mode = NormalMode
 
-  val baseAnswers: UserAnswers = emptyUserAnswers.set(NamePage, name).success.value
+  private val baseAnswers: UserAnswers = emptyUserAnswers.set(NamePage, name).success.value
 
-  val passportDetailsYesNoRoute: String = routes.PassportDetailsYesNoController.onPageLoad(mode).url
+  private val passportDetailsYesNoRoute: String = routes.PassportDetailsYesNoController.onPageLoad(mode).url
 
-  val getRequest = FakeRequest(GET, passportDetailsYesNoRoute)
+  private val getRequest = FakeRequest(GET, passportDetailsYesNoRoute)
 
   "PassportDetailsYesNo Controller" must {
 

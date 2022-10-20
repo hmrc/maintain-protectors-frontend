@@ -24,6 +24,11 @@ import pages.behaviours.PageBehaviours
 
 class AddressUkYesNoPageSpec extends PageBehaviours {
 
+  private val internalId = "id"
+  private val identifier = "utr"
+  private val sessionId = "sessionId"
+  private val newId = s"$internalId-$identifier-$sessionId"
+
   "AddressUkYesNoPage" must {
 
     beRetrievable[Boolean](AddressUkYesNoPage)
@@ -33,7 +38,7 @@ class AddressUkYesNoPageSpec extends PageBehaviours {
     beRemovable[Boolean](AddressUkYesNoPage)
 
     "implement cleanup logic when NO selected" in {
-      val userAnswers = UserAnswers("id", "utr", "sessionId", LocalDate.now)
+      val userAnswers = UserAnswers(internalId, identifier, sessionId, newId, LocalDate.now)
         .set(UkAddressPage, UkAddress("line1", "line2", None, None, "postcode"))
         .flatMap(_.set(AddressUkYesNoPage, false))
 
@@ -41,7 +46,7 @@ class AddressUkYesNoPageSpec extends PageBehaviours {
     }
 
     "implement cleanup logic when YES selected" in {
-      val userAnswers = UserAnswers("id", "utr", "sessionId", LocalDate.now)
+      val userAnswers = UserAnswers(internalId, identifier, sessionId, newId, LocalDate.now)
         .set(NonUkAddressPage, NonUkAddress("line1", "line2", None,"country"))
         .flatMap(_.set(AddressUkYesNoPage, true))
 

@@ -23,7 +23,7 @@ import connectors.TrustsConnector
 import forms.YesNoFormProvider
 import models.protectors.{IndividualProtector, Protectors}
 import models.{Name, NationalInsuranceNumber}
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -38,16 +38,16 @@ import scala.concurrent.Future
 
 class RemoveIndividualProtectorControllerSpec extends SpecBase with ScalaCheckPropertyChecks with ScalaFutures {
 
-  val messagesPrefix = "removeIndividualProtectorYesNo"
+  private val messagesPrefix = "removeIndividualProtectorYesNo"
 
-  lazy val formProvider = new YesNoFormProvider()
-  lazy val form = formProvider.withPrefix(messagesPrefix)
+  private lazy val formProvider = new YesNoFormProvider()
+  private lazy val form = formProvider.withPrefix(messagesPrefix)
 
-  lazy val name : String = "Name 1"
+  private lazy val name : String = "Name 1"
 
-  val mockConnector: TrustsConnector = mock[TrustsConnector]
+  private val mockConnector: TrustsConnector = mock[TrustsConnector]
 
-  def individualProtector(id: Int, provisional : Boolean) = IndividualProtector(
+  private def individualProtector(id: Int, provisional : Boolean) = IndividualProtector(
     name = Name(firstName = "Name", middleName = None, lastName = s"$id"),
     dateOfBirth = Some(LocalDate.parse("1983-09-24")),
     identification = Some(NationalInsuranceNumber("JS123456A")),
@@ -56,9 +56,9 @@ class RemoveIndividualProtectorControllerSpec extends SpecBase with ScalaCheckPr
     provisional = provisional
   )
 
-  val expectedResult = individualProtector(2, provisional = true)
+  private val expectedResult = individualProtector(2, provisional = true)
 
-  val protectors = List(
+  private val protectors = List(
     individualProtector(1, provisional = false),
     expectedResult,
     individualProtector(3, provisional = true)

@@ -144,7 +144,7 @@ class IndividualProtectorPrintHelperSpec extends SpecBase {
           headingKey = None,
           rows = Seq(
             AnswerRow(label = messages("individualProtector.name.checkYourAnswersLabel"), answer = Html("First Middle Last"), changeUrl = Some(rts.NameController.onPageLoad(NormalMode).url)),
-            AnswerRow(label = messages("individualProtector.mentalCapacityYesNo.checkYourAnswersLabel", name.displayName), answer = Html("I don’t know or not provided"), changeUrl = Some(rts.MentalCapacityYesNoController.onPageLoad(NormalMode).url)),
+            AnswerRow(label = messages("individualProtector.mentalCapacityYesNo.checkYourAnswersLabel", name.displayName), answer = Html("I don’t know or not provided"), changeUrl = Some(rts.MentalCapacityYesNoController.onPageLoad(NormalMode).url))
           )
         )
       }
@@ -160,7 +160,7 @@ class IndividualProtectorPrintHelperSpec extends SpecBase {
         headingKey = None,
         rows = Seq(
           AnswerRow(label = messages("individualProtector.name.checkYourAnswersLabel"), answer = Html("First Middle Last"), changeUrl = Some(rts.NameController.onPageLoad(CheckMode).url)),
-          AnswerRow(label = messages("individualProtector.mentalCapacityYesNo.checkYourAnswersLabel", name.displayName), answer = Html("I don’t know or not provided"), changeUrl = Some(rts.MentalCapacityYesNoController.onPageLoad(CheckMode).url)),
+          AnswerRow(label = messages("individualProtector.mentalCapacityYesNo.checkYourAnswersLabel", name.displayName), answer = Html("I don’t know or not provided"), changeUrl = Some(rts.MentalCapacityYesNoController.onPageLoad(CheckMode).url))
         )
       )
     }

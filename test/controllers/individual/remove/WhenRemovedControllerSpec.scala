@@ -23,7 +23,7 @@ import connectors.TrustsConnector
 import forms.DateRemovedFromTrustFormProvider
 import models.protectors.{IndividualProtector, Protectors}
 import models.{Name, NationalInsuranceNumber}
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
@@ -38,25 +38,25 @@ import scala.concurrent.Future
 
 class WhenRemovedControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new DateRemovedFromTrustFormProvider()
+  private val formProvider = new DateRemovedFromTrustFormProvider()
 
   private def form = formProvider.withPrefixAndEntityStartDate("individualProtector.whenRemoved", LocalDate.now())
 
-  val validAnswer = LocalDate.now(ZoneOffset.UTC)
+  private val validAnswer = LocalDate.now(ZoneOffset.UTC)
 
-  val index = 0
+  private val index = 0
 
-  val name = "Name 1"
-  val mockConnector = mock[TrustsConnector]
+  private val name = "Name 1"
+  private val mockConnector = mock[TrustsConnector]
 
-  val fakeService = new TrustServiceImpl(mockConnector)
+  private val fakeService = new TrustServiceImpl(mockConnector)
 
-  lazy val dateRemovedFromTrustRoute = routes.WhenRemovedController.onPageLoad(index).url
+  private lazy val dateRemovedFromTrustRoute = routes.WhenRemovedController.onPageLoad(index).url
 
-  def getRequest(): FakeRequest[AnyContentAsEmpty.type] =
+  private def getRequest: FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(GET, dateRemovedFromTrustRoute)
 
-  def postRequest(): FakeRequest[AnyContentAsFormUrlEncoded] =
+  private def postRequest(): FakeRequest[AnyContentAsFormUrlEncoded] =
     FakeRequest(POST, dateRemovedFromTrustRoute)
       .withFormUrlEncodedBody(
         "value.day"   -> validAnswer.getDayOfMonth.toString,
@@ -64,7 +64,7 @@ class WhenRemovedControllerSpec extends SpecBase with MockitoSugar {
         "value.year"  -> validAnswer.getYear.toString
       )
 
-  def individualProtector(id: Int) = IndividualProtector(
+  private def individualProtector(id: Int) = IndividualProtector(
     name = Name(firstName = "Name", middleName = None, lastName = s"$id"),
     dateOfBirth = Some(LocalDate.parse("1983-09-24")),
     identification = Some(NationalInsuranceNumber("JS123456A")),
@@ -84,7 +84,7 @@ class WhenRemovedControllerSpec extends SpecBase with MockitoSugar {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(bind[TrustsConnector].toInstance(mockConnector)).build()
 
-      val result = route(application, getRequest()).value
+      val result = route(application, getRequest).value
 
       val view = application.injector.instanceOf[WhenRemovedView]
 
@@ -142,7 +142,7 @@ class WhenRemovedControllerSpec extends SpecBase with MockitoSugar {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val result = route(application, getRequest()).value
+      val result = route(application, getRequest).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
@@ -169,7 +169,7 @@ class WhenRemovedControllerSpec extends SpecBase with MockitoSugar {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(bind[TrustsConnector].toInstance(mockConnector)).build()
 
-      val result = route(application, getRequest()).value
+      val result = route(application, getRequest).value
 
       status(result) mustEqual SEE_OTHER
 
@@ -184,7 +184,7 @@ class WhenRemovedControllerSpec extends SpecBase with MockitoSugar {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(bind[TrustsConnector].toInstance(mockConnector)).build()
 
-      val result = route(application, getRequest()).value
+      val result = route(application, getRequest).value
 
       status(result) mustEqual INTERNAL_SERVER_ERROR
 

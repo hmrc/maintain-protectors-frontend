@@ -21,7 +21,7 @@ import config.annotations.IndividualProtector
 import forms.YesNoFormProvider
 import models.{Name, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.individual.{AddressYesNoPage, NamePage}
@@ -36,16 +36,16 @@ import scala.concurrent.Future
 
 class AddressYesNoControllerSpec extends SpecBase with MockitoSugar {
 
-  def onwardRoute = Call("GET", "/foo")
+  private def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new YesNoFormProvider()
-  val form = formProvider.withPrefix("individualProtector.addressYesNo")
-  val protectorName = "FirstName LastName"
-  val name = Name("FirstName", None, "LastName")
+  private val formProvider = new YesNoFormProvider()
+  private val form = formProvider.withPrefix("individualProtector.addressYesNo")
+  private val protectorName = "FirstName LastName"
+  private val name = Name("FirstName", None, "LastName")
 
-  val baseAnswers: UserAnswers = emptyUserAnswers.set(NamePage, name).success.value
+  private val baseAnswers: UserAnswers = emptyUserAnswers.set(NamePage, name).success.value
 
-  lazy val addressYesNoControllerRoute = routes.AddressYesNoController.onPageLoad(NormalMode).url
+  private lazy val addressYesNoControllerRoute = routes.AddressYesNoController.onPageLoad(NormalMode).url
 
   "AddressYesNo Controller" must {
 

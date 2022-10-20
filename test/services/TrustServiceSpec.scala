@@ -20,7 +20,7 @@ import base.SpecBase
 import connectors.TrustsConnector
 import models.protectors.{BusinessProtector, IndividualProtector, Protectors}
 import models.{Name, NationalInsuranceNumber}
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -31,9 +31,9 @@ import scala.concurrent.{Await, Future}
 class TrustServiceSpec extends SpecBase {
 
   private val identifier: String = "utr"
-  implicit val hc: HeaderCarrier = HeaderCarrier()
+  private implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  val business: BusinessProtector = BusinessProtector(
+  private val business: BusinessProtector = BusinessProtector(
     name = "Business 1",
     utr = None,
     countryOfResidence = None,
@@ -42,7 +42,7 @@ class TrustServiceSpec extends SpecBase {
     provisional = true
   )
 
-  val individual: IndividualProtector = IndividualProtector(
+  private val individual: IndividualProtector = IndividualProtector(
     name = Name("Joe", None, "Bloggs"),
     dateOfBirth = None,
     countryOfNationality = None,

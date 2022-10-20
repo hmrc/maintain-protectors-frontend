@@ -22,7 +22,7 @@ import base.SpecBase
 import connectors.TrustsConnector
 import forms.YesNoFormProvider
 import models.protectors.{BusinessProtector, Protectors}
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -37,16 +37,16 @@ import scala.concurrent.Future
 
 class RemoveBusinessProtectorControllerSpec extends SpecBase with ScalaCheckPropertyChecks with ScalaFutures {
 
-  val messagesPrefix = "removeBusinessProtectorYesNo"
+  private val messagesPrefix = "removeBusinessProtectorYesNo"
 
-  lazy val formProvider = new YesNoFormProvider()
-  lazy val form = formProvider.withPrefix(messagesPrefix)
+  private lazy val formProvider = new YesNoFormProvider()
+  private lazy val form = formProvider.withPrefix(messagesPrefix)
 
-  lazy val name : String = "Some Name 1"
+  private lazy val name : String = "Some Name 1"
 
-  val mockConnector: TrustsConnector = mock[TrustsConnector]
+  private val mockConnector: TrustsConnector = mock[TrustsConnector]
 
-  def businessProtector(id: Int, provisional : Boolean) = BusinessProtector(
+  private def businessProtector(id: Int, provisional : Boolean) = BusinessProtector(
     name = s"Some Name $id",
     utr = None,
     countryOfResidence = None,
@@ -55,9 +55,9 @@ class RemoveBusinessProtectorControllerSpec extends SpecBase with ScalaCheckProp
     provisional = provisional
   )
 
-  val expectedResult = businessProtector(2, provisional = true)
+  private val expectedResult = businessProtector(2, provisional = true)
 
-  val protectors = List(
+  private val protectors = List(
     businessProtector(1, provisional = false),
     expectedResult,
     businessProtector(3, provisional = true)

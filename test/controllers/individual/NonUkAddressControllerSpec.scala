@@ -21,7 +21,7 @@ import config.annotations.IndividualProtector
 import forms.NonUkAddressFormProvider
 import models.{Name, NonUkAddress, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.individual.{NamePage, NonUkAddressPage}
@@ -38,20 +38,20 @@ import scala.concurrent.Future
 
 class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
 
-  val form = new NonUkAddressFormProvider().apply()
+  private val form = new NonUkAddressFormProvider().apply()
 
-  def onwardRoute = Call("GET", "/foo")
-  val name: Name = Name("FirstName", None, "LastName")
+  private def onwardRoute = Call("GET", "/foo")
+  private val name: Name = Name("FirstName", None, "LastName")
 
-  val baseAnswers: UserAnswers = emptyUserAnswers.set(NamePage, name).success.value
+  private val baseAnswers: UserAnswers = emptyUserAnswers.set(NamePage, name).success.value
 
-  val nonUkAddressRoute: String = routes.NonUkAddressController.onPageLoad(NormalMode).url
+  private val nonUkAddressRoute: String = routes.NonUkAddressController.onPageLoad(NormalMode).url
 
-  val getRequest = FakeRequest(GET, nonUkAddressRoute)
+  private val getRequest = FakeRequest(GET, nonUkAddressRoute)
 
-  val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptionsNonUK].options
+  private val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptionsNonUK].options
 
-  val validData: NonUkAddress = NonUkAddress("line1", "line2", None, "country")
+  private val validData: NonUkAddress = NonUkAddress("line1", "line2", None, "country")
 
   "NonUkAddress Controller" must {
 

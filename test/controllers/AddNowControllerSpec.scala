@@ -20,7 +20,7 @@ import base.SpecBase
 import forms.AddProtectorTypeFormProvider
 import models.ProtectorType
 import navigation.ProtectorNavigator
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import pages.AddNowPage
