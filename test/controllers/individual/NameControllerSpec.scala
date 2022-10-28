@@ -21,9 +21,8 @@ import config.annotations.IndividualProtector
 import forms.NameFormProvider
 import models.{Name, NormalMode}
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.Matchers._
-import org.mockito.Mockito._
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.ArgumentMatchers._
+import org.mockito.MockitoSugar
 import pages.individual.NamePage
 import play.api.inject.bind
 import play.api.mvc.Call
@@ -36,12 +35,12 @@ import scala.concurrent.Future
 
 class NameControllerSpec extends SpecBase with MockitoSugar {
 
-  def onwardRoute = Call("GET", "/foo")
+  private def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new NameFormProvider()
-  val form = formProvider.withPrefix("individualProtector.name")
+  private val formProvider = new NameFormProvider()
+  private val form = formProvider.withPrefix("individualProtector.name")
 
-  lazy val nameRoute = routes.NameController.onPageLoad(NormalMode).url
+  private lazy val nameRoute = routes.NameController.onPageLoad(NormalMode).url
 
   "Name Controller" must {
 

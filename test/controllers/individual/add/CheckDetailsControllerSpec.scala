@@ -21,10 +21,9 @@ import java.time.LocalDate
 import base.SpecBase
 import connectors.TrustsConnector
 import models.Name
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
+import org.mockito.ArgumentMatchers.any
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import pages.individual._
 import play.api.inject.bind
 import play.api.test.FakeRequest

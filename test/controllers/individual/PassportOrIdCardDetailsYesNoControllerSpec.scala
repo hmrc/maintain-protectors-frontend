@@ -18,7 +18,7 @@ package controllers.individual
 
 import base.SpecBase
 import models.UserAnswers
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import pages.individual.IndexPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

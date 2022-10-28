@@ -16,101 +16,67 @@
 
 package repositories
 
-import java.time.LocalDateTime
-
-import com.google.inject.ImplementedBy
-import javax.inject.{Inject, Singleton}
-import models.{MongoDateTimeFormats, UtrSession}
-import play.api.Configuration
+import config.FrontendAppConfig
+import models.UtrSession
+import org.mongodb.scala.model.Filters.equal
+import org.mongodb.scala.model._
+import play.api.Logging
 import play.api.libs.json._
-import reactivemongo.api.WriteConcern
-import reactivemongo.api.indexes.IndexType
-import reactivemongo.play.json.collection.JSONCollection
+import uk.gov.hmrc.mongo.MongoComponent
+import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 
+import java.time.LocalDateTime
+import java.util.concurrent.TimeUnit
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ActiveSessionRepositoryImpl @Inject()(override val mongo: MongoDriver,
-                                            override val config: Configuration
-                                           )(override implicit val ec: ExecutionContext)
-  extends ActiveSessionRepository
-    with IndexManager {
+class ActiveSessionRepository @Inject()(mongoComponent: MongoComponent,
+                                        config: FrontendAppConfig
+                                       )(implicit ec: ExecutionContext)
+  extends PlayMongoRepository[UtrSession](
+    mongoComponent = mongoComponent,
+    collectionName = "session",
+    domainFormat = Format(UtrSession.reads, UtrSession.writes),
+    indexes = Seq(
+      IndexModel(
+        Indexes.ascending("updatedAt"),
+        IndexOptions()
+          .name("session-updated-at-index")
+          .expireAfter(config.cachettlSessionInSeconds, TimeUnit.SECONDS)
+          .unique(false)
+      ),
+      IndexModel(
+        Indexes.ascending("utr"),
+        IndexOptions()
+          .name("utr-index")
+          .unique(false)
+      )
+    ),
+    replaceIndexes = config.dropIndexes
+  ) with Logging {
 
-  override val collectionName: String = "session"
-
-  private val cacheTtl = config.get[Int]("mongodb.session.ttlSeconds")
-
-  private def collection: Future[JSONCollection] =
-    for {
-      _ <- ensureIndexes
-      res <- mongo.api.database.map(_.collection[JSONCollection](collectionName))
-    } yield res
-
-  private val lastUpdatedIndex = MongoIndex(
-    key = Seq("updatedAt" -> IndexType.Ascending),
-    name = "session-updated-at-index",
-    expireAfterSeconds = Some(cacheTtl)
-  )
-
-  private val utrIndex = MongoIndex(
-    key = Seq("utr" -> IndexType.Ascending),
-    name = "utr-index"
-  )
-
-  private lazy val ensureIndexes = for {
-      collection              <- mongo.api.database.map(_.collection[JSONCollection](collectionName))
-      createdLastUpdatedIndex <- collection.indexesManager.ensure(lastUpdatedIndex)
-      createdIdIndex          <- collection.indexesManager.ensure(utrIndex)
-    } yield createdLastUpdatedIndex && createdIdIndex
-
-  override def get(internalId: String): Future[Option[UtrSession]] = {
+  def get(internalId: String): Future[Option[UtrSession]] = {
 
     logger.debug(s"ActiveSessionRepository getting active utr for $internalId")
 
-    val selector = Json.obj("internalId" -> internalId)
+    val selector = equal("internalId", internalId)
+    val modifier = Updates.set("updatedAt", LocalDateTime.now())
 
-    val modifier = Json.obj(
-      "$set" -> Json.obj(
-        "updatedAt" -> MongoDateTimeFormats.localDateTimeWrite.writes(LocalDateTime.now)
-      )
-    )
+    val updateOption = new FindOneAndUpdateOptions().upsert(false).returnDocument(ReturnDocument.AFTER)
 
-    for {
-      col <- collection
-      r <- col.findAndUpdate(
-        selector = selector,
-        update = modifier,
-        fetchNewObject = true,
-        upsert = false,
-        sort = None,
-        fields = None,
-        bypassDocumentValidation = false,
-        writeConcern = WriteConcern.Default,
-        maxTime = None,
-        collation = None,
-        arrayFilters = Nil)
-    } yield r.result[UtrSession]
+    collection.findOneAndUpdate(selector, modifier, updateOption).toFutureOption()
+
   }
 
-  override def set(session: UtrSession): Future[Boolean] = {
+  def set(session: UtrSession): Future[Boolean] = {
 
-    val selector = Json.obj("internalId" -> session.internalId)
+    val selector = equal("internalId", session.internalId)
 
-    val modifier = Json.obj(
-      "$set" -> (session.copy(updatedAt = LocalDateTime.now))
-    )
+    val newSession = session.copy(updatedAt = LocalDateTime.now)
 
-    for {
-      col <- collection
-      r <- col.update(ordered = false).one(selector, modifier, upsert = true, multi = false)
-    } yield r.ok
+    val replaceOptions = new ReplaceOptions().upsert(true)
+
+    collection.replaceOne(selector, newSession, replaceOptions).headOption().map(_.exists(_.wasAcknowledged()))
   }
-}
-
-@ImplementedBy(classOf[ActiveSessionRepositoryImpl])
-trait ActiveSessionRepository {
-
-  def get(internalId: String): Future[Option[UtrSession]]
-
-  def set(session: UtrSession): Future[Boolean]
 }

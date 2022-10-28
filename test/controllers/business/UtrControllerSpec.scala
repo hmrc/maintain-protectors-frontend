@@ -21,9 +21,8 @@ import config.annotations.BusinessProtector
 import forms.UtrFormProvider
 import models.{NormalMode, UserAnswers}
 import navigation.Navigator
-import org.mockito.Matchers._
-import org.mockito.Mockito._
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.ArgumentMatchers._
+import org.mockito.MockitoSugar
 import pages.business.{NamePage, UtrPage}
 import play.api.data.Form
 import play.api.inject.bind
@@ -37,17 +36,17 @@ import scala.concurrent.Future
 
 class UtrControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new UtrFormProvider()
-  val form: Form[String] = formProvider.apply("businessProtector.utr", "utr", Nil)
-  val name = "Name"
+  private val formProvider = new UtrFormProvider()
+  private val form: Form[String] = formProvider.apply("businessProtector.utr", "utr", Nil)
+  private val name = "Name"
 
-  val validAnswer = "1234567890"
+  private val validAnswer = "1234567890"
 
-  val baseAnswers: UserAnswers = emptyUserAnswers.set(NamePage, name).success.value
+  private val baseAnswers: UserAnswers = emptyUserAnswers.set(NamePage, name).success.value
 
-  lazy val utrRoute: String = routes.UtrController.onPageLoad(NormalMode).url
+  private lazy val utrRoute: String = routes.UtrController.onPageLoad(NormalMode).url
 
-  val mockTrustsService: TrustServiceImpl = mock[TrustServiceImpl]
+  private val mockTrustsService: TrustServiceImpl = mock[TrustServiceImpl]
   when(mockTrustsService.getBusinessUtrs(any(), any())(any(), any()))
     .thenReturn(Future.successful(Nil))
 

@@ -21,9 +21,8 @@ import config.annotations.IndividualProtector
 import forms.YesNoFormProvider
 import models.{Name, NormalMode, UserAnswers}
 import navigation.Navigator
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.ArgumentMatchers.any
+import org.mockito.MockitoSugar
 import pages.individual.{DateOfBirthYesNoPage, NamePage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -35,14 +34,14 @@ import scala.concurrent.Future
 
 class DateOfBirthYesNoControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new YesNoFormProvider()
-  val form = formProvider.withPrefix("individualProtector.dateOfBirthYesNo")
+  private val formProvider = new YesNoFormProvider()
+  private val form = formProvider.withPrefix("individualProtector.dateOfBirthYesNo")
 
-  lazy val dateOfBirthYesNoRoute = routes.DateOfBirthYesNoController.onPageLoad(NormalMode).url
+  private lazy val dateOfBirthYesNoRoute = routes.DateOfBirthYesNoController.onPageLoad(NormalMode).url
 
-  val name = Name("New", None, "Protector")
+  private val name = Name("New", None, "Protector")
 
-  val baseAnswers: UserAnswers = emptyUserAnswers.set(NamePage, name).success.value
+  private val baseAnswers: UserAnswers = emptyUserAnswers.set(NamePage, name).success.value
 
   "Individual Protector DateOfBirthYesNoPage Controller" must {
 

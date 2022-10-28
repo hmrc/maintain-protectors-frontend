@@ -21,9 +21,8 @@ import config.annotations.BusinessProtector
 import forms.YesNoFormProvider
 import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.ArgumentMatchers.any
+import org.mockito.MockitoSugar
 import pages.business.{AddressYesNoPage, NamePage}
 import play.api.inject.bind
 import play.api.mvc.Call
@@ -36,15 +35,15 @@ import scala.concurrent.Future
 
 class UtrYesNoControllerSpec extends SpecBase with MockitoSugar {
 
-  def onwardRoute = Call("GET", "/foo")
+  private def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new YesNoFormProvider()
-  val form = formProvider.withPrefix("businessProtector.addressYesNo")
-  val name = "Name"
+  private val formProvider = new YesNoFormProvider()
+  private val form = formProvider.withPrefix("businessProtector.addressYesNo")
+  private val name = "Name"
 
-  val baseAnswers: UserAnswers = emptyUserAnswers.set(NamePage, name).success.value
+  private val baseAnswers: UserAnswers = emptyUserAnswers.set(NamePage, name).success.value
 
-  lazy val addressYesNoControllerRoute = routes.AddressYesNoController.onPageLoad(NormalMode).url
+  private lazy val addressYesNoControllerRoute = routes.AddressYesNoController.onPageLoad(NormalMode).url
 
   "UtrYesNo Controller" must {
 

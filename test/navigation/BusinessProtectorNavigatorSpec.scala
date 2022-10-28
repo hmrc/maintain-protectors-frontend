@@ -98,12 +98,12 @@ class BusinessProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
           navigator.nextPage(CountryOfResidenceUkYesNoPage, mode, answers)
             .mustBe(controllers.business.routes.StartDateController.onPageLoad())
         }
-        
+
         "Is residence in UK page -> Yes -> With No Utr -> Do you know address page" in {
           val answers = baseAnswers
             .set(CountryOfResidenceUkYesNoPage, true).success.value
             .set(UtrYesNoPage, false).success.value
-          
+
           navigator.nextPage(CountryOfResidenceUkYesNoPage, mode, answers)
             .mustBe(controllers.business.routes.AddressYesNoController.onPageLoad(mode))
         }
@@ -124,7 +124,7 @@ class BusinessProtectorNavigatorSpec extends SpecBase with ScalaCheckPropertyChe
           navigator.nextPage(CountryOfResidencePage, mode, answers)
             .mustBe(controllers.business.routes.AddressYesNoController.onPageLoad(mode))
         }
-        
+
 
         "Country of Residence page -> With Utr -> Start date page" in {
           val answers = baseAnswers

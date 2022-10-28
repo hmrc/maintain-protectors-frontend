@@ -19,7 +19,7 @@ package services
 import base.SpecBase
 import connectors.TrustsStoreConnector
 import models.TaskStatus.Completed
-import org.mockito.Matchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{verify, when}
 import org.scalatest.concurrent.ScalaFutures.whenReady
 import play.api.http.Status.OK
@@ -29,11 +29,11 @@ import scala.concurrent.Future
 
 class TrustsStoreServiceSpec extends SpecBase {
 
-  val mockConnector: TrustsStoreConnector = mock[TrustsStoreConnector]
+  private val mockConnector: TrustsStoreConnector = mock[TrustsStoreConnector]
 
-  val featureFlagService = new TrustsStoreService(mockConnector)
+  private val featureFlagService = new TrustsStoreService(mockConnector)
 
-  implicit val hc: HeaderCarrier = HeaderCarrier()
+  private implicit val hc: HeaderCarrier = HeaderCarrier()
 
   "TrustsStoreService" when {
 

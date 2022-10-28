@@ -21,9 +21,8 @@ import config.annotations.IndividualProtector
 import forms.IdCardDetailsFormProvider
 import models.{IdCard, Mode, Name, NormalMode, UserAnswers}
 import navigation.Navigator
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.ArgumentMatchers.any
+import org.mockito.MockitoSugar
 import pages.individual.{IdCardDetailsPage, NamePage}
 import play.api.inject.bind
 import play.api.mvc.Call
@@ -39,23 +38,23 @@ import scala.concurrent.Future
 
 class IdCardDetailsControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new IdCardDetailsFormProvider()
+  private val formProvider = new IdCardDetailsFormProvider()
   private def form = formProvider.withPrefix("individualProtector")
 
-  def onwardRoute: Call = Call("GET", "/foo")
-  val name: Name = Name("FirstName", None, "LastName")
+  private def onwardRoute: Call = Call("GET", "/foo")
+  private val name: Name = Name("FirstName", None, "LastName")
 
-  val mode: Mode = NormalMode
+  private val mode: Mode = NormalMode
 
-  val baseAnswers: UserAnswers = emptyUserAnswers.set(NamePage, name).success.value
+  private val baseAnswers: UserAnswers = emptyUserAnswers.set(NamePage, name).success.value
 
-  val idCardDetailsRoute: String = routes.IdCardDetailsController.onPageLoad(mode).url
+  private val idCardDetailsRoute: String = routes.IdCardDetailsController.onPageLoad(mode).url
 
-  val getRequest = FakeRequest(GET, idCardDetailsRoute)
+  private val getRequest = FakeRequest(GET, idCardDetailsRoute)
 
-  val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptions].options
+  private val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptions].options
 
-  val validData: IdCard = IdCard("country", "card number", LocalDate.of(2020, 1, 1))
+  private val validData: IdCard = IdCard("country", "card number", LocalDate.of(2020, 1, 1))
 
   "IdCardDetails Controller" must {
 

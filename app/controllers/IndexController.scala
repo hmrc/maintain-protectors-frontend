@@ -52,14 +52,18 @@ class IndexController @Inject()(
               isTaxable = details.isTaxable,
               isUnderlyingData5mld = isUnderlyingData5mld
             )
-            case None => UserAnswers(
-              internalId = request.user.internalId,
-              identifier = identifier,
-              sessionId = Session.id(hc),
-              whenTrustSetup = details.startDate,
-              isTaxable = details.isTaxable,
-              isUnderlyingData5mld = isUnderlyingData5mld
-            )
+            case None =>
+              val internalId = request.user.internalId
+              val sessionId = Session.id(hc)
+              UserAnswers(
+                internalId = internalId,
+                identifier = identifier,
+                sessionId = sessionId,
+                newId = s"$internalId-$identifier-$sessionId",
+                whenTrustSetup = details.startDate,
+                isTaxable = details.isTaxable,
+                isUnderlyingData5mld = isUnderlyingData5mld
+              )
           }
         )
         _ <- cacheRepository.set(ua)

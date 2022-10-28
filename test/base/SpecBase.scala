@@ -39,10 +39,11 @@ trait SpecBaseHelpers extends GuiceOneAppPerSuite with TryValues with Mocked wit
   lazy val draftId = "id"
   lazy val userInternalId = "internalId"
   lazy val userSessionId = "sessionId"
+  lazy val userNewId = s"$userInternalId-UTRUTRUTR-$userSessionId"
 
-  def emptyUserAnswers: UserAnswers = UserAnswers(userInternalId, "UTRUTRUTR", userSessionId, LocalDate.now())
+  def emptyUserAnswers: UserAnswers = UserAnswers(userInternalId, "UTRUTRUTR", userSessionId, userNewId, LocalDate.now())
 
-  val bodyParsers = injector.instanceOf[BodyParsers.Default]
+  val bodyParsers: BodyParsers.Default = injector.instanceOf[BodyParsers.Default]
 
   val fakeNavigator = new FakeNavigator()
 

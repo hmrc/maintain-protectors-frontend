@@ -33,7 +33,7 @@ class TrustsStoreConnectorSpec extends SpecBase
   "trusts store connector" when {
 
     ".updateTaskStatus" must {
-      
+
       val url = "/trusts-store/maintain/tasks/update-protectors/123456789"
 
       "return OK with the current task status" in {

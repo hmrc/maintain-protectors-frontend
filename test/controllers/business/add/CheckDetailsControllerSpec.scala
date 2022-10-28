@@ -20,10 +20,9 @@ import java.time.LocalDate
 
 import base.SpecBase
 import connectors.TrustsConnector
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
+import org.mockito.ArgumentMatchers.any
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import pages.business._
 import play.api.inject.bind
 import play.api.test.FakeRequest

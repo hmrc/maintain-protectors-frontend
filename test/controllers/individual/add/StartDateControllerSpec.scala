@@ -23,9 +23,8 @@ import config.annotations.IndividualProtector
 import forms.DateAddedToTrustFormProvider
 import models.{Name, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.ArgumentMatchers.any
+import org.mockito.MockitoSugar
 import pages.individual.{NamePage, StartDatePage}
 import play.api.data.Form
 import play.api.inject.bind
@@ -54,7 +53,7 @@ class StartDateControllerSpec extends SpecBase with MockitoSugar {
   val baseAnswers: UserAnswers = emptyUserAnswers.set(NamePage, name)
     .success.value
 
-  private def getRequest(): FakeRequest[AnyContentAsEmpty.type] =
+  private def getRequest: FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(GET, startDateRoute)
 
   private def postRequest(): FakeRequest[AnyContentAsFormUrlEncoded] =
@@ -71,7 +70,7 @@ class StartDateControllerSpec extends SpecBase with MockitoSugar {
 
       val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
 
-      val result = route(application, getRequest()).value
+      val result = route(application, getRequest).value
 
       val view = application.injector.instanceOf[StartDateView]
 
@@ -93,12 +92,12 @@ class StartDateControllerSpec extends SpecBase with MockitoSugar {
 
       val view = application.injector.instanceOf[StartDateView]
 
-      val result = route(application, getRequest()).value
+      val result = route(application, getRequest).value
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), name.displayName)(getRequest(), messages).toString
+        view(form.fill(validAnswer), name.displayName)(getRequest, messages).toString
 
       application.stop()
     }
@@ -151,7 +150,7 @@ class StartDateControllerSpec extends SpecBase with MockitoSugar {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val result = route(application, getRequest()).value
+      val result = route(application, getRequest).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url

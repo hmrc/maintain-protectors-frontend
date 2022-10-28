@@ -21,9 +21,8 @@ import config.annotations.IndividualProtector
 import forms.YesNoFormProvider
 import models.{Name, NormalMode, UserAnswers}
 import navigation.Navigator
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.ArgumentMatchers.any
+import org.mockito.MockitoSugar
 import pages.individual.{NamePage, NationalInsuranceNumberYesNoPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -35,14 +34,14 @@ import scala.concurrent.Future
 
 class NationalInsuranceNumberYesNoControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new YesNoFormProvider()
-  val form = formProvider.withPrefix("individualProtector.nationalInsuranceNumberYesNo")
-  val protectorName = "FirstName LastName"
-  val name = Name("FirstName", None, "LastName")
+  private val formProvider = new YesNoFormProvider()
+  private val form = formProvider.withPrefix("individualProtector.nationalInsuranceNumberYesNo")
+  private val protectorName = "FirstName LastName"
+  private val name = Name("FirstName", None, "LastName")
 
-  val baseAnswers: UserAnswers = emptyUserAnswers.set(NamePage, name).success.value
+  private val baseAnswers: UserAnswers = emptyUserAnswers.set(NamePage, name).success.value
 
-  lazy val nationalInsuranceNumberYesNoRoute = routes.NationalInsuranceNumberYesNoController.onPageLoad(NormalMode).url
+  private lazy val nationalInsuranceNumberYesNoRoute = routes.NationalInsuranceNumberYesNoController.onPageLoad(NormalMode).url
 
   "NationalInsuranceNumberYesNo Controller" must {
 

@@ -21,33 +21,29 @@ import config.annotations.BusinessProtector
 import forms.YesNoFormProvider
 import models.{NormalMode, UserAnswers}
 import navigation.Navigator
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.ArgumentMatchers.any
+import org.mockito.MockitoSugar
 import pages.business.{AddressUkYesNoPage, NamePage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
-import uk.gov.hmrc.http.HeaderCarrier
 import views.html.business.AddressUkYesNoView
 
 import scala.concurrent.Future
 
 class AddressUkYesNoControllerSpec extends SpecBase with MockitoSugar {
 
-  def onwardRoute = Call("GET", "/foo")
+  private def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new YesNoFormProvider()
-  val form = formProvider.withPrefix("businessProtector.addressUkYesNo")
-  val name = "Name"
+  private val formProvider = new YesNoFormProvider()
+  private val form = formProvider.withPrefix("businessProtector.addressUkYesNo")
+  private val name = "Name"
 
-  implicit val hc: HeaderCarrier = HeaderCarrier()
+  private val baseAnswers: UserAnswers = emptyUserAnswers.set(NamePage, name).success.value
 
-  val baseAnswers: UserAnswers = emptyUserAnswers.set(NamePage, name).success.value
-
-  lazy val addressUkYesNoControllerRoute = routes.AddressUkYesNoController.onPageLoad(NormalMode).url
+  private lazy val addressUkYesNoControllerRoute = routes.AddressUkYesNoController.onPageLoad(NormalMode).url
 
   "LiveInTheUkYesNoPage Controller" must {
 

@@ -22,9 +22,8 @@ import base.SpecBase
 import connectors.TrustsConnector
 import forms.DateRemovedFromTrustFormProvider
 import models.protectors.{BusinessProtector, Protectors}
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.ArgumentMatchers.any
+import org.mockito.MockitoSugar
 import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
@@ -37,25 +36,25 @@ import scala.concurrent.Future
 
 class WhenRemovedControllerSpec extends SpecBase with MockitoSugar {
 
-  val formProvider = new DateRemovedFromTrustFormProvider()
+  private val formProvider = new DateRemovedFromTrustFormProvider()
 
   private def form = formProvider.withPrefixAndEntityStartDate("businessProtector.whenRemoved", LocalDate.now())
 
-  val validAnswer = LocalDate.now(ZoneOffset.UTC)
+  private val validAnswer = LocalDate.now(ZoneOffset.UTC)
 
-  val index = 0
+  private val index = 0
 
-  val name = "Some Name 1"
-  val mockConnector = mock[TrustsConnector]
+  private val name = "Some Name 1"
+  private val mockConnector = mock[TrustsConnector]
 
   val fakeService = new TrustServiceImpl(mockConnector)
 
-  lazy val dateRemovedFromTrustRoute = routes.WhenRemovedController.onPageLoad(index).url
+  private lazy val dateRemovedFromTrustRoute = routes.WhenRemovedController.onPageLoad(index).url
 
-  def getRequest(): FakeRequest[AnyContentAsEmpty.type] =
+  private def getRequest: FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(GET, dateRemovedFromTrustRoute)
 
-  def postRequest(): FakeRequest[AnyContentAsFormUrlEncoded] =
+  private def postRequest(): FakeRequest[AnyContentAsFormUrlEncoded] =
     FakeRequest(POST, dateRemovedFromTrustRoute)
       .withFormUrlEncodedBody(
         "value.day"   -> validAnswer.getDayOfMonth.toString,
@@ -63,7 +62,7 @@ class WhenRemovedControllerSpec extends SpecBase with MockitoSugar {
         "value.year"  -> validAnswer.getYear.toString
       )
 
-  def businessProtector(id: Int) = BusinessProtector(
+  private def businessProtector(id: Int) = BusinessProtector(
     name = s"Some Name $id",
     utr = None,
     countryOfResidence = None,
@@ -72,7 +71,7 @@ class WhenRemovedControllerSpec extends SpecBase with MockitoSugar {
     provisional = false
   )
 
-  val protectors = List(businessProtector(1), businessProtector(2), businessProtector(3))
+  private val protectors = List(businessProtector(1), businessProtector(2), businessProtector(3))
 
   "WhenRemoved Controller" must {
 
@@ -83,7 +82,7 @@ class WhenRemovedControllerSpec extends SpecBase with MockitoSugar {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(bind[TrustsConnector].toInstance(mockConnector)).build()
 
-      val result = route(application, getRequest()).value
+      val result = route(application, getRequest).value
 
       val view = application.injector.instanceOf[WhenRemovedView]
 
@@ -141,7 +140,7 @@ class WhenRemovedControllerSpec extends SpecBase with MockitoSugar {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val result = route(application, getRequest()).value
+      val result = route(application, getRequest).value
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
@@ -168,7 +167,7 @@ class WhenRemovedControllerSpec extends SpecBase with MockitoSugar {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(bind[TrustsConnector].toInstance(mockConnector)).build()
 
-      val result = route(application, getRequest()).value
+      val result = route(application, getRequest).value
 
       status(result) mustEqual SEE_OTHER
 
@@ -183,7 +182,7 @@ class WhenRemovedControllerSpec extends SpecBase with MockitoSugar {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(bind[TrustsConnector].toInstance(mockConnector)).build()
 
-      val result = route(application, getRequest()).value
+      val result = route(application, getRequest).value
 
       status(result) mustEqual INTERNAL_SERVER_ERROR
 

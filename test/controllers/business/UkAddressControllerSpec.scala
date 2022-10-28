@@ -21,9 +21,8 @@ import config.annotations.BusinessProtector
 import forms.UkAddressFormProvider
 import models.{NormalMode, UkAddress, UserAnswers}
 import navigation.Navigator
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.ArgumentMatchers.any
+import org.mockito.MockitoSugar
 import pages.business.{NamePage, UkAddressPage}
 import play.api.inject.bind
 import play.api.mvc.Call
@@ -36,17 +35,17 @@ import scala.concurrent.Future
 
 class UkAddressControllerSpec extends SpecBase with MockitoSugar {
 
-  def onwardRoute = Call("GET", "/foo")
+  private def onwardRoute = Call("GET", "/foo")
 
-  val form = new UkAddressFormProvider()()
+  private val form = new UkAddressFormProvider()()
 
-  val name = "Name"
+  private val name = "Name"
 
-  val baseAnswers: UserAnswers = emptyUserAnswers.set(NamePage, name).success.value
+  private val baseAnswers: UserAnswers = emptyUserAnswers.set(NamePage, name).success.value
 
-  val validAnswer = UkAddress("value 1", "value 2", None, None, "AB1 1AB")
+  private val validAnswer = UkAddress("value 1", "value 2", None, None, "AB1 1AB")
 
-  lazy val ukAddressControllerRoute = routes.UkAddressController.onPageLoad(NormalMode).url
+  private lazy val ukAddressControllerRoute = routes.UkAddressController.onPageLoad(NormalMode).url
 
   "UkAddress Controller" must {
 
