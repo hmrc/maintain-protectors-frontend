@@ -22,8 +22,7 @@ import forms.StringFormProvider
 import models.NormalMode
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers._
-import org.mockito.Mockito._
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import pages.business.NamePage
 import play.api.inject.bind
 import play.api.mvc.Call

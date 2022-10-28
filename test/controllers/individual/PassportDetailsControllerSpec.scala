@@ -22,8 +22,7 @@ import forms.PassportDetailsFormProvider
 import models.{Mode, Name, NormalMode, Passport, UserAnswers}
 import navigation.Navigator
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import pages.individual.{NamePage, PassportDetailsPage}
 import play.api.data.Form
 import play.api.inject.bind

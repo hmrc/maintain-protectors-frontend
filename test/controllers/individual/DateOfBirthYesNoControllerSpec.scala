@@ -22,8 +22,7 @@ import forms.YesNoFormProvider
 import models.{Name, NormalMode, UserAnswers}
 import navigation.Navigator
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import pages.individual.{DateOfBirthYesNoPage, NamePage}
 import play.api.inject.bind
 import play.api.test.FakeRequest

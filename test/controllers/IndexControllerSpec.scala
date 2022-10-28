@@ -22,7 +22,6 @@ import models.TaskStatus.InProgress
 import models.{TrustDetails, TypeOfTrust, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import play.api.inject.bind
 import play.api.test.FakeRequest

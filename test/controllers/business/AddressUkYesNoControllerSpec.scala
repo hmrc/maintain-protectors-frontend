@@ -22,15 +22,13 @@ import forms.YesNoFormProvider
 import models.{NormalMode, UserAnswers}
 import navigation.Navigator
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import pages.business.{AddressUkYesNoPage, NamePage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.PlaybackRepository
-import uk.gov.hmrc.http.HeaderCarrier
 import views.html.business.AddressUkYesNoView
 
 import scala.concurrent.Future

@@ -22,8 +22,7 @@ import forms.UkAddressFormProvider
 import models.{Name, NormalMode, UkAddress}
 import navigation.Navigator
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import pages.individual.{NamePage, UkAddressPage}
 import play.api.inject.bind
 import play.api.mvc.Call

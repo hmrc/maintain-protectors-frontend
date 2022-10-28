@@ -23,7 +23,6 @@ import connectors.TrustsConnector
 import forms.YesNoFormProvider
 import models.protectors.{BusinessProtector, Protectors}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.business.RemoveYesNoPage

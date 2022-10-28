@@ -24,8 +24,7 @@ import forms.DateRemovedFromTrustFormProvider
 import models.protectors.{IndividualProtector, Protectors}
 import models.{Name, NationalInsuranceNumber}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest

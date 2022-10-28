@@ -23,7 +23,6 @@ import models.TaskStatus.Completed
 import models.protectors.{BusinessProtector, IndividualProtector, Protectors}
 import models.{AddAProtector, Name, NationalInsuranceNumber, RemoveProtector}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form

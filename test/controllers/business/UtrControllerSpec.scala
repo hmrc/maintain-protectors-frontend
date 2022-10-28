@@ -22,8 +22,7 @@ import forms.UtrFormProvider
 import models.{NormalMode, UserAnswers}
 import navigation.Navigator
 import org.mockito.ArgumentMatchers._
-import org.mockito.Mockito._
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import pages.business.{NamePage, UtrPage}
 import play.api.data.Form
 import play.api.inject.bind
