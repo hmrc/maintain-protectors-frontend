@@ -35,6 +35,8 @@ class FrontendAppConfig @Inject() (configuration: Configuration,
   final val WELSH = "cy"
   final val UK_COUNTRY_CODE = "GB"
 
+  val appName: String = configuration.get[String]("appName")
+
   val betaFeedbackUrl = s"${contactFrontendConfig.baseUrl.get}/contact/beta-feedback?service=${contactFrontendConfig.serviceId.get}"
 
   lazy val authUrl: String = servicesConfig.baseUrl("auth")
