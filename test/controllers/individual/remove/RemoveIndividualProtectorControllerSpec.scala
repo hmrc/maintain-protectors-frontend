@@ -24,7 +24,6 @@ import forms.YesNoFormProvider
 import models.protectors.{IndividualProtector, Protectors}
 import models.{Name, NationalInsuranceNumber}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.individual.RemoveYesNoPage
