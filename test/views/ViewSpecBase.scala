@@ -99,6 +99,9 @@ trait ViewSpecBase extends SpecBase {
   def assertRenderedByClass(doc: Document, cssClass: String): Assertion =
     assert(doc.getElementsByClass(cssClass) != null, "\n\nElement " + cssClass + " was not rendered on the page.\n")
 
+  def assertNotRenderedByClass(doc: Document, className: String): Assertion =
+    assert(doc.getElementsByClass(className).isEmpty, "\n\nElement " + className + " was rendered on the page.\n")
+
   def assertContainsRadioButton(doc: Document, id: String, name: String, value: String, isChecked: Boolean): Assertion = {
     assertRenderedById(doc, id)
     val radio = doc.getElementById(id)
