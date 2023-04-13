@@ -36,7 +36,7 @@
     title = heading
     ) {
 
-    @formHelper(action = AddAProtectorController.submitComplete(), 'autoComplete -> "off") {
+    @formHelper(action = AddAProtectorController.submitComplete(), Symbol("autoComplete") -> "off") {
 
         @headingComp(heading)
 

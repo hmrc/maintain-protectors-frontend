@@ -76,14 +76,14 @@ class AddAProtectorController @Inject()(
               Ok(completeView(
                 inProgressProtectors = protectorRows.inProgress,
                 completeProtectors = protectorRows.complete,
-                heading = protectors.addToHeading
+                heading = protectors.addToHeading()
               ))
             } else {
               Ok(addAnotherView(
                 form = addAnotherForm,
                 inProgressProtectors = protectorRows.inProgress,
                 completeProtectors = protectorRows.complete,
-                heading = protectors.addToHeading,
+                heading = protectors.addToHeading(),
                 maxedOut = protectors.maxedOutOptions.map(x => x.messageKey)
               ))
             }
@@ -125,7 +125,7 @@ class AddAProtectorController @Inject()(
                 formWithErrors,
                 rows.inProgress,
                 rows.complete,
-                protectors.addToHeading,
+                protectors.addToHeading(),
                 maxedOut = protectors.maxedOutOptions.map(x => x.messageKey)
               )
             ))
