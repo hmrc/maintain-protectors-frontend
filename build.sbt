@@ -11,12 +11,10 @@ lazy val root = (project in file("."))
   .enablePlugins(PlayScala, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
   .settings(
-    SilencerSettings(),
     DefaultBuildSettings.scalaSettings,
     DefaultBuildSettings.defaultSettings(),
-    SbtDistributablesPlugin.publishingSettings,
     inConfig(Test)(testSettings),
-    scalaVersion := "2.12.16",
+    scalaVersion := "2.13.10",
     majorVersion := 0,
     name := appName,
     RoutesKeys.routesImport += "models._",
@@ -37,8 +35,10 @@ lazy val root = (project in file("."))
     ScoverageKeys.coverageMinimumStmtTotal := 91,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true,
-    scalacOptions ++= Seq("-feature"),
+    scalacOptions ++= Seq("-feature", "-Wconf:src=routes/.*:s", "-Wconf:cat=unused-imports&src=html/.*:s"),
     libraryDependencies ++= AppDependencies(),
+    // To resolve a bug with version 2.x.x of the scoverage plugin - https://github.com/sbt/sbt/issues/6997
+    libraryDependencySchemes ++= Seq("org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always),
     retrieveManaged := true,
     // concatenate js
     Concat.groups := Seq(
@@ -60,9 +60,9 @@ lazy val root = (project in file("."))
     uglify / includeFilter := GlobFilter("maintainprotectorsfrontend-*.js")
   )
   .configs(IntegrationTest)
-  .settings(integrationTestSettings(): _*)
+  .settings(integrationTestSettings() *)
 
-lazy val testSettings: Seq[Def.Setting[_]] = Seq(
+lazy val testSettings: Seq[Def.Setting[?]] = Seq(
   fork        := true,
   javaOptions ++= Seq(
     "-Dconfig.resource=test.application.conf"
