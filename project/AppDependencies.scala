@@ -3,11 +3,12 @@ import sbt._
 object AppDependencies {
   import play.core.PlayVersion
 
-  val bootstrapVersion = "7.15.0"
+  val bootstrapVersion  = "7.15.0"
+  val hmrcMongo         = "0.74.0"
 
   private val compile: Seq[ModuleID] = Seq(
     play.sbt.PlayImport.ws,
-    "uk.gov.hmrc.mongo" %% "hmrc-mongo-play-28"             % "1.1.0",
+    "uk.gov.hmrc.mongo" %% "hmrc-mongo-play-28"             % hmrcMongo,
     "uk.gov.hmrc"       %% "play-frontend-hmrc"             % "6.2.0-play-28",
     "uk.gov.hmrc"       %% "domain"                         % "8.2.0-play-28",
     "uk.gov.hmrc"       %% "play-conditional-form-mapping"  % "1.13.0-play-28",
@@ -20,7 +21,7 @@ object AppDependencies {
     "org.scalatestplus.play"      %% "scalatestplus-play"       % "5.1.0",
     "org.scalatestplus"           %% "scalatestplus-scalacheck" % "3.1.0.0-RC2",
     "wolfendale"                  %% "scalacheck-gen-regexp"    % "0.1.2",
-    "uk.gov.hmrc.mongo"           %% "hmrc-mongo-test-play-28"  % "1.1.0",
+    "uk.gov.hmrc.mongo"           %% "hmrc-mongo-test-play-28"  % hmrcMongo,
     "org.jsoup"                   %  "jsoup"                    % "1.15.4",
     "com.typesafe.play"           %% "play-test"                % PlayVersion.current,
     "org.mockito"                 %% "mockito-scala-scalatest"  % "1.17.14",
