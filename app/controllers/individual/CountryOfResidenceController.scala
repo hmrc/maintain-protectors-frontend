@@ -55,7 +55,7 @@ class CountryOfResidenceController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, request.protectorName, countryOptions.options))
+      Ok(view(preparedForm, mode, request.protectorName, countryOptions.options()))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.andThen(nameAction).async {
@@ -63,7 +63,7 @@ class CountryOfResidenceController @Inject()(
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, request.protectorName, countryOptions.options))),
+          Future.successful(BadRequest(view(formWithErrors, mode, request.protectorName, countryOptions.options()))),
 
         value =>
           for {

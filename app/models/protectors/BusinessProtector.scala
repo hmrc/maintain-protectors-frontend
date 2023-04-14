@@ -32,19 +32,19 @@ final case class BusinessProtector(name: String,
 object BusinessProtector extends ProtectorReads {
 
   implicit val reads: Reads[BusinessProtector] = (
-    (__ \ 'name).read[String] and
-      __.lazyRead(readNullableAtSubPath[String](__ \ 'identification \ 'utr)) and
-      (__ \ 'countryOfResidence).readNullable[String] and
-      __.lazyRead(readNullableAtSubPath[Address](__ \ 'identification \ 'address)) and
+    (__ \ Symbol("name")).read[String] and
+      __.lazyRead(readNullableAtSubPath[String](__ \ Symbol("identification") \ Symbol("utr"))) and
+      (__ \ Symbol("countryOfResidence")).readNullable[String] and
+      __.lazyRead(readNullableAtSubPath[Address](__ \ Symbol("identification") \ Symbol("address"))) and
       (__ \ "entityStart").read[LocalDate] and
       (__ \ "provisional").readWithDefault(false)
     )(BusinessProtector.apply _)
 
   implicit val writes: Writes[BusinessProtector] = (
-    (__ \ 'name).write[String] and
-      (__ \ 'identification \ 'utr).writeNullable[String] and
-      (__ \ 'countryOfResidence).writeNullable[String] and
-      (__ \ 'identification \ 'address).writeNullable[Address] and
+    (__ \ Symbol("name")).write[String] and
+      (__ \ Symbol("identification") \ Symbol("utr")).writeNullable[String] and
+      (__ \ Symbol("countryOfResidence")).writeNullable[String] and
+      (__ \ Symbol("identification") \ Symbol("address")).writeNullable[Address] and
       (__ \ "entityStart").write[LocalDate] and
       (__ \ "provisional").write[Boolean]
     )(unlift(BusinessProtector.unapply))

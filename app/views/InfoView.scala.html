@@ -86,7 +86,7 @@
         )
     )
 
-    @formHelper(action = InfoController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = InfoController.onSubmit(), Symbol("autoComplete") -> "off") {
         @submitButton()
     }
 }

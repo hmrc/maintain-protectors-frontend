@@ -36,7 +36,7 @@ final case class IndividualProtector(name: Name,
 object IndividualProtector extends ProtectorReads {
 
   def readMentalCapacity: Reads[Option[YesNoDontKnow]] =
-    (__ \ 'legallyIncapable).readNullable[Boolean].flatMap[Option[YesNoDontKnow]] { x: Option[Boolean] =>
+    (__ \ Symbol("legallyIncapable")).readNullable[Boolean].flatMap[Option[YesNoDontKnow]] { x: Option[Boolean] =>
       Reads(_ => JsSuccess(YesNoDontKnow.fromBoolean(x)))
     }
 
@@ -47,25 +47,25 @@ object IndividualProtector extends ProtectorReads {
   }
 
   implicit val reads: Reads[IndividualProtector] = (
-    (__ \ 'name).read[Name] and
-      (__ \ 'dateOfBirth).readNullable[LocalDate] and
-      (__ \ 'nationality).readNullable[String] and
-      __.lazyRead(readNullableAtSubPath[IndividualIdentification](__ \ 'identification)) and
-      (__ \ 'countryOfResidence).readNullable[String] and
-      __.lazyRead(readNullableAtSubPath[Address](__ \ 'identification \ 'address)) and
+    (__ \ Symbol("name")).read[Name] and
+      (__ \ Symbol("dateOfBirth")).readNullable[LocalDate] and
+      (__ \ Symbol("nationality")).readNullable[String] and
+      __.lazyRead(readNullableAtSubPath[IndividualIdentification](__ \ Symbol("identification"))) and
+      (__ \ Symbol("countryOfResidence")).readNullable[String] and
+      __.lazyRead(readNullableAtSubPath[Address](__ \ Symbol("identification") \ Symbol("address"))) and
       readMentalCapacity and
       (__ \ "entityStart").read[LocalDate] and
       (__ \ "provisional").readWithDefault(false)
     )(IndividualProtector.apply _)
 
   implicit val writes: Writes[IndividualProtector] = (
-    (__ \ 'name).write[Name] and
-      (__ \ 'dateOfBirth).writeNullable[LocalDate] and
-      (__ \ 'nationality).writeNullable[String] and
-      (__ \ 'identification).writeNullable[IndividualIdentification] and
-      (__ \ 'countryOfResidence).writeNullable[String] and
-      (__ \ 'identification \ 'address).writeNullable[Address] and
-      (__ \ 'legallyIncapable).writeNullable[YesNoDontKnow](legallyIncapableWrites) and
+    (__ \ Symbol("name")).write[Name] and
+      (__ \ Symbol("dateOfBirth")).writeNullable[LocalDate] and
+      (__ \ Symbol("nationality")).writeNullable[String] and
+      (__ \ Symbol("identification")).writeNullable[IndividualIdentification] and
+      (__ \ Symbol("countryOfResidence")).writeNullable[String] and
+      (__ \ Symbol("identification") \ Symbol("address")).writeNullable[Address] and
+      (__ \ Symbol("legallyIncapable")).writeNullable[YesNoDontKnow](legallyIncapableWrites) and
       (__ \ "entityStart").write[LocalDate] and
       (__ \ "provisional").write[Boolean]
     )(unlift(IndividualProtector.unapply))

@@ -42,7 +42,7 @@
     showBackLink = true
 ) {
 
-    @formHelper(action = AddAProtectorController.submitAnother(), 'autoComplete -> "off") {
+    @formHelper(action = AddAProtectorController.submitAnother(), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors, AddAProtector.options)
 
