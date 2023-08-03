@@ -37,7 +37,7 @@ class AddAProtectorSpec extends AnyWordSpec with Matchers with ScalaCheckPropert
 
     "deserialise valid values" in {
 
-      val gen = Gen.oneOf(AddAProtector.values.toSeq)
+      val gen = Gen.oneOf(AddAProtector.values)
 
       forAll(gen) {
         addABeneficiary =>
@@ -59,7 +59,7 @@ class AddAProtectorSpec extends AnyWordSpec with Matchers with ScalaCheckPropert
 
     "serialise" in {
 
-      val gen = Gen.oneOf(AddAProtector.values.toSeq)
+      val gen = Gen.oneOf(AddAProtector.values)
 
       forAll(gen) {
         addAProtector =>

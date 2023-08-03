@@ -19,8 +19,9 @@ package controllers.actions
 import base.SpecBase
 import models.requests.{IdentifierRequest, OrganisationUser}
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
-import org.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.Result
 import uk.gov.hmrc.auth.core.Enrolments
 
@@ -45,9 +46,7 @@ class SaveSessionActionSpec extends SpecBase with MockitoSugar with ScalaFutures
 
         val futureResult = action.callFilter(IdentifierRequest(fakeRequest, OrganisationUser("id", Enrolments(Set()))))
 
-        whenReady(futureResult) { result =>
-          result mustBe None
-        }
+        futureResult.futureValue mustBe None
       }
 
     }

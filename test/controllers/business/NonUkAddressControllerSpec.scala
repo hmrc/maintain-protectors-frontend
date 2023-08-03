@@ -22,7 +22,8 @@ import forms.NonUkAddressFormProvider
 import models.{NonUkAddress, NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar
 import pages.business.{NamePage, NonUkAddressPage}
 import play.api.inject.bind
 import play.api.mvc.Call

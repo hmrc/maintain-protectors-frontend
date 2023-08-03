@@ -17,13 +17,13 @@
 package controllers.business.remove
 
 import java.time.{LocalDate, ZoneOffset}
-
 import base.SpecBase
 import connectors.TrustsConnector
 import forms.DateRemovedFromTrustFormProvider
 import models.protectors.{BusinessProtector, Protectors}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest

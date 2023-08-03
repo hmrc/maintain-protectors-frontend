@@ -21,6 +21,7 @@ import connectors.TrustsConnector
 import models.protectors.{BusinessProtector, IndividualProtector, Protectors}
 import models.{Name, NationalInsuranceNumber}
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.LocalDate

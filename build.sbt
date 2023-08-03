@@ -14,7 +14,7 @@ lazy val root = (project in file("."))
     DefaultBuildSettings.scalaSettings,
     DefaultBuildSettings.defaultSettings(),
     inConfig(Test)(testSettings),
-    scalaVersion := "2.13.10",
+    scalaVersion := "2.13.11",
     majorVersion := 0,
     name := appName,
     RoutesKeys.routesImport += "models._",
@@ -60,7 +60,7 @@ lazy val root = (project in file("."))
     uglify / includeFilter := GlobFilter("maintainprotectorsfrontend-*.js")
   )
   .configs(IntegrationTest)
-  .settings(integrationTestSettings() *)
+  .settings(integrationTestSettings())
 
 lazy val testSettings: Seq[Def.Setting[?]] = Seq(
   fork        := true,
@@ -69,4 +69,4 @@ lazy val testSettings: Seq[Def.Setting[?]] = Seq(
   )
 )
 
-addCommandAlias("scalastyleAll", "all scalastyle test:scalastyle it:scalastyle")
+addCommandAlias("scalastyleAll", "all scalastyle Test/scalastyle IntegrationTest/scalastyle")

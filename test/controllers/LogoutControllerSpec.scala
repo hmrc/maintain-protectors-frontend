@@ -18,6 +18,8 @@ package controllers
 
 import base.SpecBase
 import org.mockito.ArgumentMatchers.{eq => eqTo, _}
+import org.mockito.Mockito
+import org.mockito.Mockito.verify
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -41,7 +43,7 @@ class LogoutControllerSpec extends SpecBase {
 
     redirectLocation(result).value mustBe frontendAppConfig.logoutUrl
 
-    verify(mockAuditConnector, never)
+    verify(mockAuditConnector, Mockito.never())
       .sendExplicitAudit(eqTo("trusts"), any[Map[String, String]])(any(), any())
 
     application.stop()

@@ -22,8 +22,9 @@ import forms.NationalInsuranceNumberFormProvider
 import models.{Name, NormalMode}
 import navigation.Navigator
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
-import org.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import pages.individual.{IndexPage, NamePage, NationalInsuranceNumberPage}
 import play.api.data.Form
 import play.api.inject.bind
