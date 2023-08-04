@@ -23,6 +23,7 @@ import models.TaskStatus.Completed
 import models.protectors.{BusinessProtector, IndividualProtector, Protectors}
 import models.{AddAProtector, Name, NationalInsuranceNumber, RemoveProtector}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
@@ -73,7 +74,7 @@ class AddAProtectorControllerSpec extends SpecBase with ScalaFutures with Before
 
   lazy val featureNotAvailable: String = controllers.routes.FeatureNotAvailableController.onPageLoad().url
 
-  val protectorRows = List(
+  val protectorRows: List[AddRow] = List(
     AddRow("First Last", typeLabel = "Individual protector", "Change details", Some(controllers.individual.amend.routes.CheckDetailsController.extractAndRender(0).url), "Remove", Some(controllers.individual.remove.routes.RemoveIndividualProtectorController.onPageLoad(0).url)),
     AddRow("Humanitarian Company Ltd", typeLabel = "Business protector", "Change details", Some(controllers.business.amend.routes.CheckDetailsController.extractAndRender(0).url), "Remove", Some(controllers.business.remove.routes.RemoveBusinessProtectorController.onPageLoad(0).url))
   )
@@ -265,26 +266,6 @@ class AddAProtectorControllerSpec extends SpecBase with ScalaFutures with Before
         redirectLocation(result).value mustEqual "http://localhost:9788/maintain-a-trust/overview"
 
         verify(mockStoreConnector).updateTaskStatus(any(), eqTo(Completed))(any(), any())
-
-        application.stop()
-      }
-
-      "redirect to the maintain task list when the user says they want to add later" ignore {
-
-        val fakeService = new FakeService(protectors)
-
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(bind(classOf[TrustService]).toInstance(fakeService))
-          .build()
-
-        val request = FakeRequest(POST, submitAnotherRoute)
-          .withFormUrlEncodedBody(("value", AddAProtector.YesLater.toString))
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual "http://localhost:9788/maintain-a-trust/overview"
 
         application.stop()
       }

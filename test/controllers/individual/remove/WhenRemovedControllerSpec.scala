@@ -17,14 +17,14 @@
 package controllers.individual.remove
 
 import java.time.{LocalDate, ZoneOffset}
-
 import base.SpecBase
 import connectors.TrustsConnector
 import forms.DateRemovedFromTrustFormProvider
 import models.protectors.{IndividualProtector, Protectors}
 import models.{Name, NationalInsuranceNumber}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
@@ -72,7 +72,7 @@ class WhenRemovedControllerSpec extends SpecBase with MockitoSugar {
     provisional = false
   )
 
-  val protectors = List(individualProtector(1), individualProtector(2), individualProtector(3))
+  val protectors: List[IndividualProtector] = List(individualProtector(1), individualProtector(2), individualProtector(3))
 
   "WhenRemoved Controller" must {
 

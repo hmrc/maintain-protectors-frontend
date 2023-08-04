@@ -22,6 +22,7 @@ import models.TaskStatus.InProgress
 import models.{TrustDetails, TypeOfTrust, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -44,7 +45,7 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
   val isUnderlyingData5mld = false
 
   override def beforeEach(): Unit = {
-    reset(playbackRepository, mockTrustsStoreService)
+    reset[Any](playbackRepository, mockTrustsStoreService)
 
     when(playbackRepository.set(any()))
       .thenReturn(Future.successful(true))
@@ -77,7 +78,7 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       redirectLocation(result) mustBe Some(controllers.routes.AddAProtectorController.onPageLoad().url)
 
-      val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+      val uaCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(playbackRepository).set(uaCaptor.capture)
 
       uaCaptor.getValue.internalId mustBe "id"
@@ -110,7 +111,7 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       redirectLocation(result) mustBe Some(controllers.routes.AddAProtectorController.onPageLoad().url)
 
-      val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+      val uaCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(playbackRepository).set(uaCaptor.capture)
 
       uaCaptor.getValue.isTaxable mustBe true

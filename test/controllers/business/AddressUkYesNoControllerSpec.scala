@@ -22,7 +22,8 @@ import forms.YesNoFormProvider
 import models.{NormalMode, UserAnswers}
 import navigation.Navigator
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar
 import pages.business.{AddressUkYesNoPage, NamePage}
 import play.api.inject.bind
 import play.api.mvc.Call

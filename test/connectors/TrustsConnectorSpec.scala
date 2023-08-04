@@ -129,10 +129,8 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
 
       val processed = connector.getTrustDetails(identifier)
 
-      whenReady(processed) {
-        r =>
+      val r = processed.futureValue
           r mustBe TrustDetails(startDate = date, typeOfTrust = Some(TypeOfTrust.WillTrustOrIntestacyTrust), trustTaxable = None)
-      }
 
     }
 
@@ -167,10 +165,8 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
 
           val processed = connector.getProtectors(identifier)
 
-          whenReady(processed) {
-            result =>
+          val result = processed.futureValue
               result mustBe Protectors(protector = Nil, protectorCompany = Nil)
-          }
 
           application.stop()
         }
@@ -231,13 +227,11 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
 
           val processed = connector.getProtectors(identifier)
 
-          whenReady(processed) {
-            result =>
+          val result = processed.futureValue
               result mustBe
                 Protectors(protector = List(individual),
                   protectorCompany = List(business)
                 )
-          }
 
           application.stop()
         }
@@ -539,10 +533,7 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
 
           val processed = connector.isTrust5mld(identifier)
 
-          whenReady(processed) {
-            r =>
-              r mustBe true
-          }
+          processed.futureValue mustBe true
         }
       }
 
@@ -568,10 +559,7 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
 
           val processed = connector.isTrust5mld(identifier)
 
-          whenReady(processed) {
-            r =>
-              r mustBe false
-          }
+          processed.futureValue mustBe false
         }
       }
     }

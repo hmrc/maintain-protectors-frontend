@@ -21,9 +21,10 @@ import connectors.TrustAuthConnector
 import models.requests.{AgentUser, DataRequest}
 import models.{TrustAuthAgentAllowed, TrustAuthAllowed, TrustAuthDenied, TrustAuthInternalServerError}
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{EitherValues, RecoverMethods}
-import org.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
 import play.api.mvc.AnyContent
 import play.api.test.Helpers._
@@ -62,10 +63,8 @@ class AuthenticationServiceSpec extends SpecBase with MockitoSugar with ScalaFut
 
         val service = app.injector.instanceOf[AuthenticationService]
 
-        whenReady(service.authenticateForIdentifier[AnyContent](utr)) {
-          result =>
-            result.value mustBe dataRequest
-        }
+        val result = service.authenticateForIdentifier[AnyContent](utr).futureValue
+        result.value mustBe dataRequest
       }
     }
     "user requires additional action" must {
@@ -76,12 +75,10 @@ class AuthenticationServiceSpec extends SpecBase with MockitoSugar with ScalaFut
 
         val service = app.injector.instanceOf[AuthenticationService]
 
-        whenReady(service.authenticateForIdentifier[AnyContent](utr)) {
-          result =>
-            val r = Future.successful(result.left.value)
-            status(r) mustBe SEE_OTHER
-            redirectLocation(r) mustBe Some("some-url")
-        }
+        val result = service.authenticateForIdentifier[AnyContent](utr).futureValue
+        val r = Future.successful(result.left.value)
+        status(r) mustBe SEE_OTHER
+        redirectLocation(r) mustBe Some("some-url")
       }
     }
     "an internal server error is returned" must {
@@ -92,10 +89,8 @@ class AuthenticationServiceSpec extends SpecBase with MockitoSugar with ScalaFut
 
         val service = app.injector.instanceOf[AuthenticationService]
 
-        whenReady(service.authenticateForIdentifier[AnyContent](utr)) {
-          result =>
-            result.left.value.header.status mustBe INTERNAL_SERVER_ERROR
-        }
+        val result = service.authenticateForIdentifier[AnyContent](utr).futureValue
+        result.left.value.header.status mustBe INTERNAL_SERVER_ERROR
       }
     }
 
@@ -110,10 +105,8 @@ class AuthenticationServiceSpec extends SpecBase with MockitoSugar with ScalaFut
 
         val service = app.injector.instanceOf[AuthenticationService]
 
-        whenReady(service.authenticateAgent()) {
-          result =>
-            result.value mustBe "SomeARN"
-        }
+        val result = service.authenticateAgent().futureValue
+        result.value mustBe "SomeARN"
       }
     }
     "user requires additional action" must {
@@ -124,12 +117,10 @@ class AuthenticationServiceSpec extends SpecBase with MockitoSugar with ScalaFut
 
         val service = app.injector.instanceOf[AuthenticationService]
 
-        whenReady(service.authenticateAgent()) {
-          result =>
-            val r = Future.successful(result.left.value)
-            status(r) mustBe SEE_OTHER
-            redirectLocation(r) mustBe Some("some-url")
-        }
+        val result = service.authenticateAgent().futureValue
+        val r = Future.successful(result.left.value)
+        status(r) mustBe SEE_OTHER
+        redirectLocation(r) mustBe Some("some-url")
       }
     }
     "an internal server error is returned" must {
@@ -140,10 +131,8 @@ class AuthenticationServiceSpec extends SpecBase with MockitoSugar with ScalaFut
 
         val service = app.injector.instanceOf[AuthenticationService]
 
-        whenReady(service.authenticateAgent()) {
-          result =>
-            result.left.value.header.status mustBe INTERNAL_SERVER_ERROR
-        }
+        val result = service.authenticateAgent().futureValue
+        result.left.value.header.status mustBe INTERNAL_SERVER_ERROR
       }
     }
 

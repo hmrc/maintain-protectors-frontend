@@ -35,5 +35,4 @@ tmp
 bin
 /*.iml
 /*.ipr
-/.classpath
 *.iws

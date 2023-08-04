@@ -17,14 +17,14 @@
 package controllers.business.amend
 
 import java.time.LocalDate
-
 import base.SpecBase
 import connectors.TrustsConnector
 import models.UkAddress
 import models.protectors.BusinessProtector
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
-import org.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import pages.business._
 import play.api.inject.bind
 import play.api.test.FakeRequest

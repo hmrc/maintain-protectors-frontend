@@ -1,34 +1,32 @@
-import sbt._
+import sbt.*
 
 object AppDependencies {
-  import play.core.PlayVersion
 
-  val bootstrapVersion  = "7.15.0"
-  val hmrcMongo         = "0.74.0"
+  val bootstrapVersion = "7.20.0"
+  val mongoVersion = "1.3.0"
 
-  private val compile: Seq[ModuleID] = Seq(
+  val compile: Seq[ModuleID] = Seq(
     play.sbt.PlayImport.ws,
-    "uk.gov.hmrc.mongo" %% "hmrc-mongo-play-28"             % hmrcMongo,
-    "uk.gov.hmrc"       %% "play-frontend-hmrc"             % "6.2.0-play-28",
-    "uk.gov.hmrc"       %% "domain"                         % "8.2.0-play-28",
+    "uk.gov.hmrc.mongo" %% "hmrc-mongo-play-28"             % mongoVersion,
+    "uk.gov.hmrc"       %% "play-frontend-hmrc"             % "7.16.0-play-28",
     "uk.gov.hmrc"       %% "play-conditional-form-mapping"  % "1.13.0-play-28",
-    "uk.gov.hmrc"       %% "bootstrap-frontend-play-28"     % bootstrapVersion
+    "uk.gov.hmrc"       %% "bootstrap-frontend-play-28"     % bootstrapVersion,
+    "uk.gov.hmrc"       %% "domain"                         % "8.3.0-play-28",
+    "org.typelevel"     %% "cats-core"                      % "2.9.0"
   )
 
-  private val test: Seq[ModuleID] = Seq(
+  val test: Seq[ModuleID] = Seq(
     "uk.gov.hmrc"                 %% "bootstrap-test-play-28"   % bootstrapVersion,
-    "org.scalatest"               %% "scalatest"                % "3.2.15",
-    "org.scalatestplus.play"      %% "scalatestplus-play"       % "5.1.0",
-    "org.scalatestplus"           %% "scalatestplus-scalacheck" % "3.1.0.0-RC2",
-    "wolfendale"                  %% "scalacheck-gen-regexp"    % "0.1.2",
-    "uk.gov.hmrc.mongo"           %% "hmrc-mongo-test-play-28"  % hmrcMongo,
-    "org.jsoup"                   %  "jsoup"                    % "1.15.4",
-    "com.typesafe.play"           %% "play-test"                % PlayVersion.current,
-    "org.mockito"                 %% "mockito-scala-scalatest"  % "1.17.14",
-    "org.scalacheck"              %% "scalacheck"               % "1.17.0",
+    "org.scalatest"               %% "scalatest"                % "3.2.16",
+    "uk.gov.hmrc.mongo"           %% "hmrc-mongo-test-play-28"  % mongoVersion,
+    "org.scalatestplus"           %% "scalacheck-1-17"          % "3.2.16.0",
+    "io.github.wolfendale"        %% "scalacheck-gen-regexp"    % "1.1.0",
+    "org.jsoup"                   %  "jsoup"                    % "1.16.1",
+    "org.scalatestplus"           %% "mockito-4-11"             % "3.2.16.0",
     "com.github.tomakehurst"      %  "wiremock-standalone"      % "2.27.2",
-    "com.vladsch.flexmark"        %  "flexmark-all"             % "0.64.0"
+    "com.vladsch.flexmark"        %  "flexmark-all"             % "0.64.8"
   ).map(_ % "it, test")
 
   def apply(): Seq[ModuleID] = compile ++ test
+
 }

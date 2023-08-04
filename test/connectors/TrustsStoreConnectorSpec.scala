@@ -54,10 +54,7 @@ class TrustsStoreConnectorSpec extends SpecBase
 
         val futureResult = connector.updateTaskStatus("123456789", Completed)
 
-        whenReady(futureResult) {
-          r =>
-            r.status mustBe 200
-        }
+        futureResult.futureValue.status mustBe 200
 
         application.stop()
       }

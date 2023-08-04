@@ -17,14 +17,14 @@
 package controllers.individual.add
 
 import java.time.{LocalDate, ZoneOffset}
-
 import base.SpecBase
 import config.annotations.IndividualProtector
 import forms.DateAddedToTrustFormProvider
 import models.{Name, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar
 import pages.individual.{NamePage, StartDatePage}
 import play.api.data.Form
 import play.api.inject.bind

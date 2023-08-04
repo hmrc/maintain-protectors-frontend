@@ -17,14 +17,14 @@
 package controllers.individual.amend
 
 import java.time.LocalDate
-
 import base.SpecBase
 import connectors.TrustsConnector
 import models.protectors.IndividualProtector
 import models.{Name, NationalInsuranceNumber}
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
-import org.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import pages.individual._
 import play.api.inject.bind
 import play.api.test.FakeRequest

@@ -22,7 +22,8 @@ import forms.IdCardDetailsFormProvider
 import models.{IdCard, Mode, Name, NormalMode, UserAnswers}
 import navigation.Navigator
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar
 import pages.individual.{IdCardDetailsPage, NamePage}
 import play.api.inject.bind
 import play.api.mvc.Call

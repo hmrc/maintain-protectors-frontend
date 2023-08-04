@@ -19,8 +19,9 @@ package controllers.actions
 import base.SpecBase
 import models.UtrSession
 import models.requests.{IdentifierRequest, OptionalDataRequest, OrganisationUser}
+import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
-import org.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import repositories.PlaybackRepository
 import uk.gov.hmrc.auth.core.Enrolments
 import uk.gov.hmrc.http.HeaderCarrier
@@ -50,9 +51,7 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
 
         val futureResult = action.callTransform(IdentifierRequest(fakeRequest, OrganisationUser("id", Enrolments(Set()))))
 
-        whenReady(futureResult) { result =>
-          result.userAnswers.isEmpty mustBe true
-        }
+        futureResult.futureValue.userAnswers.isEmpty mustBe true
       }
 
     }
@@ -70,9 +69,7 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
 
         val futureResult = action.callTransform(IdentifierRequest(fakeRequest, OrganisationUser("id", Enrolments(Set()))))
 
-        whenReady(futureResult) { result =>
-          result.userAnswers.isEmpty mustBe true
-        }
+        futureResult.futureValue.userAnswers.isEmpty mustBe true
       }
     }
 
@@ -89,9 +86,7 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
 
         val futureResult = action.callTransform(IdentifierRequest(fakeRequest, OrganisationUser("id", Enrolments(Set()))))
 
-        whenReady(futureResult) { result =>
-          result.userAnswers.isDefined mustBe true
-        }
+        futureResult.futureValue.userAnswers.isDefined mustBe true
       }
     }
   }
