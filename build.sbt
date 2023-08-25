@@ -29,9 +29,8 @@ lazy val root = (project in file("."))
       "controllers.routes._"
     ),
     PlayKeys.playDefaultPort := 9796,
-    ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*filters.*;.*handlers.*;.*components.*;.*Mode.*;" +
-      ".*BuildInfo.*;.*javascript.*;.*FrontendAuditConnector.*;.*Routes.*;.*GuiceInjector;.*package.*;" +
-      ".*ControllerConfiguration;.*LanguageSwitchController",
+    ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*handlers.*;.*components.*;.*Mode.*;" +
+      ".*BuildInfo.*;.*Routes.*;.*package.*;",
     ScoverageKeys.coverageMinimumStmtTotal := 91,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true,
@@ -47,8 +46,7 @@ lazy val root = (project in file("."))
           "javascripts/maintainprotectorsfrontend.js",
           "javascripts/autocomplete.js",
           "javascripts/libraries/location-autocomplete.min.js",
-          "javascripts/iebacklink.js",
-          "javascripts/print.js"
+          "javascripts/iebacklink.js"
         ))
     ),
     // prevent removal of unused code which generates warning errors due to use of third-party libs
