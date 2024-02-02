@@ -18,11 +18,11 @@ package forms
 
 import forms.helpers.WhitespaceHelper._
 import forms.mappings.Mappings
+import models.UkAddress
+import play.api.data.Form
+import play.api.data.Forms._
 
 import javax.inject.Inject
-import models.UkAddress
-import play.api.data.Forms._
-import play.api.data.{Form, Forms}
 
 class UkAddressFormProvider @Inject() extends Mappings {
 
@@ -45,22 +45,19 @@ class UkAddressFormProvider @Inject() extends Mappings {
               regexp(Validation.addressLineRegex, "ukAddress.error.line2.invalidCharacters")
             )),
       "line3" ->
-        optional(Forms.text
-          .transform(trimWhitespace, identity[String])
+        optional(text()
           .verifying(
             firstError(
               maxLength(35, "ukAddress.error.line3.length"),
               regexp(Validation.addressLineRegex, "ukAddress.error.line3.invalidCharacters")
             ))).transform(emptyToNone, identity[Option[String]]),
       "line4" ->
-        optional(Forms.text
-          .transform(trimWhitespace, identity[String])
+        optional(text()
           .verifying(
             firstError(
               maxLength(35, "ukAddress.error.line4.length"),
               regexp(Validation.addressLineRegex, "ukAddress.error.line4.invalidCharacters")
             ))).transform(emptyToNone, identity[Option[String]]),
-
       "postcode" ->
         postcode("ukAddress.error.postcode.required", "ukAddress.error.postcode.invalidCharacters")
           .verifying(
