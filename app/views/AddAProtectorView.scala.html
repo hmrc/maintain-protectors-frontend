@@ -65,7 +65,7 @@
             field = form("value"),
             legend = messages("addAProtector.additional-content"),
             legendClass = Some("govuk-heading-m"),
-            inputs = mapRadioOptionsToRadioItems(form("value"), false, AddAProtector.options)
+            inputs = mapRadioOptionsToRadioItems(form("value"), trackGa = false, AddAProtector.options)
         )
 
         @submitButton()

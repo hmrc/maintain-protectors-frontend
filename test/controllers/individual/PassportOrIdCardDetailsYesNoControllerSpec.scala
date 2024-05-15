@@ -28,8 +28,9 @@ class PassportOrIdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSu
   private val index = 0
 
   val baseAnswers: UserAnswers = emptyUserAnswers.set(IndexPage, index).success.value
-  
-  private lazy val passportOrIdCardDetailsYesNoRoute: String = routes.PassportOrIdCardDetailsYesNoController.onPageLoad().url
+
+  private lazy val passportOrIdCardDetailsYesNoRoute: String =
+    routes.PassportOrIdCardDetailsYesNoController.onPageLoad().url
 
   "PassportOrIdCardDetailsYesNo Controller" must {
 
@@ -43,7 +44,9 @@ class PassportOrIdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSu
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.individual.amend.routes.CheckDetailsController.renderFromUserAnswers(index).url
+      redirectLocation(result).value mustEqual controllers.individual.amend.routes.CheckDetailsController
+        .renderFromUserAnswers(index)
+        .url
 
       application.stop()
     }
@@ -60,7 +63,9 @@ class PassportOrIdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSu
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.individual.amend.routes.CheckDetailsController.renderFromUserAnswers(index).url
+      redirectLocation(result).value mustEqual controllers.individual.amend.routes.CheckDetailsController
+        .renderFromUserAnswers(index)
+        .url
 
       application.stop()
     }
