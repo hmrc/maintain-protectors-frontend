@@ -36,13 +36,11 @@ class TrustsConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig) {
                      (implicit hc: HeaderCarrier, ex: ExecutionContext): Future[TrustDetails] = {
     val url: String = s"${trustsUrl}/trust-details/$identifier/transformed"
     http.get(url"$url").execute[TrustDetails]
-    //http.GET[TrustDetails](url)
   }
 
   def getProtectors(identifier: String)
                    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Protectors] = {
     val url: String = s"$protectorsUrl/$identifier/transformed"
-   // http.GET[Protectors](url)
     http.get(url"$url").execute[Protectors]
   }
 
@@ -50,13 +48,11 @@ class TrustsConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig) {
                             (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     val url: String = s"$protectorsUrl/add-individual/$identifier"
     http.post(url"$url").withBody(Json.toJson(protector)).execute[HttpResponse]
- //   http.POST[JsValue, HttpResponse](url, Json.toJson(protector))
   }
 
   def amendIndividualProtector(identifier: String, index: Int, individual: IndividualProtector)
                               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     val url: String = s"$protectorsUrl/amend-individual/$identifier/$index"
-   // http.POST[JsValue, HttpResponse](url, Json.toJson(individual))
     http.post(url"$url").withBody(Json.toJson(individual)).execute[HttpResponse]
 
   }
@@ -64,7 +60,6 @@ class TrustsConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig) {
   def addBusinessProtector(identifier: String, protector: BusinessProtector)
                           (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     val url: String = s"$protectorsUrl/add-business/$identifier"
-    //http.POST[JsValue, HttpResponse](url, Json.toJson(protector))
     http.post(url"$url").withBody(Json.toJson(protector)).execute[HttpResponse]
 
   }
@@ -72,7 +67,6 @@ class TrustsConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig) {
   def amendBusinessProtector(identifier: String, index: Int, protector: BusinessProtector)
                             (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     val url: String = s"$protectorsUrl/amend-business/$identifier/$index"
-   // http.POST[JsValue, HttpResponse](url, Json.toJson(protector))
     http.post(url"$url").withBody(Json.toJson(protector)).execute[HttpResponse]
 
   }
@@ -80,7 +74,6 @@ class TrustsConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig) {
   def removeProtector(identifier: String, protector: RemoveProtector)
                      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     val url: String = s"$protectorsUrl/$identifier/remove"
-  //  http.PUT[JsValue, HttpResponse](url, Json.toJson(protector))
     http.put(url"$url").withBody(Json.toJson(protector)).execute[HttpResponse]
 
   }
@@ -88,7 +81,6 @@ class TrustsConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig) {
   def isTrust5mld(identifier: String)
                  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
     val url: String = s"$trustsUrl/$identifier/is-trust-5mld"
-   // http.GET[Boolean](url)
     http.get(url"$url").execute[Boolean]
   }
 
