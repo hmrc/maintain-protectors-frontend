@@ -87,6 +87,6 @@ class CheckDetailsController @Inject()(
           connector.amendBusinessProtector(request.userAnswers.identifier, index, business).map(_ =>
             Redirect(controllers.routes.AddAProtectorController.onPageLoad())
           )
-      }.getOrElse(Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate)))
+      }.getOrElse(errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html)))
   }
 }
