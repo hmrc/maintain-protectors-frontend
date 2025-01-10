@@ -30,8 +30,8 @@ class TrustsStoreConnector @Inject()(http: HttpClientV2, config: FrontendAppConf
 
   def updateTaskStatus(identifier: String, taskStatus: TaskStatus)
                       (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    val url: String = s"${config.trustsStoreUrl}/trusts-store/maintain/tasks/update-protectors/$identifier"
-    http.post(url"$url").withBody(Json.toJson(taskStatus)).execute[HttpResponse]
+    val fullUrl: String = s"${config.trustsStoreUrl}/trusts-store/maintain/tasks/update-protectors/$identifier"
+    http.post(url"$fullUrl").withBody(Json.toJson(taskStatus)).execute[HttpResponse]
 
   }
 
