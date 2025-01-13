@@ -21,7 +21,6 @@ import connectors.TrustsConnector
 import controllers.actions._
 import controllers.actions.business.NameRequiredAction
 import handlers.ErrorHandler
-import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -30,7 +29,8 @@ import utils.print.BusinessProtectorPrintHelper
 import viewmodels.AnswerSection
 import views.html.business.add.CheckDetailsView
 
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 class CheckDetailsController @Inject()(
                                         override val messagesApi: MessagesApi,
@@ -57,7 +57,7 @@ class CheckDetailsController @Inject()(
 
       mapper(request.userAnswers) match {
         case None =>
-          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+          errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
         case Some(protector) =>
           connector.addBusinessProtector(request.userAnswers.identifier, protector).map(_ =>
             Redirect(controllers.routes.AddAProtectorController.onPageLoad())

@@ -57,7 +57,7 @@ class CheckDetailsController @Inject()(
 
       mapper(request.userAnswers) match {
         case None =>
-          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+          errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
         case Some(protector) =>
           connector.addIndividualProtector(request.userAnswers.identifier, protector).map(_ =>
             Redirect(controllers.routes.AddAProtectorController.onPageLoad())

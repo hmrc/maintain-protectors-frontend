@@ -28,7 +28,7 @@
     govukSummaryList: GovukSummaryList
 )
 
-@(answersSection: Seq[AnswerSection], index: Int)(implicit request: Request[_], messages: Messages)
+@(answersSection: Seq[AnswerSection], index: Int)(implicit request: RequestHeader, messages: Messages)
 
 @main_template(
     title = messages("businessProtector.checkDetails.title"),
