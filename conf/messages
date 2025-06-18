@@ -1,4 +1,4 @@
-service.name = Register and Maintain a Trust
+service.name = Manage a trust
 
 checkYourAnswers.title = Check Your Answers
 checkYourAnswers.heading = Check Your Answers
@@ -31,7 +31,7 @@ index.guidance = Welcome to your new frontend. Please see the README file for a 
 session_expired.title = For your security, we signed you out
 session_expired.heading = For your security, we signed you out
 session_expired.guidance = This is because you have been inactive on the service for 15 minutes.
-session_expired.guidance.2 = You will need to sign in to continue maintaining the trust.
+session_expired.guidance.2 = You will need to sign in to continue managing the trust.
 
 site.back = Back
 site.delete = Remove
@@ -46,7 +46,7 @@ site.iDontKnow = I don’t know
 site.dontKnow = I don’t know or not provided
 site.or = or
 site.continue = Continue
-site.service_name = Register and Maintain a Trust
+site.service_name = Manage a trust
 site.service_section = Protectors
 site.textarea.char_limit = (Limit is {0} characters)
 site.sign_out = Sign out
