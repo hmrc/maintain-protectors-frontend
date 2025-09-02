@@ -30,7 +30,6 @@ class FrontendAppConfigSpec extends SpecBase{
     )
   }
 
-
   "return the correct route to switch language - EN" in {
     val enCall = appConfig.routeToSwitchLanguage("en")
     enCall.url mustBe "/maintain-a-trust/protectors/language/en"
@@ -41,16 +40,14 @@ class FrontendAppConfigSpec extends SpecBase{
     cyCall.url mustBe "/maintain-a-trust/protectors/language/cy"
   }
 
-    "helplineUrl in English mode return trusts helpline URL" in {
-        val messages = MessagesImpl(Lang("en"), messagesApi)
-       appConfig.helplineUrl(messages) mustBe "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/trusts"
-      }
+  "helplineUrl in English mode return trusts helpline URL" in {
+    val messages = MessagesImpl(Lang("en"), messagesApi)
+    appConfig.helplineUrl(messages) mustBe "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/trusts"
+  }
 
-      "helplineUrl in Welsh mode return trusts helpline URL" in {
-        val messages = MessagesImpl(Lang("cy"), messagesApi)
-        appConfig.helplineUrl(messages) mustBe "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/welsh-language-helplines"
-      }
-
-
+  "helplineUrl in Welsh mode return trusts helpline URL" in {
+    val messages = MessagesImpl(Lang("cy"), messagesApi)
+    appConfig.helplineUrl(messages) mustBe "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/welsh-language-helplines"
+  }
 
 }
