@@ -1,4 +1,3 @@
-import scoverage.ScoverageKeys
 import uk.gov.hmrc.DefaultBuildSettings
 
 ThisBuild / scalaVersion := "2.13.16"
@@ -22,10 +21,7 @@ lazy val microservice = Project(appName, file("."))
       "controllers.routes._"
     ),
     PlayKeys.playDefaultPort := 9796,
-    ScoverageKeys.coverageExcludedFiles := "<empty>;.*handlers.*;.*components.*;.*Mode.*;.*Routes.*;",
-    ScoverageKeys.coverageMinimumStmtTotal := 91,
-    ScoverageKeys.coverageFailOnMinimum := true,
-    ScoverageKeys.coverageHighlighting := true,
+    CodeCoverageSettings(),
     scalacOptions ++= Seq("-feature", "-Wconf:src=routes/.*:s", "-Wconf:cat=unused-imports&src=html/.*:s"),
     Test / javaOptions ++= Seq("-Dconfig.resource=test.application.conf"),
     libraryDependencies ++= AppDependencies(),
@@ -55,5 +51,3 @@ lazy val it = project
   .enablePlugins(PlayScala)
   .dependsOn(microservice % "test->test")
   .settings(DefaultBuildSettings.itSettings())
-
-addCommandAlias("scalastyleAll", "all scalastyle Test/scalastyle it/Test/scalastyle")
