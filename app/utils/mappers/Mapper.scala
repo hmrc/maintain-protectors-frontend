@@ -25,17 +25,18 @@ import play.api.libs.json.{JsError, JsSuccess, Reads}
 
 import scala.reflect.{ClassTag, classTag}
 
-abstract class Mapper[T <: Protector : ClassTag] extends Logging {
+abstract class Mapper[T <: Protector: ClassTag] extends Logging {
 
-  def apply(answers: UserAnswers): Option[T] = {
+  def apply(answers: UserAnswers): Option[T] =
     answers.data.validate[T](reads) match {
       case JsSuccess(value, _) =>
         Some(value)
-      case JsError(errors) =>
-        logger.error(s"[UTR/URN: ${answers.identifier}] Failed to rehydrate ${classTag[T].runtimeClass.getSimpleName} from UserAnswers due to $errors")
+      case JsError(errors)     =>
+        logger.error(
+          s"[UTR/URN: ${answers.identifier}] Failed to rehydrate ${classTag[T].runtimeClass.getSimpleName} from UserAnswers due to $errors"
+        )
         None
     }
-  }
 
   val reads: Reads[T]
 
@@ -48,37 +49,41 @@ abstract class Mapper[T <: Protector : ClassTag] extends Logging {
   def ukAddressPage: QuestionPage[UkAddress]
   def nonUkAddressPage: QuestionPage[NonUkAddress]
 
-  def readCountryOfResidence: Reads[Option[String]] = {
-    readCountryOfResidenceOrNationality(countryOfResidenceYesNoPage, countryOfResidenceUkYesNoPage, countryOfResidencePage)
-  }
+  def readCountryOfResidence: Reads[Option[String]] =
+    readCountryOfResidenceOrNationality(
+      countryOfResidenceYesNoPage,
+      countryOfResidenceUkYesNoPage,
+      countryOfResidencePage
+    )
 
-  def readCountryOfResidenceOrNationality(yesNoPage: QuestionPage[Boolean],
-                                          ukYesNoPage: QuestionPage[Boolean],
-                                          page: QuestionPage[String]): Reads[Option[String]] = {
+  def readCountryOfResidenceOrNationality(
+    yesNoPage: QuestionPage[Boolean],
+    ukYesNoPage: QuestionPage[Boolean],
+    page: QuestionPage[String]
+  ): Reads[Option[String]] =
     yesNoPage.path.readNullable[Boolean].flatMap[Option[String]] {
-      case Some(true) => ukYesNoPage.path.read[Boolean].flatMap {
-        case true => Reads(_ => JsSuccess(Some(GB)))
-        case false => page.path.read[String].map(Some(_))
-      }
-      case _ => Reads(_ => JsSuccess(None))
+      case Some(true) =>
+        ukYesNoPage.path.read[Boolean].flatMap {
+          case true  => Reads(_ => JsSuccess(Some(GB)))
+          case false => page.path.read[String].map(Some(_))
+        }
+      case _          => Reads(_ => JsSuccess(None))
     }
-  }
 
-  def readAddress: Reads[Option[Address]] = {
+  def readAddress: Reads[Option[Address]] =
     addressDeciderPage.path.readNullable[Boolean].flatMap {
-      case Some(false) => addressYesNoPage.path.read[Boolean].flatMap[Option[Address]] {
-        case true => readUkOrNonUkAddress
-        case false => Reads(_ => JsSuccess(None))
-      }
-      case _ => Reads(_ => JsSuccess(None))
+      case Some(false) =>
+        addressYesNoPage.path.read[Boolean].flatMap[Option[Address]] {
+          case true  => readUkOrNonUkAddress
+          case false => Reads(_ => JsSuccess(None))
+        }
+      case _           => Reads(_ => JsSuccess(None))
     }
-  }
 
-  private def readUkOrNonUkAddress: Reads[Option[Address]] = {
+  private def readUkOrNonUkAddress: Reads[Option[Address]] =
     ukAddressYesNoPage.path.read[Boolean].flatMap[Option[Address]] {
-      case true => ukAddressPage.path.read[UkAddress].map(Some(_))
+      case true  => ukAddressPage.path.read[UkAddress].map(Some(_))
       case false => nonUkAddressPage.path.read[NonUkAddress].map(Some(_))
     }
-  }
 
 }

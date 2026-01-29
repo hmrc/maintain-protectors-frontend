@@ -40,11 +40,11 @@ import scala.concurrent.Future
 
 class PassportDetailsControllerSpec extends SpecBase with MockitoSugar {
 
-  private val formProvider = new PassportDetailsFormProvider()
+  private val formProvider         = new PassportDetailsFormProvider()
   private def form: Form[Passport] = formProvider.withPrefix("individualProtector")
 
   private def onwardRoute: Call = Call("GET", "/foo")
-  private val name: Name = Name("FirstName", None, "LastName")
+  private val name: Name        = Name("FirstName", None, "LastName")
 
   private val mode: Mode = NormalMode
 
@@ -79,8 +79,12 @@ class PassportDetailsControllerSpec extends SpecBase with MockitoSugar {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = baseAnswers
-        .set(NamePage, name).success.value
-        .set(PassportDetailsPage, validData).success.value
+        .set(NamePage, name)
+        .success
+        .value
+        .set(PassportDetailsPage, validData)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -110,8 +114,8 @@ class PassportDetailsControllerSpec extends SpecBase with MockitoSugar {
       val request =
         FakeRequest(POST, passportDetailsRoute)
           .withFormUrlEncodedBody(
-            "country" -> "country",
-            "number" -> "123456",
+            "country"          -> "country",
+            "number"           -> "123456",
             "expiryDate.day"   -> validData.expirationDate.getDayOfMonth.toString,
             "expiryDate.month" -> validData.expirationDate.getMonthValue.toString,
             "expiryDate.year"  -> validData.expirationDate.getYear.toString
@@ -167,8 +171,8 @@ class PassportDetailsControllerSpec extends SpecBase with MockitoSugar {
       val request =
         FakeRequest(POST, passportDetailsRoute)
           .withFormUrlEncodedBody(
-            "country" -> "country",
-            "number" -> "123456",
+            "country"          -> "country",
+            "number"           -> "123456",
             "expiryDate.day"   -> validData.expirationDate.getDayOfMonth.toString,
             "expiryDate.month" -> validData.expirationDate.getMonthValue.toString,
             "expiryDate.year"  -> validData.expirationDate.getYear.toString
@@ -183,4 +187,5 @@ class PassportDetailsControllerSpec extends SpecBase with MockitoSugar {
       application.stop()
     }
   }
+
 }

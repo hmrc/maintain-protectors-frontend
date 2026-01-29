@@ -31,14 +31,32 @@ class InfoViewSpec extends ViewBehaviours {
       view = applyView,
       messageKeyPrefix = "protector.info",
       messageKeyParam = "",
-      expectedGuidanceKeys = "section1.subheading", "section1.p1", "section1.bullet1", "section1.bullet2", "section1.bullet3",
-      "section2.subheading", "section2.p1", "section2.bullet1", "section2.bullet2",
-      "details.heading", "details.subheading1", "details.p1", "details.subheading2", "details.p2",
-      "section3.subheading", "section3.p1", "section3.p2", "section3.bullet1", "section3.bullet2", "section3.bullet3", "section3.bullet4"
+      expectedGuidanceKeys = "section1.subheading",
+      "section1.p1",
+      "section1.bullet1",
+      "section1.bullet2",
+      "section1.bullet3",
+      "section2.subheading",
+      "section2.p1",
+      "section2.bullet1",
+      "section2.bullet2",
+      "details.heading",
+      "details.subheading1",
+      "details.p1",
+      "details.subheading2",
+      "details.p2",
+      "section3.subheading",
+      "section3.p1",
+      "section3.p2",
+      "section3.bullet1",
+      "section3.bullet2",
+      "section3.bullet3",
+      "section3.bullet4"
     )
 
     behave like pageWithBackLink(applyView)
 
     behave like pageWithASubmitButton(applyView)
   }
+
 }

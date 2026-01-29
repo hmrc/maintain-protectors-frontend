@@ -32,25 +32,24 @@ import views.html.individual.DateOfBirthView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DateOfBirthController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       sessionRepository: PlaybackRepository,
-                                       @IndividualProtector navigator: Navigator,
-                                       standardActionSets: StandardActionSets,
-                                       nameAction: NameRequiredAction,
-                                       formProvider: DateOfBirthFormProvider,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       view: DateOfBirthView
-                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class DateOfBirthController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: PlaybackRepository,
+  @IndividualProtector navigator: Navigator,
+  standardActionSets: StandardActionSets,
+  nameAction: NameRequiredAction,
+  formProvider: DateOfBirthFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: DateOfBirthView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   def form = formProvider.withPrefix("individualProtector.dateOfBirth")
 
-
   def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
-
       val preparedForm = request.userAnswers.get(DateOfBirthPage) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
 
@@ -59,15 +58,16 @@ class DateOfBirthController @Inject()(
 
   def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
     implicit request =>
-
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, request.protectorName, mode))),
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(DateOfBirthPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(DateOfBirthPage, mode, updatedAnswers))
-      )
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.protectorName, mode))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(DateOfBirthPage, value))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(DateOfBirthPage, mode, updatedAnswers))
+        )
   }
+
 }

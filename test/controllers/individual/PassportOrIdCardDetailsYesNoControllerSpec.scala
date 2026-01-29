@@ -102,4 +102,5 @@ class PassportOrIdCardDetailsYesNoControllerSpec extends SpecBase with MockitoSu
       application.stop()
     }
   }
+
 }

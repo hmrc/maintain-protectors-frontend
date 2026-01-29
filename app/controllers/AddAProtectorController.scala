@@ -37,104 +37,106 @@ import views.html.{AddAProtectorView, AddAProtectorYesNoView, MaxedOutProtectors
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddAProtectorController @Inject()(
-                                         override val messagesApi: MessagesApi,
-                                         standardActionSets: StandardActionSets,
-                                         val controllerComponents: MessagesControllerComponents,
-                                         val appConfig: FrontendAppConfig,
-                                         trustStoreConnector: TrustsStoreConnector,
-                                         trustService: TrustService,
-                                         addAnotherFormProvider: AddAProtectorFormProvider,
-                                         yesNoFormProvider: YesNoFormProvider,
-                                         repository: PlaybackRepository,
-                                         addAnotherView: AddAProtectorView,
-                                         yesNoView: AddAProtectorYesNoView,
-                                         completeView: MaxedOutProtectorsView,
-                                         navigator: ProtectorNavigator
-                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+class AddAProtectorController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  val controllerComponents: MessagesControllerComponents,
+  val appConfig: FrontendAppConfig,
+  trustStoreConnector: TrustsStoreConnector,
+  trustService: TrustService,
+  addAnotherFormProvider: AddAProtectorFormProvider,
+  yesNoFormProvider: YesNoFormProvider,
+  repository: PlaybackRepository,
+  addAnotherView: AddAProtectorView,
+  yesNoView: AddAProtectorYesNoView,
+  completeView: MaxedOutProtectorsView,
+  navigator: ProtectorNavigator
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport with Logging {
 
   private val addAnotherForm: Form[AddAProtector] = addAnotherFormProvider()
 
   private val yesNoForm: Form[Boolean] = yesNoFormProvider.withPrefix("addAProtectorYesNo")
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
-    implicit request =>
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async { implicit request =>
+    for {
+      protectors     <- trustService.getProtectors(request.userAnswers.identifier)
+      updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
+      _              <- repository.set(updatedAnswers)
+    } yield {
 
-      for {
-        protectors <- trustService.getProtectors(request.userAnswers.identifier)
-        updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
-        _ <- repository.set(updatedAnswers)
-      } yield {
+      val protectorRows = new AddAProtectorViewHelper(protectors).rows
 
-        val protectorRows = new AddAProtectorViewHelper(protectors).rows
-
-        protectors match {
-          case Protectors(Nil, Nil) =>
-            Ok(yesNoView(yesNoForm))
-          case _ =>
-            if (protectors.nonMaxedOutOptions.isEmpty) {
-              Ok(completeView(
+      protectors match {
+        case Protectors(Nil, Nil) =>
+          Ok(yesNoView(yesNoForm))
+        case _                    =>
+          if (protectors.nonMaxedOutOptions.isEmpty) {
+            Ok(
+              completeView(
                 inProgressProtectors = protectorRows.inProgress,
                 completeProtectors = protectorRows.complete,
                 heading = protectors.addToHeading()
-              ))
-            } else {
-              Ok(addAnotherView(
+              )
+            )
+          } else {
+            Ok(
+              addAnotherView(
                 form = addAnotherForm,
                 inProgressProtectors = protectorRows.inProgress,
                 completeProtectors = protectorRows.complete,
                 heading = protectors.addToHeading(),
                 maxedOut = protectors.maxedOutOptions.map(x => x.messageKey)
-              ))
-            }
-        }
+              )
+            )
+          }
       }
+    }
   }
 
-  def submitOne(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
-    implicit request =>
-
-      yesNoForm.bindFromRequest().fold(
-        (formWithErrors: Form[_]) => {
-          Future.successful(BadRequest(yesNoView(formWithErrors)))
-        },
-        addNow => {
+  def submitOne(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async { implicit request =>
+    yesNoForm
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[_]) => Future.successful(BadRequest(yesNoView(formWithErrors))),
+        addNow =>
           if (addNow) {
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
-              _ <- repository.set(updatedAnswers)
+              _              <- repository.set(updatedAnswers)
             } yield Redirect(controllers.routes.InfoController.onPageLoad())
           } else {
             submitComplete()(request)
           }
-        }
       )
   }
 
-  def submitAnother(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
-    implicit request =>
-
-      trustService.getProtectors(request.userAnswers.identifier).flatMap { protectors =>
-        addAnotherForm.bindFromRequest().fold(
+  def submitAnother(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async { implicit request =>
+    trustService.getProtectors(request.userAnswers.identifier).flatMap { protectors =>
+      addAnotherForm
+        .bindFromRequest()
+        .fold(
           (formWithErrors: Form[_]) => {
 
             val rows = new AddAProtectorViewHelper(protectors).rows
 
-            Future.successful(BadRequest(
-              addAnotherView(
-                formWithErrors,
-                rows.inProgress,
-                rows.complete,
-                protectors.addToHeading(),
-                maxedOut = protectors.maxedOutOptions.map(x => x.messageKey)
+            Future.successful(
+              BadRequest(
+                addAnotherView(
+                  formWithErrors,
+                  rows.inProgress,
+                  rows.complete,
+                  protectors.addToHeading(),
+                  maxedOut = protectors.maxedOutOptions.map(x => x.messageKey)
+                )
               )
-            ))
+            )
           },
           {
             case AddAProtector.YesNow =>
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
-                _ <- repository.set(updatedAnswers)
+                _              <- repository.set(updatedAnswers)
               } yield Redirect(navigator.addProtectorRoute(protectors))
 
             case AddAProtector.YesLater =>
@@ -144,18 +146,19 @@ class AddAProtectorController @Inject()(
               submitComplete()(request)
           }
         )
-      }
+    }
   }
 
-  def submitComplete(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
-    implicit request =>
-
-      for {
-        _ <- trustStoreConnector.updateTaskStatus(request.userAnswers.identifier, Completed)
-      } yield {
-        logger.info(s"[Session ID: ${Session.id(hc)}]" +
-          s" user has finished maintaining protectors and is returning to the task list")
-        Redirect(appConfig.maintainATrustOverview)
-      }
+  def submitComplete(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async { implicit request =>
+    for {
+      _ <- trustStoreConnector.updateTaskStatus(request.userAnswers.identifier, Completed)
+    } yield {
+      logger.info(
+        s"[Session ID: ${Session.id(hc)}]" +
+          s" user has finished maintaining protectors and is returning to the task list"
+      )
+      Redirect(appConfig.maintainATrustOverview)
+    }
   }
+
 }

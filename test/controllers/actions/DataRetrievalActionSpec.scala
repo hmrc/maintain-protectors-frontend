@@ -31,7 +31,8 @@ import scala.concurrent.Future
 
 class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutures {
 
-  class Harness(playbackRepository: PlaybackRepository) extends DataRetrievalActionImpl(mockSessionRepository, playbackRepository) {
+  class Harness(playbackRepository: PlaybackRepository)
+      extends DataRetrievalActionImpl(mockSessionRepository, playbackRepository) {
     def callTransform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] = transform(request)
   }
 
@@ -49,7 +50,8 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
 
         val action = new Harness(playbackRepository)
 
-        val futureResult = action.callTransform(IdentifierRequest(fakeRequest, OrganisationUser("id", Enrolments(Set()))))
+        val futureResult =
+          action.callTransform(IdentifierRequest(fakeRequest, OrganisationUser("id", Enrolments(Set()))))
 
         futureResult.futureValue.userAnswers.isEmpty mustBe true
       }
@@ -67,7 +69,8 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
 
         val action = new Harness(playbackRepository)
 
-        val futureResult = action.callTransform(IdentifierRequest(fakeRequest, OrganisationUser("id", Enrolments(Set()))))
+        val futureResult =
+          action.callTransform(IdentifierRequest(fakeRequest, OrganisationUser("id", Enrolments(Set()))))
 
         futureResult.futureValue.userAnswers.isEmpty mustBe true
       }
@@ -84,10 +87,12 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
 
         val action = new Harness(playbackRepository)
 
-        val futureResult = action.callTransform(IdentifierRequest(fakeRequest, OrganisationUser("id", Enrolments(Set()))))
+        val futureResult =
+          action.callTransform(IdentifierRequest(fakeRequest, OrganisationUser("id", Enrolments(Set()))))
 
         futureResult.futureValue.userAnswers.isDefined mustBe true
       }
     }
   }
+
 }

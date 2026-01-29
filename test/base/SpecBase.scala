@@ -34,23 +34,25 @@ trait SpecBaseHelpers extends GuiceOneAppPerSuite with TryValues with Mocked wit
   this: TestSuite =>
 
   final val ENGLISH = "en"
-  final val WELSH = "cy"
+  final val WELSH   = "cy"
 
-  lazy val draftId = "id"
+  lazy val draftId        = "id"
   lazy val userInternalId = "internalId"
-  lazy val userSessionId = "sessionId"
-  lazy val userNewId = s"$userInternalId-UTRUTRUTR-$userSessionId"
+  lazy val userSessionId  = "sessionId"
+  lazy val userNewId      = s"$userInternalId-UTRUTRUTR-$userSessionId"
 
-  def emptyUserAnswers: UserAnswers = UserAnswers(userInternalId, "UTRUTRUTR", userSessionId, userNewId, LocalDate.now())
+  def emptyUserAnswers: UserAnswers =
+    UserAnswers(userInternalId, "UTRUTRUTR", userSessionId, userNewId, LocalDate.now())
 
   val bodyParsers: BodyParsers.Default = injector.instanceOf[BodyParsers.Default]
 
   val fakeNavigator = new FakeNavigator()
 
-  protected def applicationBuilder(userAnswers: Option[models.UserAnswers] = None,
-                                   affinityGroup: AffinityGroup = AffinityGroup.Organisation,
-                                   enrolments: Enrolments = Enrolments(Set.empty[Enrolment])
-                                  ): GuiceApplicationBuilder =
+  protected def applicationBuilder(
+    userAnswers: Option[models.UserAnswers] = None,
+    affinityGroup: AffinityGroup = AffinityGroup.Organisation,
+    enrolments: Enrolments = Enrolments(Set.empty[Enrolment])
+  ): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .overrides(
         bind[IdentifierAction].toInstance(new FakeIdentifierAction(bodyParsers, affinityGroup)),
@@ -60,6 +62,7 @@ trait SpecBaseHelpers extends GuiceOneAppPerSuite with TryValues with Mocked wit
         bind[PlaybackRepository].toInstance(playbackRepository),
         bind[ActiveSessionRepository].toInstance(mockSessionRepository)
       )
+
 }
 
 trait SpecBase extends PlaySpec with SpecBaseHelpers

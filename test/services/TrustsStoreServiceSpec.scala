@@ -33,7 +33,7 @@ class TrustsStoreServiceSpec extends SpecBase with ScalaFutures {
 
   private val featureFlagService = new TrustsStoreService(mockConnector)
 
-  private implicit val hc: HeaderCarrier = HeaderCarrier()
+  implicit private val hc: HeaderCarrier = HeaderCarrier()
 
   "TrustsStoreService" when {
 
@@ -50,4 +50,5 @@ class TrustsStoreServiceSpec extends SpecBase with ScalaFutures {
       }
     }
   }
+
 }

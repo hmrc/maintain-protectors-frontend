@@ -37,9 +37,9 @@ import scala.concurrent.Future
 
 class UtrControllerSpec extends SpecBase with MockitoSugar {
 
-  private val formProvider = new UtrFormProvider()
+  private val formProvider       = new UtrFormProvider()
   private val form: Form[String] = formProvider.apply("businessProtector.utr", "utr", Nil)
-  private val name = "Name"
+  private val name               = "Name"
 
   private val validAnswer = "1234567890"
 
@@ -48,6 +48,7 @@ class UtrControllerSpec extends SpecBase with MockitoSugar {
   private lazy val utrRoute: String = routes.UtrController.onPageLoad(NormalMode).url
 
   private val mockTrustsService: TrustServiceImpl = mock[TrustServiceImpl]
+
   when(mockTrustsService.getBusinessUtrs(any(), any())(any(), any()))
     .thenReturn(Future.successful(Nil))
 
@@ -105,7 +106,8 @@ class UtrControllerSpec extends SpecBase with MockitoSugar {
         .overrides(
           bind[Navigator].qualifiedWith(classOf[BusinessProtector]).toInstance(fakeNavigator),
           bind[TrustServiceImpl].toInstance(mockTrustsService)
-        ).build()
+        )
+        .build()
 
       val request = FakeRequest(POST, utrRoute)
         .withFormUrlEncodedBody(("value", validAnswer))
@@ -172,4 +174,5 @@ class UtrControllerSpec extends SpecBase with MockitoSugar {
       application.stop()
     }
   }
+
 }

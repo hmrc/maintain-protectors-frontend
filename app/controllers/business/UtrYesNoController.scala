@@ -32,42 +32,42 @@ import views.html.business.UtrYesNoView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class UtrYesNoController @Inject()(
-                                    override val messagesApi: MessagesApi,
-                                    sessionRepository: PlaybackRepository,
-                                    @BusinessProtector navigator: Navigator,
-                                    standardActionSets: StandardActionSets,
-                                    nameAction: NameRequiredAction,
-                                    formProvider: YesNoFormProvider,
-                                    val controllerComponents: MessagesControllerComponents,
-                                    view: UtrYesNoView
-                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class UtrYesNoController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: PlaybackRepository,
+  @BusinessProtector navigator: Navigator,
+  standardActionSets: StandardActionSets,
+  nameAction: NameRequiredAction,
+  formProvider: YesNoFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: UtrYesNoView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   val form = formProvider.withPrefix("businessProtector.utrYesNo")
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.andThen(nameAction) {
     implicit request =>
-
       val preparedForm = request.userAnswers.get(UtrYesNoPage) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
 
       Ok(view(preparedForm, request.protectorName, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.andThen(nameAction).async {
-    implicit request =>
+  def onSubmit(mode: Mode): Action[AnyContent] =
+    standardActionSets.verifiedForIdentifier.andThen(nameAction).async { implicit request =>
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.protectorName, mode))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(UtrYesNoPage, value))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(UtrYesNoPage, mode, updatedAnswers))
+        )
+    }
 
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, request.protectorName, mode))),
-
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(UtrYesNoPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(UtrYesNoPage, mode, updatedAnswers))
-      )
-  }
 }

@@ -27,9 +27,9 @@ import java.time.LocalDate
 class IndividualProtectorSpec extends SpecBase {
 
   private val firstName = "Joe"
-  private val lastName = "Bloggs"
-  private val name = Name(firstName, None, lastName)
-  private val date = "2000-01-01"
+  private val lastName  = "Bloggs"
+  private val name      = Name(firstName, None, lastName)
+  private val date      = "2000-01-01"
 
   "Individual Protector" must {
 
@@ -148,4 +148,5 @@ class IndividualProtectorSpec extends SpecBase {
 
     }
   }
+
 }

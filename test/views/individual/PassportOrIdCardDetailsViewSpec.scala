@@ -30,10 +30,11 @@ import views.html.individual.PassportOrIdCardDetailsView
 class PassportOrIdCardDetailsViewSpec extends QuestionViewBehaviours[CombinedPassportOrIdCard] with FakeTrustsApp {
 
   private val messageKeyPrefix: String = "individualProtector.passportOrIdCardDetails"
-  private val name: Name = Name("First", Some("Middle"), "Last")
-  private val mode: Mode = CheckMode
+  private val name: Name               = Name("First", Some("Middle"), "Last")
+  private val mode: Mode               = CheckMode
 
-  override val form: Form[CombinedPassportOrIdCard] = new CombinedPassportOrIdCardDetailsFormProvider(frontendAppConfig).withPrefix(messageKeyPrefix)
+  override val form: Form[CombinedPassportOrIdCard] =
+    new CombinedPassportOrIdCardDetailsFormProvider(frontendAppConfig).withPrefix(messageKeyPrefix)
 
   "PassportOrIdCardDetails View" must {
 
@@ -69,4 +70,5 @@ class PassportOrIdCardDetailsViewSpec extends QuestionViewBehaviours[CombinedPas
 
     behave like pageWithASubmitButton(applyView(form))
   }
+
 }

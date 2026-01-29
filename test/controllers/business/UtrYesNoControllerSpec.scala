@@ -39,8 +39,8 @@ class UtrYesNoControllerSpec extends SpecBase with MockitoSugar {
   private def onwardRoute = Call("GET", "/foo")
 
   private val formProvider = new YesNoFormProvider()
-  private val form = formProvider.withPrefix("businessProtector.addressYesNo")
-  private val name = "Name"
+  private val form         = formProvider.withPrefix("businessProtector.addressYesNo")
+  private val name         = "Name"
 
   private val baseAnswers: UserAnswers = emptyUserAnswers.set(NamePage, name).success.value
 
@@ -166,4 +166,5 @@ class UtrYesNoControllerSpec extends SpecBase with MockitoSugar {
       application.stop()
     }
   }
+
 }

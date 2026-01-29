@@ -53,7 +53,9 @@ class PassportOrIdCardDetailsControllerSpec extends SpecBase with MockitoSugar w
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.individual.amend.routes.CheckDetailsController.renderFromUserAnswers(index).url
+      redirectLocation(result).value mustEqual controllers.individual.amend.routes.CheckDetailsController
+        .renderFromUserAnswers(index)
+        .url
 
       application.stop()
     }
@@ -70,7 +72,9 @@ class PassportOrIdCardDetailsControllerSpec extends SpecBase with MockitoSugar w
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.individual.amend.routes.CheckDetailsController.renderFromUserAnswers(index).url
+      redirectLocation(result).value mustEqual controllers.individual.amend.routes.CheckDetailsController
+        .renderFromUserAnswers(index)
+        .url
 
       application.stop()
     }
@@ -107,4 +111,5 @@ class PassportOrIdCardDetailsControllerSpec extends SpecBase with MockitoSugar w
       application.stop()
     }
   }
+
 }

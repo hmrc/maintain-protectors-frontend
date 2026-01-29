@@ -25,38 +25,51 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TrustServiceImpl @Inject()(connector: TrustsConnector) extends TrustService {
+class TrustServiceImpl @Inject() (connector: TrustsConnector) extends TrustService {
 
-  override def getProtectors(identifier: String)(implicit hc:HeaderCarrier, ec:ExecutionContext): Future[Protectors] =
+  override def getProtectors(identifier: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Protectors] =
     connector.getProtectors(identifier)
 
-  override def getIndividualProtector(identifier: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[IndividualProtector] =
+  override def getIndividualProtector(identifier: String, index: Int)(implicit
+    hc: HeaderCarrier,
+    ex: ExecutionContext
+  ): Future[IndividualProtector] =
     getProtectors(identifier).map(_.protector(index))
 
-  override def getBusinessProtector(identifier: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[BusinessProtector] =
+  override def getBusinessProtector(identifier: String, index: Int)(implicit
+    hc: HeaderCarrier,
+    ex: ExecutionContext
+  ): Future[BusinessProtector] =
     getProtectors(identifier).map(_.protectorCompany(index))
 
-  override def removeProtector(identifier: String, protector: RemoveProtector)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+  override def removeProtector(identifier: String, protector: RemoveProtector)(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[HttpResponse] =
     connector.removeProtector(identifier, protector)
 
-  override def getBusinessUtrs(identifier: String, index: Option[Int])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] =
-    getProtectors(identifier).map(_.protectorCompany
-      .zipWithIndex
-      .filterNot(x => index.contains(x._2))
-      .flatMap(_._1.utr)
+  override def getBusinessUtrs(identifier: String, index: Option[Int])(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[List[String]] =
+    getProtectors(identifier).map(
+      _.protectorCompany.zipWithIndex
+        .filterNot(x => index.contains(x._2))
+        .flatMap(_._1.utr)
     )
 
-  override def getIndividualNinos(identifier: String, index: Option[Int])
-                                 (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] = {
-    getProtectors(identifier).map(_.protector
-      .zipWithIndex
-      .filterNot(x => index.contains(x._2))
-      .flatMap(_._1.identification)
-      .collect {
-        case NationalInsuranceNumber(nino) => nino
-      }
+  override def getIndividualNinos(identifier: String, index: Option[Int])(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[List[String]] =
+    getProtectors(identifier).map(
+      _.protector.zipWithIndex
+        .filterNot(x => index.contains(x._2))
+        .flatMap(_._1.identification)
+        .collect { case NationalInsuranceNumber(nino) =>
+          nino
+        }
     )
-  }
 
 }
 
@@ -65,14 +78,29 @@ trait TrustService {
 
   def getProtectors(identifier: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Protectors]
 
-  def getIndividualProtector(identifier: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[IndividualProtector]
+  def getIndividualProtector(identifier: String, index: Int)(implicit
+    hc: HeaderCarrier,
+    ex: ExecutionContext
+  ): Future[IndividualProtector]
 
-  def getBusinessProtector(identifier: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[BusinessProtector]
+  def getBusinessProtector(identifier: String, index: Int)(implicit
+    hc: HeaderCarrier,
+    ex: ExecutionContext
+  ): Future[BusinessProtector]
 
-  def removeProtector(identifier: String, protector: RemoveProtector)(implicit hc:HeaderCarrier, ec:ExecutionContext): Future[HttpResponse]
+  def removeProtector(identifier: String, protector: RemoveProtector)(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[HttpResponse]
 
-  def getBusinessUtrs(identifier: String, index: Option[Int])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]]
+  def getBusinessUtrs(identifier: String, index: Option[Int])(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[List[String]]
 
-  def getIndividualNinos(identifier: String, index: Option[Int])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]]
+  def getIndividualNinos(identifier: String, index: Option[Int])(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[List[String]]
 
 }

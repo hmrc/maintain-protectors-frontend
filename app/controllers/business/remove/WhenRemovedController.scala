@@ -30,52 +30,56 @@ import views.html.business.remove.WhenRemovedView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class WhenRemovedController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       standardActionSets: StandardActionSets,
-                                       formProvider: DateRemovedFromTrustFormProvider,
-                                       trust: TrustService,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       view: WhenRemovedView,
-                                       trustService: TrustService,
-                                       errorHandler: ErrorHandler)(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+class WhenRemovedController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  formProvider: DateRemovedFromTrustFormProvider,
+  trust: TrustService,
+  val controllerComponents: MessagesControllerComponents,
+  view: WhenRemovedView,
+  trustService: TrustService,
+  errorHandler: ErrorHandler
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport with Logging {
 
-  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
-    implicit request =>
+  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async { implicit request =>
+    trust.getBusinessProtector(request.userAnswers.identifier, index).map { protector =>
+      val form = formProvider.withPrefixAndEntityStartDate("businessProtector.whenRemoved", protector.entityStart)
+      Ok(view(form, index, protector.name))
+    } recoverWith {
+      case iobe: IndexOutOfBoundsException =>
+        logger.warn(
+          s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
+            s" error getting business protector $index from trusts service ${iobe.getMessage}: IndexOutOfBoundsException"
+        )
 
-      trust.getBusinessProtector(request.userAnswers.identifier, index).map {
-        protector =>
-          val form = formProvider.withPrefixAndEntityStartDate("businessProtector.whenRemoved", protector.entityStart)
-          Ok(view(form, index, protector.name))
-      } recoverWith {
-        case iobe: IndexOutOfBoundsException =>
-          logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
-            s" error getting business protector $index from trusts service ${iobe.getMessage}: IndexOutOfBoundsException")
+        Future.successful(Redirect(controllers.routes.AddAProtectorController.onPageLoad()))
+      case e                               =>
+        logger.error(
+          s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
+            s" error getting business protector $index from trusts service ${e.getMessage}"
+        )
 
-          Future.successful(Redirect(controllers.routes.AddAProtectorController.onPageLoad()))
-        case e =>
-          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
-            s" error getting business protector $index from trusts service ${e.getMessage}")
-
-          errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
-      }
+        errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
+    }
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
-    implicit request =>
-
-      trust.getBusinessProtector(request.userAnswers.identifier, index).flatMap {
-        protector =>
-          val form = formProvider.withPrefixAndEntityStartDate("businessProtector.whenRemoved", protector.entityStart)
-          form.bindFromRequest().fold(
-            formWithErrors => {
-              Future.successful(BadRequest(view(formWithErrors, index, protector.name)))
-            },
-            value =>
-              trustService.removeProtector(request.userAnswers.identifier, RemoveProtector(ProtectorType.BusinessProtector, index, value)).map(_ =>
-                Redirect(controllers.routes.AddAProtectorController.onPageLoad())
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async { implicit request =>
+    trust.getBusinessProtector(request.userAnswers.identifier, index).flatMap { protector =>
+      val form = formProvider.withPrefixAndEntityStartDate("businessProtector.whenRemoved", protector.entityStart)
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, index, protector.name))),
+          value =>
+            trustService
+              .removeProtector(
+                request.userAnswers.identifier,
+                RemoveProtector(ProtectorType.BusinessProtector, index, value)
               )
-          )
-      }
+              .map(_ => Redirect(controllers.routes.AddAProtectorController.onPageLoad()))
+        )
+    }
   }
+
 }

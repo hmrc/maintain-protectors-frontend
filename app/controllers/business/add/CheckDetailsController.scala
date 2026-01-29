@@ -32,36 +32,35 @@ import views.html.business.add.CheckDetailsView
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class CheckDetailsController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        standardActionSets: StandardActionSets,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: CheckDetailsView,
-                                        connector: TrustsConnector,
-                                        val appConfig: FrontendAppConfig,
-                                        printHelper: BusinessProtectorPrintHelper,
-                                        mapper: BusinessProtectorMapper,
-                                        nameAction: NameRequiredAction,
-                                        errorHandler: ErrorHandler
-                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class CheckDetailsController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  val controllerComponents: MessagesControllerComponents,
+  view: CheckDetailsView,
+  connector: TrustsConnector,
+  val appConfig: FrontendAppConfig,
+  printHelper: BusinessProtectorPrintHelper,
+  mapper: BusinessProtectorMapper,
+  nameAction: NameRequiredAction,
+  errorHandler: ErrorHandler
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.andThen(nameAction) {
     implicit request =>
-
       val section: AnswerSection = printHelper(request.userAnswers, adding = true, request.protectorName)
       Ok(view(Seq(section)))
   }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
-    implicit request =>
-
-      mapper(request.userAnswers) match {
-        case None =>
-          errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
-        case Some(protector) =>
-          connector.addBusinessProtector(request.userAnswers.identifier, protector).map(_ =>
-            Redirect(controllers.routes.AddAProtectorController.onPageLoad())
-          )
-      }
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async { implicit request =>
+    mapper(request.userAnswers) match {
+      case None            =>
+        errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
+      case Some(protector) =>
+        connector
+          .addBusinessProtector(request.userAnswers.identifier, protector)
+          .map(_ => Redirect(controllers.routes.AddAProtectorController.onPageLoad()))
+    }
   }
+
 }

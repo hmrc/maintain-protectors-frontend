@@ -21,13 +21,12 @@ import java.time.LocalDate
 import models.{UkAddress, UserAnswers}
 import pages.behaviours.PageBehaviours
 
-
 class AddressYesNoPageSpec extends PageBehaviours {
 
   private val internalId = "id"
   private val identifier = "utr"
-  private val sessionId = "sessionId"
-  private val newId = s"$internalId-$identifier-$sessionId"
+  private val sessionId  = "sessionId"
+  private val newId      = s"$internalId-$identifier-$sessionId"
 
   "AddressYesNoPage" must {
 
@@ -47,4 +46,5 @@ class AddressYesNoPageSpec extends PageBehaviours {
       userAnswers.get.get(UkAddressPage) mustNot be(defined)
     }
   }
+
 }

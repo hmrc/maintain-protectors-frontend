@@ -41,7 +41,7 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
   private val form = new NonUkAddressFormProvider().apply()
 
   private def onwardRoute = Call("GET", "/foo")
-  private val name: Name = Name("FirstName", None, "LastName")
+  private val name: Name  = Name("FirstName", None, "LastName")
 
   private val baseAnswers: UserAnswers = emptyUserAnswers.set(NamePage, name).success.value
 
@@ -74,8 +74,12 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = baseAnswers
-        .set(NonUkAddressPage, validData).success.value
-        .set(NamePage, name).success.value
+        .set(NonUkAddressPage, validData)
+        .success
+        .value
+        .set(NamePage, name)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -168,4 +172,5 @@ class NonUkAddressControllerSpec extends SpecBase with MockitoSugar {
       application.stop()
     }
   }
+
 }

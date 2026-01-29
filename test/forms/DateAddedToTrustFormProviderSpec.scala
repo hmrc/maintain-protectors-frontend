@@ -25,7 +25,8 @@ class DateAddedToTrustFormProviderSpec extends DateBehaviours {
   private val min = LocalDate.of(1500, 1, 1)
   private val max = LocalDate.now(ZoneOffset.UTC)
 
-  val form: Form[LocalDate] = new DateAddedToTrustFormProvider().withPrefixAndTrustStartDate("individualProtector.startDate", min)
+  val form: Form[LocalDate] =
+    new DateAddedToTrustFormProvider().withPrefixAndTrustStartDate("individualProtector.startDate", min)
 
   ".value" should {
 
@@ -38,15 +39,20 @@ class DateAddedToTrustFormProviderSpec extends DateBehaviours {
 
     behave like mandatoryDateField(form, "value", "individualProtector.startDate.error.required.all")
 
-    behave like dateFieldWithMax(form, "value",
+    behave like dateFieldWithMax(
+      form,
+      "value",
       max = max,
       FormError("value", "individualProtector.startDate.error.future", List("day", "month", "year"))
     )
 
-    behave like dateFieldWithMin(form, "value",
+    behave like dateFieldWithMin(
+      form,
+      "value",
       min = min,
       FormError("value", "individualProtector.startDate.error.past", List("day", "month", "year"))
     )
 
   }
+
 }

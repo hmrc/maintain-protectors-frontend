@@ -27,7 +27,7 @@ import views.html.business.UtrView
 class UtrViewSpec extends StringViewBehaviours {
 
   val messageKeyPrefix = "businessProtector.utr"
-  val name = "Name"
+  val name             = "Name"
 
   override val form: Form[String] = new UtrFormProvider().apply(messageKeyPrefix, "utr", Nil)
 
@@ -46,4 +46,5 @@ class UtrViewSpec extends StringViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
   }
+
 }

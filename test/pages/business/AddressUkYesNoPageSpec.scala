@@ -21,13 +21,12 @@ import java.time.LocalDate
 import models.{NonUkAddress, UkAddress, UserAnswers}
 import pages.behaviours.PageBehaviours
 
-
 class AddressUkYesNoPageSpec extends PageBehaviours {
 
   private val internalId = "id"
   private val identifier = "utr"
-  private val sessionId = "sessionId"
-  private val newId = s"$internalId-$identifier-$sessionId"
+  private val sessionId  = "sessionId"
+  private val newId      = s"$internalId-$identifier-$sessionId"
 
   "AddressUkYesNoPage" must {
 
@@ -47,10 +46,11 @@ class AddressUkYesNoPageSpec extends PageBehaviours {
 
     "implement cleanup logic when YES selected" in {
       val userAnswers = UserAnswers(internalId, identifier, sessionId, newId, LocalDate.now)
-        .set(NonUkAddressPage, NonUkAddress("line1", "line2", None,"country"))
+        .set(NonUkAddressPage, NonUkAddress("line1", "line2", None, "country"))
         .flatMap(_.set(AddressUkYesNoPage, true))
 
       userAnswers.get.get(NonUkAddressPage) mustNot be(defined)
     }
   }
+
 }

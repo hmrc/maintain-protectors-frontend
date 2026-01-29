@@ -27,11 +27,11 @@ import scala.util.{Success, Try}
 
 trait ProtectorExtractor[T <: Protector] {
 
-  def apply(answers: UserAnswers, protector: T, index: Int): Try[UserAnswers] = {
-    answers.deleteAtPath(basePath)
+  def apply(answers: UserAnswers, protector: T, index: Int): Try[UserAnswers] =
+    answers
+      .deleteAtPath(basePath)
       .flatMap(_.set(startDatePage, protector.entityStart))
       .flatMap(_.set(indexPage, index))
-  }
 
   def countryOfResidenceYesNoPage: QuestionPage[Boolean]
   def countryOfResidenceUkYesNoPage: QuestionPage[Boolean]
@@ -47,7 +47,7 @@ trait ProtectorExtractor[T <: Protector] {
 
   def basePath: JsPath
 
-  def extractCountryOfResidence(countryOfResidence: Option[String], answers: UserAnswers): Try[UserAnswers] = {
+  def extractCountryOfResidence(countryOfResidence: Option[String], answers: UserAnswers): Try[UserAnswers] =
     extractCountryOfResidenceOrNationality(
       country = countryOfResidence,
       answers = answers,
@@ -55,48 +55,52 @@ trait ProtectorExtractor[T <: Protector] {
       ukYesNoPage = countryOfResidenceUkYesNoPage,
       page = countryOfResidencePage
     )
-  }
 
-  def extractCountryOfResidenceOrNationality(country: Option[String],
-                                             answers: UserAnswers,
-                                             yesNoPage: QuestionPage[Boolean],
-                                             ukYesNoPage: QuestionPage[Boolean],
-                                             page: QuestionPage[String]): Try[UserAnswers] = {
+  def extractCountryOfResidenceOrNationality(
+    country: Option[String],
+    answers: UserAnswers,
+    yesNoPage: QuestionPage[Boolean],
+    ukYesNoPage: QuestionPage[Boolean],
+    page: QuestionPage[String]
+  ): Try[UserAnswers] =
     if (answers.isUnderlyingData5mld) {
       country match {
-        case Some(GB) =>
-          answers.set(yesNoPage, true)
+        case Some(GB)      =>
+          answers
+            .set(yesNoPage, true)
             .flatMap(_.set(ukYesNoPage, true))
             .flatMap(_.set(page, GB))
         case Some(country) =>
-          answers.set(yesNoPage, true)
+          answers
+            .set(yesNoPage, true)
             .flatMap(_.set(ukYesNoPage, false))
             .flatMap(_.set(page, country))
-        case None =>
+        case None          =>
           answers.set(yesNoPage, false)
       }
     } else {
       Success(answers)
     }
-  }
 
-  def extractAddress(address: Option[Address], answers: UserAnswers): Try[UserAnswers] = {
+  def extractAddress(address: Option[Address], answers: UserAnswers): Try[UserAnswers] =
     if (answers.isTaxable) {
       address match {
-        case Some(uk: UkAddress) => answers
-          .set(addressYesNoPage, true)
-          .flatMap(_.set(ukAddressYesNoPage, true))
-          .flatMap(_.set(ukAddressPage, uk))
-        case Some(nonUk: NonUkAddress) => answers
-          .set(addressYesNoPage, true)
-          .flatMap(_.set(ukAddressYesNoPage, false))
-          .flatMap(_.set(nonUkAddressPage, nonUk))
-        case _ => answers
-          .set(addressYesNoPage, false)
+        case Some(uk: UkAddress)       =>
+          answers
+            .set(addressYesNoPage, true)
+            .flatMap(_.set(ukAddressYesNoPage, true))
+            .flatMap(_.set(ukAddressPage, uk))
+        case Some(nonUk: NonUkAddress) =>
+          answers
+            .set(addressYesNoPage, true)
+            .flatMap(_.set(ukAddressYesNoPage, false))
+            .flatMap(_.set(nonUkAddressPage, nonUk))
+        case _                         =>
+          answers
+            .set(addressYesNoPage, false)
       }
     } else {
       Success(answers)
     }
-  }
 
 }

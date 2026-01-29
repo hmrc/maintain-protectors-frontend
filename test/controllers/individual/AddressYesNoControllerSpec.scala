@@ -38,10 +38,10 @@ class AddressYesNoControllerSpec extends SpecBase with MockitoSugar {
 
   private def onwardRoute = Call("GET", "/foo")
 
-  private val formProvider = new YesNoFormProvider()
-  private val form = formProvider.withPrefix("individualProtector.addressYesNo")
+  private val formProvider  = new YesNoFormProvider()
+  private val form          = formProvider.withPrefix("individualProtector.addressYesNo")
   private val protectorName = "FirstName LastName"
-  private val name = Name("FirstName", None, "LastName")
+  private val name          = Name("FirstName", None, "LastName")
 
   private val baseAnswers: UserAnswers = emptyUserAnswers.set(NamePage, name).success.value
 
@@ -167,4 +167,5 @@ class AddressYesNoControllerSpec extends SpecBase with MockitoSugar {
       application.stop()
     }
   }
+
 }

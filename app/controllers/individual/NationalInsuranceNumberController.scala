@@ -34,49 +34,51 @@ import views.html.individual.NationalInsuranceNumberView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class NationalInsuranceNumberController @Inject()(
-                                                   override val messagesApi: MessagesApi,
-                                                   sessionRepository: PlaybackRepository,
-                                                   @IndividualProtector navigator: Navigator,
-                                                   standardActionSets: StandardActionSets,
-                                                   nameAction: NameRequiredAction,
-                                                   formProvider: NationalInsuranceNumberFormProvider,
-                                                   val controllerComponents: MessagesControllerComponents,
-                                                   view: NationalInsuranceNumberView,
-                                                   trustsService: TrustService
-                                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class NationalInsuranceNumberController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: PlaybackRepository,
+  @IndividualProtector navigator: Navigator,
+  standardActionSets: StandardActionSets,
+  nameAction: NameRequiredAction,
+  formProvider: NationalInsuranceNumberFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: NationalInsuranceNumberView,
+  trustsService: TrustService
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
-  private def form(ninos: List[String]): Form[String] = formProvider.apply("individualProtector.nationalInsuranceNumber", ninos)
+  private def form(ninos: List[String]): Form[String] =
+    formProvider.apply("individualProtector.nationalInsuranceNumber", ninos)
 
-  private def index(implicit request: ProtectorNameRequest[AnyContent]): Option[Int] = request.userAnswers.get(IndexPage)
+  private def index(implicit request: ProtectorNameRequest[AnyContent]): Option[Int] =
+    request.userAnswers.get(IndexPage)
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.andThen(nameAction).async {
-    implicit request =>
-
+  def onPageLoad(mode: Mode): Action[AnyContent] =
+    standardActionSets.verifiedForIdentifier.andThen(nameAction).async { implicit request =>
       trustsService.getIndividualNinos(request.userAnswers.identifier, index) map { ninos =>
         val preparedForm = request.userAnswers.get(NationalInsuranceNumberPage) match {
-          case None => form(ninos)
+          case None        => form(ninos)
           case Some(value) => form(ninos).fill(value)
         }
 
         Ok(view(preparedForm, request.protectorName, mode))
       }
-  }
+    }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.andThen(nameAction).async {
-    implicit request =>
-
+  def onSubmit(mode: Mode): Action[AnyContent] =
+    standardActionSets.verifiedForIdentifier.andThen(nameAction).async { implicit request =>
       trustsService.getIndividualNinos(request.userAnswers.identifier, index) flatMap { ninos =>
-        form(ninos).bindFromRequest().fold(
-          formWithErrors =>
-            Future.successful(BadRequest(view(formWithErrors, request.protectorName, mode))),
-
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(NationalInsuranceNumberPage, value))
-              _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(NationalInsuranceNumberPage, mode, updatedAnswers))
-        )
+        form(ninos)
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.protectorName, mode))),
+            value =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(NationalInsuranceNumberPage, value))
+                _              <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(NationalInsuranceNumberPage, mode, updatedAnswers))
+          )
       }
-  }
+    }
+
 }

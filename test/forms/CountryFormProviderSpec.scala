@@ -21,12 +21,12 @@ import play.api.data.{Form, FormError}
 
 class CountryFormProviderSpec extends StringFieldBehaviours {
 
-  private val messagePrefix = "countryOfResidence"
-  private val requiredKey = s"$messagePrefix.error.required"
-  private val lengthKey = s"$messagePrefix.error.length"
-  private val maxLength = 100
+  private val messagePrefix  = "countryOfResidence"
+  private val requiredKey    = s"$messagePrefix.error.required"
+  private val lengthKey      = s"$messagePrefix.error.length"
+  private val maxLength      = 100
   private val regexp: String = Validation.countryRegex
-  private val invalidKey = s"$messagePrefix.error.invalidCharacters"
+  private val invalidKey     = s"$messagePrefix.error.invalidCharacters"
 
   private val form: Form[String] = new CountryFormProvider().withPrefix(messagePrefix)
 
@@ -61,4 +61,5 @@ class CountryFormProviderSpec extends StringFieldBehaviours {
       error = FormError(fieldName, invalidKey, Seq(regexp))
     )
   }
+
 }

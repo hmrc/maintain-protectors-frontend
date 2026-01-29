@@ -33,8 +33,15 @@ class Module extends AbstractModule {
     bind(classOf[IdentifierAction]).to(classOf[AuthenticatedIdentifierAction]).asEagerSingleton()
     bind(classOf[AuthenticationService]).to(classOf[AuthenticationServiceImpl]).asEagerSingleton()
 
-    bind(classOf[Navigator]).annotatedWith(classOf[IndividualProtector]).to(classOf[IndividualProtectorNavigator]).asEagerSingleton()
+    bind(classOf[Navigator])
+      .annotatedWith(classOf[IndividualProtector])
+      .to(classOf[IndividualProtectorNavigator])
+      .asEagerSingleton()
 
-    bind(classOf[Navigator]).annotatedWith(classOf[BusinessProtector]).to(classOf[BusinessProtectorNavigator]).asEagerSingleton()
+    bind(classOf[Navigator])
+      .annotatedWith(classOf[BusinessProtector])
+      .to(classOf[BusinessProtectorNavigator])
+      .asEagerSingleton()
   }
+
 }

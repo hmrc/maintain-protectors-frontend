@@ -22,10 +22,11 @@ import play.api.data.{Form, FormError}
 
 class DateRemovedFromTrustFormProviderSpec extends DateBehaviours {
 
-  private val max = LocalDate.now(ZoneOffset.UTC)
+  private val max             = LocalDate.now(ZoneOffset.UTC)
   private val entityStartDate = LocalDate.of(2020, 1, 1)
 
-  val form: Form[LocalDate] = new DateRemovedFromTrustFormProvider().withPrefixAndEntityStartDate("businessProtector.whenRemoved", entityStartDate)
+  val form: Form[LocalDate] = new DateRemovedFromTrustFormProvider()
+    .withPrefixAndEntityStartDate("businessProtector.whenRemoved", entityStartDate)
 
   ".value" should {
 
@@ -38,15 +39,20 @@ class DateRemovedFromTrustFormProviderSpec extends DateBehaviours {
 
     behave like mandatoryDateField(form, "value", "businessProtector.whenRemoved.error.required.all")
 
-    behave like dateFieldWithMax(form, "value",
+    behave like dateFieldWithMax(
+      form,
+      "value",
       max = max,
       FormError("value", "businessProtector.whenRemoved.error.future", List("day", "month", "year"))
     )
 
-    behave like dateFieldWithMin(form, "value",
+    behave like dateFieldWithMin(
+      form,
+      "value",
       min = entityStartDate,
       FormError("value", "businessProtector.whenRemoved.error.past", List("day", "month", "year"))
     )
 
   }
+
 }

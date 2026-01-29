@@ -40,13 +40,13 @@ class RemoveIndividualProtectorControllerSpec extends SpecBase with ScalaCheckPr
   private val messagesPrefix = "removeIndividualProtectorYesNo"
 
   private lazy val formProvider = new YesNoFormProvider()
-  private lazy val form = formProvider.withPrefix(messagesPrefix)
+  private lazy val form         = formProvider.withPrefix(messagesPrefix)
 
-  private lazy val name : String = "Name 1"
+  private lazy val name: String = "Name 1"
 
   private val mockConnector: TrustsConnector = mock[TrustsConnector]
 
-  private def individualProtector(id: Int, provisional : Boolean) = IndividualProtector(
+  private def individualProtector(id: Int, provisional: Boolean) = IndividualProtector(
     name = Name(firstName = "Name", middleName = None, lastName = s"$id"),
     dateOfBirth = Some(LocalDate.parse("1983-09-24")),
     identification = Some(NationalInsuranceNumber("JS123456A")),
@@ -112,12 +112,16 @@ class RemoveIndividualProtectorControllerSpec extends SpecBase with ScalaCheckPr
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
-        .set(RemoveYesNoPage, true).success.value
+        .set(RemoveYesNoPage, true)
+        .success
+        .value
 
       when(mockConnector.getProtectors(any())(any(), any()))
         .thenReturn(Future.successful(Protectors(protectors, Nil)))
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).overrides(bind[TrustsConnector].toInstance(mockConnector)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[TrustsConnector].toInstance(mockConnector))
+        .build()
 
       val request = FakeRequest(GET, routes.RemoveIndividualProtectorController.onPageLoad(0).url)
 
@@ -178,7 +182,9 @@ class RemoveIndividualProtectorControllerSpec extends SpecBase with ScalaCheckPr
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.individual.remove.routes.WhenRemovedController.onPageLoad(0).url
+        redirectLocation(result).value mustEqual controllers.individual.remove.routes.WhenRemovedController
+          .onPageLoad(0)
+          .url
 
         application.stop()
       }
@@ -218,7 +224,9 @@ class RemoveIndividualProtectorControllerSpec extends SpecBase with ScalaCheckPr
 
       val index = 0
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(bind[TrustsConnector].toInstance(mockConnector)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[TrustsConnector].toInstance(mockConnector))
+        .build()
 
       val request =
         FakeRequest(POST, routes.RemoveIndividualProtectorController.onSubmit(index).url)
@@ -274,4 +282,5 @@ class RemoveIndividualProtectorControllerSpec extends SpecBase with ScalaCheckPr
       application.stop()
     }
   }
+
 }

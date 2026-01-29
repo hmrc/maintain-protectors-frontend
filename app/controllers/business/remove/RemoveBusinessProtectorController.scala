@@ -33,80 +33,79 @@ import views.html.business.remove.RemoveBusinessProtectorView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class RemoveBusinessProtectorController @Inject()(
-                                                   override val messagesApi: MessagesApi,
-                                                   repository: PlaybackRepository,
-                                                   standardActionSets: StandardActionSets,
-                                                   trustService: TrustService,
-                                                   formProvider: YesNoFormProvider,
-                                                   val controllerComponents: MessagesControllerComponents,
-                                                   view: RemoveBusinessProtectorView,
-                                                   errorHandler: ErrorHandler
-                                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+class RemoveBusinessProtectorController @Inject() (
+  override val messagesApi: MessagesApi,
+  repository: PlaybackRepository,
+  standardActionSets: StandardActionSets,
+  trustService: TrustService,
+  formProvider: YesNoFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: RemoveBusinessProtectorView,
+  errorHandler: ErrorHandler
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport with Logging {
 
   private val messagesPrefix: String = "removeBusinessProtectorYesNo"
 
   private val form = formProvider.withPrefix(messagesPrefix)
 
-  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
-    implicit request =>
+  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async { implicit request =>
+    val preparedForm = request.userAnswers.get(RemoveYesNoPage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      val preparedForm = request.userAnswers.get(RemoveYesNoPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
+    trustService.getBusinessProtector(request.userAnswers.identifier, index).map { protector =>
+      Ok(view(preparedForm, index, protector.name))
+    } recoverWith {
+      case iobe: IndexOutOfBoundsException =>
+        logger.warn(
+          s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
+            s" error getting business protector $index from trusts service ${iobe.getMessage}: IndexOutOfBoundsException"
+        )
 
-      trustService.getBusinessProtector(request.userAnswers.identifier, index).map {
-        protector =>
-          Ok(view(preparedForm, index, protector.name))
-      } recoverWith {
-        case iobe: IndexOutOfBoundsException =>
-          logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
-            s" error getting business protector $index from trusts service ${iobe.getMessage}: IndexOutOfBoundsException")
+        Future.successful(Redirect(controllers.routes.AddAProtectorController.onPageLoad()))
+      case e                               =>
+        logger.error(
+          s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
+            s" error getting business protector $index from trusts service ${e.getMessage}"
+        )
 
-          Future.successful(Redirect(controllers.routes.AddAProtectorController.onPageLoad()))
-        case e =>
-          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
-            s" error getting business protector $index from trusts service ${e.getMessage}")
-
-          errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
-      }
+        errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
+    }
 
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
-    implicit request =>
-
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) => {
-          trustService.getBusinessProtector(request.userAnswers.identifier, index).map {
-            protector =>
-              BadRequest(view(formWithErrors, index, protector.name))
-          }
-        },
-        value => {
-
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[_]) =>
+          trustService.getBusinessProtector(request.userAnswers.identifier, index).map { protector =>
+            BadRequest(view(formWithErrors, index, protector.name))
+          },
+        value =>
           if (value) {
 
-            trustService.getBusinessProtector(request.userAnswers.identifier, index).flatMap {
-              protector =>
-                if (protector.provisional) {
-                  trustService.removeProtector(request.userAnswers.identifier, RemoveProtector(ProtectorType.BusinessProtector, index)).map(_ =>
-                    Redirect(controllers.routes.AddAProtectorController.onPageLoad())
+            trustService.getBusinessProtector(request.userAnswers.identifier, index).flatMap { protector =>
+              if (protector.provisional) {
+                trustService
+                  .removeProtector(
+                    request.userAnswers.identifier,
+                    RemoveProtector(ProtectorType.BusinessProtector, index)
                   )
-                } else {
-                  for {
-                    updatedAnswers <- Future.fromTry(request.userAnswers.set(RemoveYesNoPage, value))
-                    _ <- repository.set(updatedAnswers)
-                  } yield {
-                    Redirect(controllers.business.remove.routes.WhenRemovedController.onPageLoad(index).url)
-                  }
-                }
+                  .map(_ => Redirect(controllers.routes.AddAProtectorController.onPageLoad()))
+              } else {
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.set(RemoveYesNoPage, value))
+                  _              <- repository.set(updatedAnswers)
+                } yield Redirect(controllers.business.remove.routes.WhenRemovedController.onPageLoad(index).url)
+              }
             }
           } else {
             Future.successful(Redirect(controllers.routes.AddAProtectorController.onPageLoad().url))
           }
-        }
       )
   }
+
 }

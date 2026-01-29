@@ -31,30 +31,30 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ActiveSessionRepository @Inject()(mongoComponent: MongoComponent,
-                                        config: FrontendAppConfig
-                                       )(implicit ec: ExecutionContext)
-  extends PlayMongoRepository[UtrSession](
-    mongoComponent = mongoComponent,
-    collectionName = "session",
-    domainFormat = Format(UtrSession.reads, UtrSession.writes),
-    indexes = Seq(
-      IndexModel(
-        Indexes.ascending("updatedAt"),
-        IndexOptions()
-          .name("session-updated-at-index")
-          .expireAfter(config.cachettlSessionInSeconds, TimeUnit.SECONDS)
-          .unique(false)
+class ActiveSessionRepository @Inject() (mongoComponent: MongoComponent, config: FrontendAppConfig)(implicit
+  ec: ExecutionContext
+) extends PlayMongoRepository[UtrSession](
+      mongoComponent = mongoComponent,
+      collectionName = "session",
+      domainFormat = Format(UtrSession.reads, UtrSession.writes),
+      indexes = Seq(
+        IndexModel(
+          Indexes.ascending("updatedAt"),
+          IndexOptions()
+            .name("session-updated-at-index")
+            .expireAfter(config.cachettlSessionInSeconds, TimeUnit.SECONDS)
+            .unique(false)
+        ),
+        IndexModel(
+          Indexes.ascending("utr"),
+          IndexOptions()
+            .name("utr-index")
+            .unique(false)
+        )
       ),
-      IndexModel(
-        Indexes.ascending("utr"),
-        IndexOptions()
-          .name("utr-index")
-          .unique(false)
-      )
-    ),
-    replaceIndexes = config.dropIndexes
-  ) with Logging {
+      replaceIndexes = config.dropIndexes
+    )
+    with Logging {
 
   def get(internalId: String): Future[Option[UtrSession]] = {
 
@@ -79,4 +79,5 @@ class ActiveSessionRepository @Inject()(mongoComponent: MongoComponent,
 
     collection.replaceOne(selector, newSession, replaceOptions).headOption().map(_.exists(_.wasAcknowledged()))
   }
+
 }

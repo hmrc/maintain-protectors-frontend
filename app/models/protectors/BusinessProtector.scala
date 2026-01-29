@@ -22,12 +22,14 @@ import play.api.libs.json._
 
 import java.time.LocalDate
 
-final case class BusinessProtector(name: String,
-                                   utr: Option[String],
-                                   countryOfResidence: Option[String],
-                                   address: Option[Address],
-                                   entityStart: LocalDate,
-                                   provisional: Boolean) extends Protector
+final case class BusinessProtector(
+  name: String,
+  utr: Option[String],
+  countryOfResidence: Option[String],
+  address: Option[Address],
+  entityStart: LocalDate,
+  provisional: Boolean
+) extends Protector
 
 object BusinessProtector extends ProtectorReads {
 
@@ -38,7 +40,7 @@ object BusinessProtector extends ProtectorReads {
       __.lazyRead(readNullableAtSubPath[Address](__ \ Symbol("identification") \ Symbol("address"))) and
       (__ \ "entityStart").read[LocalDate] and
       (__ \ "provisional").readWithDefault(false)
-    )(BusinessProtector.apply _)
+  )(BusinessProtector.apply _)
 
   implicit val writes: Writes[BusinessProtector] = (
     (__ \ Symbol("name")).write[String] and
@@ -47,5 +49,6 @@ object BusinessProtector extends ProtectorReads {
       (__ \ Symbol("identification") \ Symbol("address")).writeNullable[Address] and
       (__ \ "entityStart").write[LocalDate] and
       (__ \ "provisional").write[Boolean]
-    )(unlift(BusinessProtector.unapply))
+  )(unlift(BusinessProtector.unapply))
+
 }

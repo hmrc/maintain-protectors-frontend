@@ -41,14 +41,14 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
   private val index = 0
 
-  private lazy val checkDetailsRoute = routes.CheckDetailsController.extractAndRender(index).url
+  private lazy val checkDetailsRoute  = routes.CheckDetailsController.extractAndRender(index).url
   private lazy val submitDetailsRoute = routes.CheckDetailsController.onSubmit(index).url
 
   private lazy val onwardRoute = controllers.routes.AddAProtectorController.onPageLoad().url
 
-  private val name = "Name"
+  private val name      = "Name"
   private val startDate = LocalDate.parse("2019-03-09")
-  private val address = UkAddress("Line 1", "Line 2", None, None, "NE98 1ZZ")
+  private val address   = UkAddress("Line 1", "Line 2", None, None, "NE98 1ZZ")
 
   private val businessProtector = BusinessProtector(
     name = name,
@@ -60,18 +60,30 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
   )
 
   private val userAnswers = emptyUserAnswers
-    .set(NamePage, name).success.value
-    .set(UtrYesNoPage, false).success.value
-    .set(AddressYesNoPage, true).success.value
-    .set(AddressUkYesNoPage, true).success.value
-    .set(UkAddressPage, address).success.value
-    .set(StartDatePage, startDate).success.value
+    .set(NamePage, name)
+    .success
+    .value
+    .set(UtrYesNoPage, false)
+    .success
+    .value
+    .set(AddressYesNoPage, true)
+    .success
+    .value
+    .set(AddressUkYesNoPage, true)
+    .success
+    .value
+    .set(UkAddressPage, address)
+    .success
+    .value
+    .set(StartDatePage, startDate)
+    .success
+    .value
 
   "CheckDetails Controller" must {
 
     "return OK and the correct view for a GET for a given index" in {
 
-      val mockService : TrustService = mock[TrustService]
+      val mockService: TrustService = mock[TrustService]
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(
@@ -86,8 +98,8 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[CheckDetailsView]
-      val printHelper = application.injector.instanceOf[BusinessProtectorPrintHelper]
+      val view          = application.injector.instanceOf[CheckDetailsView]
+      val printHelper   = application.injector.instanceOf[BusinessProtectorPrintHelper]
       val answerSection = printHelper(userAnswers, adding = false, name)
 
       status(result) mustEqual OK
@@ -105,7 +117,8 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
           .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
           .build()
 
-      when(mockTrustConnector.amendBusinessProtector(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockTrustConnector.amendBusinessProtector(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val request = FakeRequest(POST, submitDetailsRoute)
 
@@ -119,4 +132,5 @@ class CheckDetailsControllerSpec extends SpecBase with MockitoSugar with ScalaFu
     }
 
   }
+
 }

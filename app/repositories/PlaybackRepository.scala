@@ -32,30 +32,30 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PlaybackRepository @Inject()(mongoComponent: MongoComponent,
-                                   config: FrontendAppConfig
-                                  )(implicit ec: ExecutionContext)
-  extends PlayMongoRepository[UserAnswers](
-    mongoComponent = mongoComponent,
-    collectionName = "user-answers",
-    domainFormat = Format(UserAnswers.reads, UserAnswers.writes),
-    indexes = Seq(
-      IndexModel(
-        Indexes.ascending("updatedAt"),
-        IndexOptions()
-          .name("user-answers-updated-at-index")
-          .expireAfter(config.cachettlplaybackInSeconds, TimeUnit.SECONDS)
-          .unique(false)
+class PlaybackRepository @Inject() (mongoComponent: MongoComponent, config: FrontendAppConfig)(implicit
+  ec: ExecutionContext
+) extends PlayMongoRepository[UserAnswers](
+      mongoComponent = mongoComponent,
+      collectionName = "user-answers",
+      domainFormat = Format(UserAnswers.reads, UserAnswers.writes),
+      indexes = Seq(
+        IndexModel(
+          Indexes.ascending("updatedAt"),
+          IndexOptions()
+            .name("user-answers-updated-at-index")
+            .expireAfter(config.cachettlplaybackInSeconds, TimeUnit.SECONDS)
+            .unique(false)
+        ),
+        IndexModel(
+          Indexes.ascending("newId"),
+          IndexOptions()
+            .name("internal-id-and-utr-and-sessionId-compound-index")
+            .unique(false)
+        )
       ),
-      IndexModel(
-        Indexes.ascending("newId"),
-        IndexOptions()
-          .name("internal-id-and-utr-and-sessionId-compound-index")
-          .unique(false)
-      )
-    ),
-    replaceIndexes = config.dropIndexes
-  ) with Logging {
+      replaceIndexes = config.dropIndexes
+    )
+    with Logging {
 
   private def selector(internalId: String, utr: String, sessionId: String): Bson =
     equal("newId", s"$internalId-$utr-$sessionId")
@@ -77,7 +77,14 @@ class PlaybackRepository @Inject()(mongoComponent: MongoComponent,
 
     val replaceOptions = ReplaceOptions().upsert(true)
 
-    collection.replaceOne(selector(userAnswers.internalId, userAnswers.identifier, userAnswers.sessionId), newUserAnswers, replaceOptions)
-      .headOption().map(_.exists(_.wasAcknowledged()))
+    collection
+      .replaceOne(
+        selector(userAnswers.internalId, userAnswers.identifier, userAnswers.sessionId),
+        newUserAnswers,
+        replaceOptions
+      )
+      .headOption()
+      .map(_.exists(_.wasAcknowledged()))
   }
+
 }

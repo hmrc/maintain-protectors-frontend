@@ -17,7 +17,9 @@
 package extractors
 
 import models.protectors.IndividualProtector
-import models.{Address, CombinedPassportOrIdCard, IdCard, NationalInsuranceNumber, NonUkAddress, Passport, UkAddress, UserAnswers}
+import models.{
+  Address, CombinedPassportOrIdCard, IdCard, NationalInsuranceNumber, NonUkAddress, Passport, UkAddress, UserAnswers
+}
 import pages.QuestionPage
 import pages.individual._
 import play.api.libs.json.JsPath
@@ -27,8 +29,9 @@ import scala.util.{Success, Try}
 
 class IndividualProtectorExtractor extends ProtectorExtractor[IndividualProtector] {
 
-  override def apply(answers: UserAnswers, individual: IndividualProtector, index: Int): Try[UserAnswers] = {
-    super.apply(answers, individual, index)
+  override def apply(answers: UserAnswers, individual: IndividualProtector, index: Int): Try[UserAnswers] =
+    super
+      .apply(answers, individual, index)
       .flatMap(_.set(NamePage, individual.name))
       .flatMap(answers => extractDateOfBirth(individual, answers))
       .flatMap(answers => extractCountryOfNationality(individual.countryOfNationality, answers))
@@ -36,15 +39,14 @@ class IndividualProtectorExtractor extends ProtectorExtractor[IndividualProtecto
       .flatMap(answers => extractAddress(individual.address, answers))
       .flatMap(answers => extractIdentification(individual, answers))
       .flatMap(_.set(MentalCapacityYesNoPage, individual.mentalCapacityYesNo))
-  }
 
-  override def countryOfResidenceYesNoPage: QuestionPage[Boolean] = CountryOfResidenceYesNoPage
+  override def countryOfResidenceYesNoPage: QuestionPage[Boolean]   = CountryOfResidenceYesNoPage
   override def countryOfResidenceUkYesNoPage: QuestionPage[Boolean] = CountryOfResidenceUkYesNoPage
-  override def countryOfResidencePage: QuestionPage[String] = CountryOfResidencePage
-  override def addressYesNoPage: QuestionPage[Boolean] = AddressYesNoPage
-  override def ukAddressYesNoPage: QuestionPage[Boolean] = LiveInTheUkYesNoPage
-  override def ukAddressPage: QuestionPage[UkAddress] = UkAddressPage
-  override def nonUkAddressPage: QuestionPage[NonUkAddress] = NonUkAddressPage
+  override def countryOfResidencePage: QuestionPage[String]         = CountryOfResidencePage
+  override def addressYesNoPage: QuestionPage[Boolean]              = AddressYesNoPage
+  override def ukAddressYesNoPage: QuestionPage[Boolean]            = LiveInTheUkYesNoPage
+  override def ukAddressPage: QuestionPage[UkAddress]               = UkAddressPage
+  override def nonUkAddressPage: QuestionPage[NonUkAddress]         = NonUkAddressPage
 
   override def startDatePage: QuestionPage[LocalDate] = StartDatePage
 
@@ -52,18 +54,21 @@ class IndividualProtectorExtractor extends ProtectorExtractor[IndividualProtecto
 
   override def basePath: JsPath = pages.individual.basePath
 
-  private def extractDateOfBirth(individual: IndividualProtector, answers: UserAnswers): Try[UserAnswers] = {
+  private def extractDateOfBirth(individual: IndividualProtector, answers: UserAnswers): Try[UserAnswers] =
     individual.dateOfBirth match {
-      case Some(dob) => answers
-        .set(DateOfBirthYesNoPage, true)
-        .flatMap(_.set(DateOfBirthPage, dob))
-      case None => answers
-        .set(DateOfBirthYesNoPage, false)
+      case Some(dob) =>
+        answers
+          .set(DateOfBirthYesNoPage, true)
+          .flatMap(_.set(DateOfBirthPage, dob))
+      case None      =>
+        answers
+          .set(DateOfBirthYesNoPage, false)
     }
-  }
 
-  private def extractCountryOfNationality(countryOfNationality: Option[String],
-                                          answers: UserAnswers): Try[UserAnswers] = {
+  private def extractCountryOfNationality(
+    countryOfNationality: Option[String],
+    answers: UserAnswers
+  ): Try[UserAnswers] =
     extractCountryOfResidenceOrNationality(
       country = countryOfNationality,
       answers = answers,
@@ -71,44 +76,46 @@ class IndividualProtectorExtractor extends ProtectorExtractor[IndividualProtecto
       ukYesNoPage = CountryOfNationalityUkYesNoPage,
       page = CountryOfNationalityPage
     )
-  }
 
-  private def extractIdentification(individual: IndividualProtector,
-                                    answers: UserAnswers): Try[UserAnswers] = {
+  private def extractIdentification(individual: IndividualProtector, answers: UserAnswers): Try[UserAnswers] =
     if (answers.isTaxable) {
       individual.identification match {
-        case Some(NationalInsuranceNumber(nino)) => answers
-          .set(NationalInsuranceNumberYesNoPage, true)
-          .flatMap(_.set(NationalInsuranceNumberPage, nino))
-        case Some(p: Passport) => answers
-          .set(NationalInsuranceNumberYesNoPage, false)
-          .flatMap(_.set(PassportDetailsYesNoPage, true))
-          .flatMap(_.set(PassportDetailsPage, p))
-        case Some(id: IdCard) => answers
-          .set(NationalInsuranceNumberYesNoPage, false)
-          .flatMap(_.set(PassportDetailsYesNoPage, false))
-          .flatMap(_.set(IdCardDetailsYesNoPage, true))
-          .flatMap(_.set(IdCardDetailsPage, id))
-        case Some(combined: CombinedPassportOrIdCard) => answers
-          .set(NationalInsuranceNumberYesNoPage, false)
-          .flatMap(_.set(PassportOrIdCardDetailsYesNoPage, true))
-          .flatMap(_.set(PassportOrIdCardDetailsPage, combined))
-        case _ => answers
-          .set(NationalInsuranceNumberYesNoPage, false)
-          .flatMap(answers => extractPassportOrIdCardDetailsYesNo(individual.address, answers))
+        case Some(NationalInsuranceNumber(nino))      =>
+          answers
+            .set(NationalInsuranceNumberYesNoPage, true)
+            .flatMap(_.set(NationalInsuranceNumberPage, nino))
+        case Some(p: Passport)                        =>
+          answers
+            .set(NationalInsuranceNumberYesNoPage, false)
+            .flatMap(_.set(PassportDetailsYesNoPage, true))
+            .flatMap(_.set(PassportDetailsPage, p))
+        case Some(id: IdCard)                         =>
+          answers
+            .set(NationalInsuranceNumberYesNoPage, false)
+            .flatMap(_.set(PassportDetailsYesNoPage, false))
+            .flatMap(_.set(IdCardDetailsYesNoPage, true))
+            .flatMap(_.set(IdCardDetailsPage, id))
+        case Some(combined: CombinedPassportOrIdCard) =>
+          answers
+            .set(NationalInsuranceNumberYesNoPage, false)
+            .flatMap(_.set(PassportOrIdCardDetailsYesNoPage, true))
+            .flatMap(_.set(PassportOrIdCardDetailsPage, combined))
+        case _                                        =>
+          answers
+            .set(NationalInsuranceNumberYesNoPage, false)
+            .flatMap(answers => extractPassportOrIdCardDetailsYesNo(individual.address, answers))
       }
     } else {
       Success(answers)
     }
-  }
 
-  private def extractPassportOrIdCardDetailsYesNo(address: Option[Address], answers: UserAnswers): Try[UserAnswers] = {
+  private def extractPassportOrIdCardDetailsYesNo(address: Option[Address], answers: UserAnswers): Try[UserAnswers] =
     if (address.isDefined) {
-      answers.set(PassportDetailsYesNoPage, false)
+      answers
+        .set(PassportDetailsYesNoPage, false)
         .flatMap(_.set(IdCardDetailsYesNoPage, false))
     } else {
       Success(answers)
     }
-  }
 
 }

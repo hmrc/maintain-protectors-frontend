@@ -27,8 +27,14 @@ import uk.gov.hmrc.mongo.test.MongoSupport
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class ActiveSessionRepositorySpec extends AnyWordSpec with Matchers
-  with ScalaFutures with OptionValues with MongoSuite with MongoSupport with BeforeAndAfterEach {
+class ActiveSessionRepositorySpec
+    extends AnyWordSpec
+    with Matchers
+    with ScalaFutures
+    with OptionValues
+    with MongoSuite
+    with MongoSupport
+    with BeforeAndAfterEach {
 
   private lazy val repository: ActiveSessionRepository = new ActiveSessionRepository(mongoComponent, config)
 
@@ -39,43 +45,44 @@ class ActiveSessionRepositorySpec extends AnyWordSpec with Matchers
 
     "return None when no cache exists" in {
 
-        val internalId = "Int-328969d0-557e-4559-sdba-074d0597107e"
+      val internalId = "Int-328969d0-557e-4559-sdba-074d0597107e"
 
-        repository.get(internalId).futureValue mustBe None
+      repository.get(internalId).futureValue mustBe None
     }
 
     "return a UtrSession when one exists" in {
 
-        val internalId = "Int-328969d0-557e-2559-96ba-074d0597107e"
+      val internalId = "Int-328969d0-557e-2559-96ba-074d0597107e"
 
-        val session = UtrSession(internalId, "utr")
+      val session = UtrSession(internalId, "utr")
 
-        val initial = repository.set(session).futureValue
+      val initial = repository.set(session).futureValue
 
-        initial mustBe true
+      initial mustBe true
 
-        repository.get(internalId).futureValue.value.utr mustBe "utr"
+      repository.get(internalId).futureValue.value.utr mustBe "utr"
     }
 
     "override an existing session for an internalId" in {
 
-        val internalId = "Int-328969d0-557e-4559-96ba-0d4d0597107e"
+      val internalId = "Int-328969d0-557e-4559-96ba-0d4d0597107e"
 
-        val session = UtrSession(internalId, "utr")
+      val session = UtrSession(internalId, "utr")
 
-        repository.set(session).futureValue
+      repository.set(session).futureValue
 
-        repository.get(internalId).futureValue.value.utr mustBe "utr"
-        repository.get(internalId).futureValue.value.internalId mustBe internalId
+      repository.get(internalId).futureValue.value.utr        mustBe "utr"
+      repository.get(internalId).futureValue.value.internalId mustBe internalId
 
-        // update
+      // update
 
-        val session2 = UtrSession(internalId, "utr2")
+      val session2 = UtrSession(internalId, "utr2")
 
-        repository.set(session2).futureValue
+      repository.set(session2).futureValue
 
-        repository.get(internalId).futureValue.value.utr mustBe "utr2"
-        repository.get(internalId).futureValue.value.internalId mustBe internalId
+      repository.get(internalId).futureValue.value.utr        mustBe "utr2"
+      repository.get(internalId).futureValue.value.internalId mustBe internalId
     }
   }
+
 }

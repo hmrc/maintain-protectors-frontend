@@ -35,14 +35,15 @@ import scala.concurrent.Future
 
 class NationalInsuranceNumberYesNoControllerSpec extends SpecBase with MockitoSugar {
 
-  private val formProvider = new YesNoFormProvider()
-  private val form = formProvider.withPrefix("individualProtector.nationalInsuranceNumberYesNo")
+  private val formProvider  = new YesNoFormProvider()
+  private val form          = formProvider.withPrefix("individualProtector.nationalInsuranceNumberYesNo")
   private val protectorName = "FirstName LastName"
-  private val name = Name("FirstName", None, "LastName")
+  private val name          = Name("FirstName", None, "LastName")
 
   private val baseAnswers: UserAnswers = emptyUserAnswers.set(NamePage, name).success.value
 
-  private lazy val nationalInsuranceNumberYesNoRoute = routes.NationalInsuranceNumberYesNoController.onPageLoad(NormalMode).url
+  private lazy val nationalInsuranceNumberYesNoRoute =
+    routes.NationalInsuranceNumberYesNoController.onPageLoad(NormalMode).url
 
   "NationalInsuranceNumberYesNo Controller" must {
 
@@ -161,4 +162,5 @@ class NationalInsuranceNumberYesNoControllerSpec extends SpecBase with MockitoSu
       application.stop()
     }
   }
+
 }

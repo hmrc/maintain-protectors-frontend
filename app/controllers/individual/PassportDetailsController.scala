@@ -34,43 +34,44 @@ import views.html.individual.PassportDetailsView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class PassportDetailsController @Inject()(
-                                           override val messagesApi: MessagesApi,
-                                           sessionRepository: PlaybackRepository,
-                                           @IndividualProtector navigator: Navigator,
-                                           standardActionSets: StandardActionSets,
-                                           nameAction: NameRequiredAction,
-                                           formProvider: PassportDetailsFormProvider,
-                                           val controllerComponents: MessagesControllerComponents,
-                                           view: PassportDetailsView,
-                                           val countryOptions: CountryOptions
-                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class PassportDetailsController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: PlaybackRepository,
+  @IndividualProtector navigator: Navigator,
+  standardActionSets: StandardActionSets,
+  nameAction: NameRequiredAction,
+  formProvider: PassportDetailsFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: PassportDetailsView,
+  val countryOptions: CountryOptions
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private val form: Form[Passport] = formProvider.withPrefix("individualProtector")
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.andThen(nameAction) {
     implicit request =>
-
       val preparedForm = request.userAnswers.get(PassportDetailsPage) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
 
       Ok(view(preparedForm, mode, countryOptions.options(), request.protectorName))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.andThen(nameAction).async {
-    implicit request =>
+  def onSubmit(mode: Mode): Action[AnyContent] =
+    standardActionSets.verifiedForIdentifier.andThen(nameAction).async { implicit request =>
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors =>
+            Future.successful(BadRequest(view(formWithErrors, mode, countryOptions.options(), request.protectorName))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(PassportDetailsPage, value))
+              _              <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(PassportDetailsPage, mode, updatedAnswers))
+        )
+    }
 
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode, countryOptions.options(), request.protectorName))),
-
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(PassportDetailsPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(PassportDetailsPage, mode, updatedAnswers))
-      )
-  }
 }

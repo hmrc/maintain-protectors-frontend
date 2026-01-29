@@ -42,14 +42,14 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AddAProtectorControllerSpec extends SpecBase with ScalaFutures with BeforeAndAfterEach {
 
-  lazy val getRoute: String = controllers.routes.AddAProtectorController.onPageLoad().url
-  lazy val submitOneRoute: String = controllers.routes.AddAProtectorController.submitOne().url
-  lazy val submitAnotherRoute: String = controllers.routes.AddAProtectorController.submitAnother().url
+  lazy val getRoute: String            = controllers.routes.AddAProtectorController.onPageLoad().url
+  lazy val submitOneRoute: String      = controllers.routes.AddAProtectorController.submitOne().url
+  lazy val submitAnotherRoute: String  = controllers.routes.AddAProtectorController.submitAnother().url
   lazy val submitCompleteRoute: String = controllers.routes.AddAProtectorController.submitComplete().url
 
   val mockStoreConnector: TrustsStoreConnector = mock[TrustsStoreConnector]
 
-  val addProtectorForm = new AddAProtectorFormProvider()()
+  val addProtectorForm                     = new AddAProtectorFormProvider()()
   val addProtectorYesNoForm: Form[Boolean] = new YesNoFormProvider().withPrefix("addAProtectorYesNo")
 
   private def individualProtector(provisional: Boolean) = IndividualProtector(
@@ -75,28 +75,59 @@ class AddAProtectorControllerSpec extends SpecBase with ScalaFutures with Before
   lazy val featureNotAvailable: String = controllers.routes.FeatureNotAvailableController.onPageLoad().url
 
   val protectorRows: List[AddRow] = List(
-    AddRow("First Last", typeLabel = "Individual protector", "Change details", Some(controllers.individual.amend.routes.CheckDetailsController.extractAndRender(0).url), "Remove", Some(controllers.individual.remove.routes.RemoveIndividualProtectorController.onPageLoad(0).url)),
-    AddRow("Humanitarian Company Ltd", typeLabel = "Business protector", "Change details", Some(controllers.business.amend.routes.CheckDetailsController.extractAndRender(0).url), "Remove", Some(controllers.business.remove.routes.RemoveBusinessProtectorController.onPageLoad(0).url))
+    AddRow(
+      "First Last",
+      typeLabel = "Individual protector",
+      "Change details",
+      Some(controllers.individual.amend.routes.CheckDetailsController.extractAndRender(0).url),
+      "Remove",
+      Some(controllers.individual.remove.routes.RemoveIndividualProtectorController.onPageLoad(0).url)
+    ),
+    AddRow(
+      "Humanitarian Company Ltd",
+      typeLabel = "Business protector",
+      "Change details",
+      Some(controllers.business.amend.routes.CheckDetailsController.extractAndRender(0).url),
+      "Remove",
+      Some(controllers.business.remove.routes.RemoveBusinessProtectorController.onPageLoad(0).url)
+    )
   )
 
   class FakeService(data: Protectors) extends TrustService {
+
     override def getProtectors(utr: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Protectors] =
       Future.successful(data)
 
-    override def getIndividualProtector(utr: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[IndividualProtector] =
+    override def getIndividualProtector(utr: String, index: Int)(implicit
+      hc: HeaderCarrier,
+      ex: ExecutionContext
+    ): Future[IndividualProtector] =
       Future.successful(individualProtector(false))
 
-    override def getBusinessProtector(utr: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[BusinessProtector] =
+    override def getBusinessProtector(utr: String, index: Int)(implicit
+      hc: HeaderCarrier,
+      ex: ExecutionContext
+    ): Future[BusinessProtector] =
       Future.successful(businessProtector(false))
 
-    override def removeProtector(utr: String, protector: RemoveProtector)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+    override def removeProtector(utr: String, protector: RemoveProtector)(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext
+    ): Future[HttpResponse] =
       Future.successful(HttpResponse(OK, ""))
 
-    override def getBusinessUtrs(identifier: String, index: Option[Int])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] =
+    override def getBusinessUtrs(identifier: String, index: Option[Int])(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext
+    ): Future[List[String]] =
       Future.successful(Nil)
 
-    override def getIndividualNinos(identifier: String, index: Option[Int])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] =
+    override def getIndividualNinos(identifier: String, index: Option[Int])(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext
+    ): Future[List[String]] =
       Future.successful(Nil)
+
   }
 
   override def beforeEach(): Unit = {
@@ -176,7 +207,8 @@ class AddAProtectorControllerSpec extends SpecBase with ScalaFutures with Before
           .overrides(
             bind(classOf[TrustService]).toInstance(fakeService),
             bind(classOf[TrustsStoreConnector]).toInstance(mockStoreConnector)
-          ).build()
+          )
+          .build()
 
         val request = FakeRequest(POST, submitOneRoute)
           .withFormUrlEncodedBody(("value", "false"))
@@ -200,7 +232,8 @@ class AddAProtectorControllerSpec extends SpecBase with ScalaFutures with Before
           .overrides(
             bind(classOf[TrustService]).toInstance(fakeService),
             bind(classOf[TrustsStoreConnector]).toInstance(mockStoreConnector)
-          ).build()
+          )
+          .build()
 
         val request = FakeRequest(POST, submitOneRoute)
           .withFormUrlEncodedBody(("value", "true"))
@@ -254,7 +287,8 @@ class AddAProtectorControllerSpec extends SpecBase with ScalaFutures with Before
           .overrides(
             bind(classOf[TrustService]).toInstance(fakeService),
             bind(classOf[TrustsStoreConnector]).toInstance(mockStoreConnector)
-          ).build()
+          )
+          .build()
 
         val request = FakeRequest(POST, submitAnotherRoute)
           .withFormUrlEncodedBody(("value", AddAProtector.NoComplete.toString))
@@ -278,7 +312,8 @@ class AddAProtectorControllerSpec extends SpecBase with ScalaFutures with Before
           .overrides(
             bind(classOf[TrustService]).toInstance(fakeService),
             bind(classOf[TrustsStoreConnector]).toInstance(mockStoreConnector)
-          ).build()
+          )
+          .build()
 
         val request = FakeRequest(POST, submitAnotherRoute)
           .withFormUrlEncodedBody(("value", AddAProtector.YesNow.toString))
@@ -369,7 +404,8 @@ class AddAProtectorControllerSpec extends SpecBase with ScalaFutures with Before
           .overrides(
             bind(classOf[TrustService]).toInstance(fakeService),
             bind(classOf[TrustsStoreConnector]).toInstance(mockStoreConnector)
-          ).build()
+          )
+          .build()
 
         val request = FakeRequest(POST, submitCompleteRoute)
 
@@ -399,22 +435,23 @@ class AddAProtectorControllerSpec extends SpecBase with ScalaFutures with Before
           .build()
 
         val submitEmptyFormRequest = FakeRequest(POST, submitRoute).withFormUrlEncodedBody(("value", ""))
-        val submitEmptyFormResult = route(application, submitEmptyFormRequest).value
+        val submitEmptyFormResult  = route(application, submitEmptyFormRequest).value
         status(submitEmptyFormResult) mustEqual BAD_REQUEST
 
         val toggleLanguageRoute: String = routes.LanguageSwitchController.switchToLanguage("cymraeg").url
-        val headers: Headers = new Headers(Seq(("Referer", submitRoute)))
-        val toggleLanguageRequest = FakeRequest(GET, toggleLanguageRoute).withHeaders(headers)
-        val toggleLanguageResult = route(application, toggleLanguageRequest).value
+        val headers: Headers            = new Headers(Seq(("Referer", submitRoute)))
+        val toggleLanguageRequest       = FakeRequest(GET, toggleLanguageRoute).withHeaders(headers)
+        val toggleLanguageResult        = route(application, toggleLanguageRequest).value
         status(toggleLanguageResult) mustEqual SEE_OTHER
 
-        val referrerRoute = redirectLocation(toggleLanguageResult).value
+        val referrerRoute   = redirectLocation(toggleLanguageResult).value
         val referrerRequest = FakeRequest(GET, referrerRoute)
-        val referrerResult = route(application, referrerRequest).value
+        val referrerResult  = route(application, referrerRequest).value
         status(referrerResult) mustEqual OK
 
         application.stop()
       }
     }
   }
+
 }

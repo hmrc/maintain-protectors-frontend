@@ -24,16 +24,15 @@ import views.html.InfoView
 
 import javax.inject.Inject
 
-class InfoController @Inject()(
-                                override val messagesApi: MessagesApi,
-                                actions: StandardActionSets,
-                                val controllerComponents: MessagesControllerComponents,
-                                view: InfoView
-                              ) extends FrontendBaseController with I18nSupport {
+class InfoController @Inject() (
+  override val messagesApi: MessagesApi,
+  actions: StandardActionSets,
+  val controllerComponents: MessagesControllerComponents,
+  view: InfoView
+) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = actions.verifiedForIdentifier {
-    implicit request =>
-      Ok(view())
+  def onPageLoad(): Action[AnyContent] = actions.verifiedForIdentifier { implicit request =>
+    Ok(view())
   }
 
   def onSubmit(): Action[AnyContent] = actions.verifiedForIdentifier {
