@@ -31,7 +31,7 @@ import views.html.individual.CountryOfNationalityUkYesNoView
 
 class CountryOfNationalityUkYesNoControllerSpec extends SpecBase {
 
-  private val form: Form[Boolean]     =
+  private val form: Form[Boolean] =
     new YesNoFormProvider().withPrefix("individualProtector.countryOfNationalityUkYesNo")
 
   private val onPageLoadRoute: String = routes.CountryOfNationalityUkYesNoController.onPageLoad(NormalMode).url

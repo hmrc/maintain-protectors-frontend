@@ -68,20 +68,20 @@ class TrustsConnectorSpec
   private val trustsUrl: String     = "/trusts"
   private val protectorsUrl: String = s"$trustsUrl/protectors"
 
-  private def getTrustDetailsUrl(identifier: String)                      = s"$trustsUrl/trust-details/$identifier/transformed"
-  private def getProtectorsUrl(identifier: String)                        = s"$protectorsUrl/$identifier/transformed"
-  private def addBusinessProtectorUrl(identifier: String)                 = s"$protectorsUrl/add-business/$identifier"
+  private def getTrustDetailsUrl(identifier: String)      = s"$trustsUrl/trust-details/$identifier/transformed"
+  private def getProtectorsUrl(identifier: String)        = s"$protectorsUrl/$identifier/transformed"
+  private def addBusinessProtectorUrl(identifier: String) = s"$protectorsUrl/add-business/$identifier"
 
-  private def amendBusinessProtectorUrl(identifier: String, index: Int)   =
+  private def amendBusinessProtectorUrl(identifier: String, index: Int) =
     s"$protectorsUrl/amend-business/$identifier/$index"
 
-  private def addIndividualProtectorUrl(identifier: String)               = s"$protectorsUrl/add-individual/$identifier"
+  private def addIndividualProtectorUrl(identifier: String) = s"$protectorsUrl/add-individual/$identifier"
 
   private def amendIndividualProtectorUrl(identifier: String, index: Int) =
     s"/trusts/protectors/amend-individual/$identifier/$index"
 
-  private def removeProtectorUrl(identifier: String)                      = s"$protectorsUrl/$identifier/remove"
-  private def isTrust5mldUrl(identifier: String)                          = s"$trustsUrl/$identifier/is-trust-5mld"
+  private def removeProtectorUrl(identifier: String) = s"$protectorsUrl/$identifier/remove"
+  private def isTrust5mldUrl(identifier: String)     = s"$trustsUrl/$identifier/is-trust-5mld"
 
   private val individual = IndividualProtector(
     name = Name("Carmel", None, "Protector"),
