@@ -29,19 +29,20 @@ object ProtectorType extends Enumerable.Implicits {
   case object BusinessProtector extends WithName("business") with ProtectorType
 
   val values: List[ProtectorType] = List(
-    IndividualProtector, BusinessProtector
+    IndividualProtector,
+    BusinessProtector
   )
 
-  val options: List[RadioOption] = values.map {
-    value =>
-      RadioOption(prefix, value.toString)
+  val options: List[RadioOption] = values.map { value =>
+    RadioOption(prefix, value.toString)
   }
 
   implicit val enumerable: Enumerable[ProtectorType] =
     Enumerable(values.map(v => v.toString -> v): _*)
 
-  val writesToTrusts : Writes[ProtectorType] = Writes {
+  val writesToTrusts: Writes[ProtectorType] = Writes {
     case IndividualProtector => JsString("protector")
-    case BusinessProtector => JsString("protectorCompany")
+    case BusinessProtector   => JsString("protectorCompany")
   }
+
 }

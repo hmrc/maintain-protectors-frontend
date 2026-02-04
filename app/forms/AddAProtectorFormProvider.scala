@@ -27,4 +27,5 @@ class AddAProtectorFormProvider @Inject() extends Mappings {
     Form(
       "value" -> enumerable[AddAProtector]("addAProtector.error.required")
     )
+
 }

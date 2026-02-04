@@ -38,10 +38,10 @@ import scala.concurrent.Future
 
 class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach {
 
-  val formProvider = new NationalInsuranceNumberFormProvider()
+  val formProvider       = new NationalInsuranceNumberFormProvider()
   val form: Form[String] = formProvider.apply("individualProtector.nationalInsuranceNumber", Nil)
 
-  val index = 0
+  val index               = 0
   val protectorName: Name = Name("FirstName", None, "LastName")
 
   lazy val nationalInsuranceNumberRoute: String = routes.NationalInsuranceNumberController.onPageLoad(NormalMode).url
@@ -85,8 +85,12 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar w
       "amending" in {
 
         val userAnswers = emptyUserAnswers
-          .set(IndexPage, index).success.value
-          .set(NamePage, protectorName).success.value
+          .set(IndexPage, index)
+          .success
+          .value
+          .set(NamePage, protectorName)
+          .success
+          .value
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(bind[TrustServiceImpl].toInstance(mockTrustsService))
@@ -112,8 +116,12 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar w
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
-        .set(NamePage, protectorName).success.value
-        .set(NationalInsuranceNumberPage, "answer").success.value
+        .set(NamePage, protectorName)
+        .success
+        .value
+        .set(NationalInsuranceNumberPage, "answer")
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[TrustServiceImpl].toInstance(mockTrustsService))
@@ -145,7 +153,8 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar w
           .overrides(
             bind[Navigator].qualifiedWith(classOf[IndividualProtector]).toInstance(fakeNavigator),
             bind[TrustServiceImpl].toInstance(mockTrustsService)
-          ).build()
+          )
+          .build()
 
         val request = FakeRequest(POST, nationalInsuranceNumberRoute)
           .withFormUrlEncodedBody(("value", "AA000000A"))
@@ -168,7 +177,8 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar w
           .overrides(
             bind[Navigator].qualifiedWith(classOf[IndividualProtector]).toInstance(fakeNavigator),
             bind[TrustServiceImpl].toInstance(mockTrustsService)
-          ).build()
+          )
+          .build()
 
         val request = FakeRequest(POST, nationalInsuranceNumberRoute)
           .withFormUrlEncodedBody(("value", "AA000000A"))
@@ -240,4 +250,5 @@ class NationalInsuranceNumberControllerSpec extends SpecBase with MockitoSugar w
       application.stop()
     }
   }
+
 }

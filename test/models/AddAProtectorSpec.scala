@@ -39,10 +39,8 @@ class AddAProtectorSpec extends AnyWordSpec with Matchers with ScalaCheckPropert
 
       val gen = Gen.oneOf(AddAProtector.values)
 
-      forAll(gen) {
-        addABeneficiary =>
-
-          JsString(addABeneficiary.toString).validate[AddAProtector].asOpt.value mustEqual addABeneficiary
+      forAll(gen) { addABeneficiary =>
+        JsString(addABeneficiary.toString).validate[AddAProtector].asOpt.value mustEqual addABeneficiary
       }
     }
 
@@ -50,10 +48,8 @@ class AddAProtectorSpec extends AnyWordSpec with Matchers with ScalaCheckPropert
 
       val gen = arbitrary[String] suchThat (!AddAProtector.values.map(_.toString).contains(_))
 
-      forAll(gen) {
-        invalidValue =>
-
-          JsString(invalidValue).validate[AddAProtector] mustEqual JsError("error.invalid")
+      forAll(gen) { invalidValue =>
+        JsString(invalidValue).validate[AddAProtector] mustEqual JsError("error.invalid")
       }
     }
 
@@ -61,11 +57,10 @@ class AddAProtectorSpec extends AnyWordSpec with Matchers with ScalaCheckPropert
 
       val gen = Gen.oneOf(AddAProtector.values)
 
-      forAll(gen) {
-        addAProtector =>
-
-          Json.toJson(addAProtector) mustEqual JsString(addAProtector.toString)
+      forAll(gen) { addAProtector =>
+        Json.toJson(addAProtector) mustEqual JsString(addAProtector.toString)
       }
     }
   }
+
 }

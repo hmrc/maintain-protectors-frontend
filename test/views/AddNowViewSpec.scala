@@ -28,7 +28,7 @@ class AddNowViewSpec extends OptionsViewBehaviours {
   val messageKeyPrefix = "addNow"
 
   val form: Form[ProtectorType] = new AddProtectorTypeFormProvider()()
-  val view: AddNowView = viewFor[AddNowView](Some(emptyUserAnswers))
+  val view: AddNowView          = viewFor[AddNowView](Some(emptyUserAnswers))
 
   "AddNow view" must {
 

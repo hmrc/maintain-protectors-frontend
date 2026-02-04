@@ -37,10 +37,10 @@ import scala.concurrent.Future
 class PassportDetailsYesNoControllerSpec extends SpecBase with MockitoSugar {
 
   private val formProvider = new YesNoFormProvider()
-  private def form = formProvider.withPrefix("individualProtector.passportDetailsYesNo")
+  private def form         = formProvider.withPrefix("individualProtector.passportDetailsYesNo")
 
   private def onwardRoute: Call = Call("GET", "/foo")
-  private val name: Name = Name("FirstName", None, "LastName")
+  private val name: Name        = Name("FirstName", None, "LastName")
 
   private val mode: Mode = NormalMode
 
@@ -71,8 +71,12 @@ class PassportDetailsYesNoControllerSpec extends SpecBase with MockitoSugar {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = baseAnswers
-        .set(NamePage, name).success.value
-        .set(PassportDetailsYesNoPage, true).success.value
+        .set(NamePage, name)
+        .success
+        .value
+        .set(PassportDetailsYesNoPage, true)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -165,4 +169,5 @@ class PassportDetailsYesNoControllerSpec extends SpecBase with MockitoSugar {
       application.stop()
     }
   }
+
 }

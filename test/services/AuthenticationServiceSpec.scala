@@ -34,30 +34,37 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
 
-class AuthenticationServiceSpec extends SpecBase with MockitoSugar with ScalaFutures with EitherValues with RecoverMethods {
+class AuthenticationServiceSpec
+    extends SpecBase with MockitoSugar with ScalaFutures with EitherValues with RecoverMethods {
 
   private val utr = "0987654321"
 
-  private val agentEnrolment = Enrolment("HMRC-AS-AGENT", List(EnrolmentIdentifier("AgentReferenceNumber", "SomeVal")), "Activated", None)
+  private val agentEnrolment =
+    Enrolment("HMRC-AS-AGENT", List(EnrolmentIdentifier("AgentReferenceNumber", "SomeVal")), "Activated", None)
+
   private val trustsEnrolment = Enrolment("HMRC-TERS-ORG", List(EnrolmentIdentifier("SAUTR", utr)), "Activated", None)
 
-  private val enrolments = Enrolments(Set(
-    agentEnrolment,
-    trustsEnrolment
-  ))
+  private val enrolments = Enrolments(
+    Set(
+      agentEnrolment,
+      trustsEnrolment
+    )
+  )
 
-  private implicit val hc: HeaderCarrier = HeaderCarrier()
-  private implicit val dataRequest: DataRequest[AnyContent]
-  = DataRequest[AnyContent](fakeRequest, emptyUserAnswers, AgentUser("internalId", enrolments, "SomeVal"))
+  implicit private val hc: HeaderCarrier = HeaderCarrier()
+
+  implicit private val dataRequest: DataRequest[AnyContent] =
+    DataRequest[AnyContent](fakeRequest, emptyUserAnswers, AgentUser("internalId", enrolments, "SomeVal"))
 
   type RetrievalType = Option[String] ~ Option[AffinityGroup] ~ Enrolments
 
   private lazy val trustAuthConnector = mock[TrustAuthConnector]
 
   "invoking authenticateForUtr" when {
-    "user is authenticated" must {
+    "user is authenticated"                must {
       "return the data request" in {
-        when(trustAuthConnector.authorisedForIdentifier(any())(any(), any())).thenReturn(Future.successful(TrustAuthAllowed()))
+        when(trustAuthConnector.authorisedForIdentifier(any())(any(), any()))
+          .thenReturn(Future.successful(TrustAuthAllowed()))
 
         val app = buildApp
 
@@ -67,23 +74,25 @@ class AuthenticationServiceSpec extends SpecBase with MockitoSugar with ScalaFut
         result.value mustBe dataRequest
       }
     }
-    "user requires additional action" must {
+    "user requires additional action"      must {
       "redirect to desired url" in {
-        when(trustAuthConnector.authorisedForIdentifier(any())(any(), any())).thenReturn(Future.successful(TrustAuthDenied("some-url")))
+        when(trustAuthConnector.authorisedForIdentifier(any())(any(), any()))
+          .thenReturn(Future.successful(TrustAuthDenied("some-url")))
 
         val app = buildApp
 
         val service = app.injector.instanceOf[AuthenticationService]
 
         val result = service.authenticateForIdentifier[AnyContent](utr).futureValue
-        val r = Future.successful(result.left.value)
-        status(r) mustBe SEE_OTHER
+        val r      = Future.successful(result.left.value)
+        status(r)           mustBe SEE_OTHER
         redirectLocation(r) mustBe Some("some-url")
       }
     }
     "an internal server error is returned" must {
       "return an internal server error result" in {
-        when(trustAuthConnector.authorisedForIdentifier(any())(any(), any())).thenReturn(Future.successful(TrustAuthInternalServerError))
+        when(trustAuthConnector.authorisedForIdentifier(any())(any(), any()))
+          .thenReturn(Future.successful(TrustAuthInternalServerError))
 
         val app = buildApp
 
@@ -97,9 +106,10 @@ class AuthenticationServiceSpec extends SpecBase with MockitoSugar with ScalaFut
   }
 
   "invoking authenticateAgent" when {
-    "user is authenticated" must {
+    "user is authenticated"                must {
       "return the data request" in {
-        when(trustAuthConnector.agentIsAuthorised()(any(), any())).thenReturn(Future.successful(TrustAuthAgentAllowed("SomeARN")))
+        when(trustAuthConnector.agentIsAuthorised()(any(), any()))
+          .thenReturn(Future.successful(TrustAuthAgentAllowed("SomeARN")))
 
         val app = buildApp
 
@@ -109,23 +119,25 @@ class AuthenticationServiceSpec extends SpecBase with MockitoSugar with ScalaFut
         result.value mustBe "SomeARN"
       }
     }
-    "user requires additional action" must {
+    "user requires additional action"      must {
       "redirect to desired url" in {
-        when(trustAuthConnector.agentIsAuthorised()(any(), any())).thenReturn(Future.successful(TrustAuthDenied("some-url")))
+        when(trustAuthConnector.agentIsAuthorised()(any(), any()))
+          .thenReturn(Future.successful(TrustAuthDenied("some-url")))
 
         val app = buildApp
 
         val service = app.injector.instanceOf[AuthenticationService]
 
         val result = service.authenticateAgent().futureValue
-        val r = Future.successful(result.left.value)
-        status(r) mustBe SEE_OTHER
+        val r      = Future.successful(result.left.value)
+        status(r)           mustBe SEE_OTHER
         redirectLocation(r) mustBe Some("some-url")
       }
     }
     "an internal server error is returned" must {
       "return an internal server error result" in {
-        when(trustAuthConnector.agentIsAuthorised()(any(), any())).thenReturn(Future.successful(TrustAuthInternalServerError))
+        when(trustAuthConnector.agentIsAuthorised()(any(), any()))
+          .thenReturn(Future.successful(TrustAuthInternalServerError))
 
         val app = buildApp
 
@@ -138,9 +150,9 @@ class AuthenticationServiceSpec extends SpecBase with MockitoSugar with ScalaFut
 
   }
 
-  private def buildApp = {
+  private def buildApp =
     applicationBuilder()
       .overrides(bind[TrustAuthConnector].toInstance(trustAuthConnector))
       .build()
-  }
+
 }

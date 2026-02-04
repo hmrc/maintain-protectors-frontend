@@ -38,17 +38,16 @@ import scala.concurrent.Future
 class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
 
   private val formProvider = new DateOfBirthFormProvider()
-  private def form = formProvider.withPrefix("individualProtector.dateOfBirth")
+  private def form         = formProvider.withPrefix("individualProtector.dateOfBirth")
 
   private def onwardRoute = Call("GET", "/foo")
 
   private val validAnswer = LocalDate.now(ZoneOffset.UTC)
-  private val name = Name("FirstName", None, "LastName")
+  private val name        = Name("FirstName", None, "LastName")
 
   private lazy val dateOfBirthRoute = routes.DateOfBirthController.onPageLoad(NormalMode).url
 
-  private val userAnswersWithName = emptyUserAnswers.set(NamePage, name)
-    .success.value
+  private val userAnswersWithName = emptyUserAnswers.set(NamePage, name).success.value
 
   private def getRequest: FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(GET, dateOfBirthRoute)
@@ -82,8 +81,12 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
-        .set(DateOfBirthPage, validAnswer).success.value
-        .set(NamePage, name).success.value
+        .set(DateOfBirthPage, validAnswer)
+        .success
+        .value
+        .set(NamePage, name)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -168,4 +171,5 @@ class DateOfBirthControllerSpec extends SpecBase with MockitoSugar {
       application.stop()
     }
   }
+
 }

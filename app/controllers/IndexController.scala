@@ -31,45 +31,48 @@ import utils.Session
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class IndexController @Inject()(
-                                 val controllerComponents: MessagesControllerComponents,
-                                 actions: StandardActionSets,
-                                 cacheRepository: PlaybackRepository,
-                                 trustsConnector: TrustsConnector,
-                                 trustsStoreService: TrustsStoreService
-                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+class IndexController @Inject() (
+  val controllerComponents: MessagesControllerComponents,
+  actions: StandardActionSets,
+  cacheRepository: PlaybackRepository,
+  trustsConnector: TrustsConnector,
+  trustsStoreService: TrustsStoreService
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport with Logging {
 
-  def onPageLoad(identifier: String): Action[AnyContent] = (actions.auth andThen actions.saveSession(identifier) andThen actions.getData).async {
-    implicit request =>
-      logger.info(s"[Session ID: ${Session.id(hc)}][UTR/URN: $identifier]" +
-        s" user has started to maintain protectors")
+  def onPageLoad(identifier: String): Action[AnyContent] =
+    (actions.auth andThen actions.saveSession(identifier) andThen actions.getData).async { implicit request =>
+      logger.info(
+        s"[Session ID: ${Session.id(hc)}][UTR/URN: $identifier]" +
+          s" user has started to maintain protectors"
+      )
       for {
-        details <- trustsConnector.getTrustDetails(identifier)
+        details              <- trustsConnector.getTrustDetails(identifier)
         isUnderlyingData5mld <- trustsConnector.isTrust5mld(identifier)
-        ua <- Future.successful(
-          request.userAnswers match {
-            case Some(userAnswers) => userAnswers.copy(
-              isTaxable = details.isTaxable,
-              isUnderlyingData5mld = isUnderlyingData5mld
-            )
-            case None =>
-              val internalId = request.user.internalId
-              val sessionId = Session.id(hc)
-              UserAnswers(
-                internalId = internalId,
-                identifier = identifier,
-                sessionId = sessionId,
-                newId = s"$internalId-$identifier-$sessionId",
-                whenTrustSetup = details.startDate,
-                isTaxable = details.isTaxable,
-                isUnderlyingData5mld = isUnderlyingData5mld
-              )
-          }
-        )
-        _ <- cacheRepository.set(ua)
-        _ <- trustsStoreService.updateTaskStatus(identifier, InProgress)
-      } yield {
-        Redirect(controllers.routes.AddAProtectorController.onPageLoad())
-      }
-  }
+        ua                   <- Future.successful(
+                                  request.userAnswers match {
+                                    case Some(userAnswers) =>
+                                      userAnswers.copy(
+                                        isTaxable = details.isTaxable,
+                                        isUnderlyingData5mld = isUnderlyingData5mld
+                                      )
+                                    case None              =>
+                                      val internalId = request.user.internalId
+                                      val sessionId  = Session.id(hc)
+                                      UserAnswers(
+                                        internalId = internalId,
+                                        identifier = identifier,
+                                        sessionId = sessionId,
+                                        newId = s"$internalId-$identifier-$sessionId",
+                                        whenTrustSetup = details.startDate,
+                                        isTaxable = details.isTaxable,
+                                        isUnderlyingData5mld = isUnderlyingData5mld
+                                      )
+                                  }
+                                )
+        _                    <- cacheRepository.set(ua)
+        _                    <- trustsStoreService.updateTaskStatus(identifier, InProgress)
+      } yield Redirect(controllers.routes.AddAProtectorController.onPageLoad())
+    }
+
 }

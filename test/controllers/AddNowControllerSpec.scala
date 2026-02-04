@@ -32,10 +32,10 @@ import views.html.AddNowView
 
 class AddNowControllerSpec extends SpecBase with MockitoSugar {
 
-  val form: Form[ProtectorType] = new AddProtectorTypeFormProvider()()
-  lazy val addNowRoute: String = routes.AddNowController.onPageLoad().url
+  val form: Form[ProtectorType]                                                = new AddProtectorTypeFormProvider()()
+  lazy val addNowRoute: String                                                 = routes.AddNowController.onPageLoad().url
   val individualProtectorAnswer: models.ProtectorType.IndividualProtector.type = ProtectorType.IndividualProtector
-  val businessProtectorAnswer: models.ProtectorType.BusinessProtector.type = ProtectorType.BusinessProtector
+  val businessProtectorAnswer: models.ProtectorType.BusinessProtector.type     = ProtectorType.BusinessProtector
 
   "AddNow Controller" must {
 
@@ -115,7 +115,7 @@ class AddNowControllerSpec extends SpecBase with MockitoSugar {
       contentAsString(result) mustEqual
         view(boundForm)(request, messages).toString
 
-       application.stop()
+      application.stop()
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {
@@ -149,4 +149,5 @@ class AddNowControllerSpec extends SpecBase with MockitoSugar {
       application.stop()
     }
   }
+
 }

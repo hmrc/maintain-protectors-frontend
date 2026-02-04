@@ -19,7 +19,7 @@ package config
 import base.SpecBase
 import play.api.i18n.{Lang, MessagesImpl}
 
-class FrontendAppConfigSpec extends SpecBase{
+class FrontendAppConfigSpec extends SpecBase {
 
   private val appConfig = app.injector.instanceOf[FrontendAppConfig]
 
@@ -42,12 +42,16 @@ class FrontendAppConfigSpec extends SpecBase{
 
   "helplineUrl in English mode return trusts helpline URL" in {
     val messages = MessagesImpl(Lang("en"), messagesApi)
-    appConfig.helplineUrl(messages) mustBe "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/trusts"
+    appConfig.helplineUrl(
+      messages
+    ) mustBe "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/trusts"
   }
 
   "helplineUrl in Welsh mode return trusts helpline URL" in {
     val messages = MessagesImpl(Lang("cy"), messagesApi)
-    appConfig.helplineUrl(messages) mustBe "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/welsh-language-helplines"
+    appConfig.helplineUrl(
+      messages
+    ) mustBe "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/welsh-language-helplines"
   }
 
 }

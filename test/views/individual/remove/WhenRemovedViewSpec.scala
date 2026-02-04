@@ -27,10 +27,11 @@ import views.html.individual.remove.WhenRemovedView
 class WhenRemovedViewSpec extends QuestionViewBehaviours[LocalDate] {
 
   val messageKeyPrefix = "individualProtector.whenRemoved"
-  val index = 0
-  val name = "Name"
+  val index            = 0
+  val name             = "Name"
 
-  override val form: Form[LocalDate] = new DateRemovedFromTrustFormProvider().withPrefixAndEntityStartDate(messageKeyPrefix, LocalDate.now())
+  override val form: Form[LocalDate] =
+    new DateRemovedFromTrustFormProvider().withPrefixAndEntityStartDate(messageKeyPrefix, LocalDate.now())
 
   "whenRemoved view" must {
 
@@ -58,4 +59,5 @@ class WhenRemovedViewSpec extends QuestionViewBehaviours[LocalDate] {
 
     behave like pageWithASubmitButton(applyView(form))
   }
+
 }

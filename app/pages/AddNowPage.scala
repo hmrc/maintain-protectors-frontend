@@ -28,7 +28,7 @@ case object AddNowPage extends QuestionPage[ProtectorType] {
 
   override def toString: String = "addNow"
 
-  override def cleanup(value: Option[ProtectorType], userAnswers: UserAnswers): Try[UserAnswers] = {
+  override def cleanup(value: Option[ProtectorType], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
 
       case Some(BusinessProtector) =>
@@ -40,6 +40,5 @@ case object AddNowPage extends QuestionPage[ProtectorType] {
       case _ =>
         super.cleanup(value, userAnswers)
     }
-  }
 
 }

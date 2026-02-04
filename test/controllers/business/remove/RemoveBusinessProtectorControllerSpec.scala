@@ -39,13 +39,13 @@ class RemoveBusinessProtectorControllerSpec extends SpecBase with ScalaCheckProp
   private val messagesPrefix = "removeBusinessProtectorYesNo"
 
   private lazy val formProvider = new YesNoFormProvider()
-  private lazy val form = formProvider.withPrefix(messagesPrefix)
+  private lazy val form         = formProvider.withPrefix(messagesPrefix)
 
-  private lazy val name : String = "Some Name 1"
+  private lazy val name: String = "Some Name 1"
 
   private val mockConnector: TrustsConnector = mock[TrustsConnector]
 
-  private def businessProtector(id: Int, provisional : Boolean) = BusinessProtector(
+  private def businessProtector(id: Int, provisional: Boolean) = BusinessProtector(
     name = s"Some Name $id",
     utr = None,
     countryOfResidence = None,
@@ -91,12 +91,16 @@ class RemoveBusinessProtectorControllerSpec extends SpecBase with ScalaCheckProp
     "redirect to the add protector page if we get an Index Not Found Exception" in {
 
       val userAnswers = emptyUserAnswers
-        .set(RemoveYesNoPage, true).success.value
+        .set(RemoveYesNoPage, true)
+        .success
+        .value
 
       when(mockConnector.getProtectors(any())(any(), any()))
         .thenReturn(Future.failed(new IndexOutOfBoundsException("")))
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).overrides(bind[TrustsConnector].toInstance(mockConnector)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[TrustsConnector].toInstance(mockConnector))
+        .build()
 
       val request = FakeRequest(GET, routes.RemoveBusinessProtectorController.onPageLoad(0).url)
 
@@ -112,12 +116,16 @@ class RemoveBusinessProtectorControllerSpec extends SpecBase with ScalaCheckProp
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
-        .set(RemoveYesNoPage, true).success.value
+        .set(RemoveYesNoPage, true)
+        .success
+        .value
 
       when(mockConnector.getProtectors(any())(any(), any()))
         .thenReturn(Future.successful(Protectors(Nil, protectors)))
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).overrides(bind[TrustsConnector].toInstance(mockConnector)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[TrustsConnector].toInstance(mockConnector))
+        .build()
 
       val request = FakeRequest(GET, routes.RemoveBusinessProtectorController.onPageLoad(0).url)
 
@@ -178,7 +186,9 @@ class RemoveBusinessProtectorControllerSpec extends SpecBase with ScalaCheckProp
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.business.remove.routes.WhenRemovedController.onPageLoad(0).url
+        redirectLocation(result).value mustEqual controllers.business.remove.routes.WhenRemovedController
+          .onPageLoad(0)
+          .url
 
         application.stop()
       }
@@ -218,7 +228,9 @@ class RemoveBusinessProtectorControllerSpec extends SpecBase with ScalaCheckProp
 
       val index = 0
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(bind[TrustsConnector].toInstance(mockConnector)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[TrustsConnector].toInstance(mockConnector))
+        .build()
 
       val request =
         FakeRequest(POST, routes.RemoveBusinessProtectorController.onSubmit(index).url)
@@ -274,4 +286,5 @@ class RemoveBusinessProtectorControllerSpec extends SpecBase with ScalaCheckProp
       application.stop()
     }
   }
+
 }

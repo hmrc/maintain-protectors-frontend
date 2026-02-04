@@ -29,8 +29,14 @@ import uk.gov.hmrc.mongo.test.MongoSupport
 import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class PlaybackRepositorySpec extends AnyWordSpec with Matchers
-  with ScalaFutures with OptionValues with MongoSupport with MongoSuite with BeforeAndAfterEach {
+class PlaybackRepositorySpec
+    extends AnyWordSpec
+    with Matchers
+    with ScalaFutures
+    with OptionValues
+    with MongoSupport
+    with MongoSuite
+    with BeforeAndAfterEach {
 
   private lazy val repository: PlaybackRepository = new PlaybackRepository(mongoComponent, config)
 
@@ -41,18 +47,18 @@ class PlaybackRepositorySpec extends AnyWordSpec with Matchers
 
     "return None when no UserAnswers exists" in {
       val internalId: String = "Int-328969d0-557e-2559-96ba-074d0597107e"
-      val utr: String = "utr-identifier"
-      val sessionId: String = "sessionId"
+      val utr: String        = "utr-identifier"
+      val sessionId: String  = "sessionId"
 
-      repository.get(internalId, utr, sessionId) .futureValue mustBe None
+      repository.get(internalId, utr, sessionId).futureValue mustBe None
     }
 
     "return UserAnswers when one exists" in {
       val internalId: String = "Int-328969d0-557e-0987-96ba-123d4567890e"
-      val identifier = "identifier"
-      val sessionId: String = "sessionId"
+      val identifier         = "identifier"
+      val sessionId: String  = "sessionId"
 
-      val newId: String = s"$internalId-$identifier-$sessionId"
+      val newId: String            = s"$internalId-$identifier-$sessionId"
       val userAnswers: UserAnswers = UserAnswers(internalId, identifier, sessionId, newId, LocalDate.now())
 
       repository.get(internalId, identifier, sessionId).futureValue mustBe None
@@ -65,11 +71,11 @@ class PlaybackRepositorySpec extends AnyWordSpec with Matchers
 
     "return UserAnswers after an update" in {
       val internalId: String = "Int-328969d0-557e-0987-96ba-123d4567890e"
-      val identifier = "identifier"
-      val sessionId: String = "sessionId"
+      val identifier         = "identifier"
+      val sessionId: String  = "sessionId"
 
-      val newId: String = s"$internalId-$identifier-$sessionId"
-      val userAnswers: UserAnswers = UserAnswers(internalId, identifier, sessionId, newId, LocalDate.now())
+      val newId: String                   = s"$internalId-$identifier-$sessionId"
+      val userAnswers: UserAnswers        = UserAnswers(internalId, identifier, sessionId, newId, LocalDate.now())
       val updatedUserAnswers: UserAnswers = userAnswers.copy(data = Json.obj("key" -> "something"), isTaxable = false)
 
       repository.get(internalId, identifier, sessionId).futureValue mustBe None
@@ -79,7 +85,7 @@ class PlaybackRepositorySpec extends AnyWordSpec with Matchers
       val dbUserAnswer = repository.get(internalId, identifier, sessionId).futureValue
       dbUserAnswer.map(_.copy(updatedAt = userAnswers.updatedAt)) mustBe Some(userAnswers)
 
-      //update
+      // update
 
       repository.set(updatedUserAnswers).futureValue mustBe true
 
@@ -87,4 +93,5 @@ class PlaybackRepositorySpec extends AnyWordSpec with Matchers
       testUpdatedUserAnswers.map(_.copy(updatedAt = userAnswers.updatedAt)) mustBe Some(updatedUserAnswers)
     }
   }
+
 }

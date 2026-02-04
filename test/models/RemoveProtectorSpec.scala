@@ -31,8 +31,7 @@ class RemoveProtectorSpec extends SpecBase {
 
         val model = RemoveProtector(ProtectorType.IndividualProtector, 0, LocalDate.parse("2010-10-10"))
 
-        Json.toJson(model)(RemoveProtector.writes) mustBe Json.parse(
-          """
+        Json.toJson(model)(RemoveProtector.writes) mustBe Json.parse("""
             |{
             | "type": "protector",
             | "index": 0,
@@ -43,4 +42,5 @@ class RemoveProtectorSpec extends SpecBase {
       }
     }
   }
+
 }

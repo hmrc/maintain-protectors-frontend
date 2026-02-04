@@ -21,13 +21,12 @@ import java.time.LocalDate
 import models.{NonUkAddress, UserAnswers}
 import pages.behaviours.PageBehaviours
 
-
 class UtrYesNoPageSpec extends PageBehaviours {
 
   private val internalId = "id"
   private val identifier = "utr"
-  private val sessionId = "sessionId"
-  private val newId = s"$internalId-$identifier-$sessionId"
+  private val sessionId  = "sessionId"
+  private val newId      = s"$internalId-$identifier-$sessionId"
 
   "UtrYesNoPage" must {
 
@@ -49,7 +48,7 @@ class UtrYesNoPageSpec extends PageBehaviours {
       val userAnswers = UserAnswers(identifier, internalId, sessionId, newId, LocalDate.now)
         .set(AddressYesNoPage, true)
         .flatMap(_.set(AddressUkYesNoPage, false))
-        .flatMap(_.set(NonUkAddressPage, NonUkAddress("line1", "line2", None,"country")))
+        .flatMap(_.set(NonUkAddressPage, NonUkAddress("line1", "line2", None, "country")))
         .flatMap(_.set(UtrYesNoPage, true))
 
       userAnswers.get.get(AddressYesNoPage) mustNot be(defined)
@@ -57,4 +56,5 @@ class UtrYesNoPageSpec extends PageBehaviours {
       userAnswers.get.get(NonUkAddressPage) mustNot be(defined)
     }
   }
+
 }

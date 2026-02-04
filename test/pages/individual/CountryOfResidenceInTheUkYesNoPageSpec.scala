@@ -25,8 +25,8 @@ class CountryOfResidenceInTheUkYesNoPageSpec extends PageBehaviours {
 
   private val internalId = "id"
   private val identifier = "identifier"
-  private val sessionId = "sessionId"
-  private val newId = s"$internalId-$identifier-$sessionId"
+  private val sessionId  = "sessionId"
+  private val newId      = s"$internalId-$identifier-$sessionId"
 
   "CountryOfResidenceInTheUkYesNoPage" must {
 
@@ -38,11 +38,14 @@ class CountryOfResidenceInTheUkYesNoPageSpec extends PageBehaviours {
 
     "implement cleanup logic when YES selected" in {
       val userAnswers = UserAnswers(internalId, identifier, sessionId, newId, LocalDate.now)
-        .set(CountryOfResidencePage, "FR").success.value
+        .set(CountryOfResidencePage, "FR")
+        .success
+        .value
 
       val result = userAnswers.set(CountryOfResidenceUkYesNoPage, true).success.value
 
       result.get(CountryOfResidencePage) mustBe None
     }
   }
+
 }

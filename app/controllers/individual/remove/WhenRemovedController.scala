@@ -30,53 +30,56 @@ import views.html.individual.remove.WhenRemovedView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class WhenRemovedController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       standardActionSets: StandardActionSets,
-                                       formProvider: DateRemovedFromTrustFormProvider,
-                                       trust: TrustService,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       view: WhenRemovedView,
-                                       trustService: TrustService,
-                                       errorHandler: ErrorHandler
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+class WhenRemovedController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  formProvider: DateRemovedFromTrustFormProvider,
+  trust: TrustService,
+  val controllerComponents: MessagesControllerComponents,
+  view: WhenRemovedView,
+  trustService: TrustService,
+  errorHandler: ErrorHandler
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport with Logging {
 
-  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
-    implicit request =>
+  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async { implicit request =>
+    trust.getIndividualProtector(request.userAnswers.identifier, index).map { protector =>
+      val form = formProvider.withPrefixAndEntityStartDate("individualProtector.whenRemoved", protector.entityStart)
+      Ok(view(form, index, protector.name.displayName))
+    } recoverWith {
+      case iobe: IndexOutOfBoundsException =>
+        logger.warn(
+          s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
+            s" error getting individual protector $index from trusts service ${iobe.getMessage}: IndexOutOfBoundsException"
+        )
 
-      trust.getIndividualProtector(request.userAnswers.identifier, index).map {
-        protector =>
-          val form = formProvider.withPrefixAndEntityStartDate("individualProtector.whenRemoved", protector.entityStart)
-          Ok(view(form, index, protector.name.displayName))
-      } recoverWith {
-        case iobe: IndexOutOfBoundsException =>
-          logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
-            s" error getting individual protector $index from trusts service ${iobe.getMessage}: IndexOutOfBoundsException")
+        Future.successful(Redirect(controllers.routes.AddAProtectorController.onPageLoad()))
+      case e                               =>
+        logger.error(
+          s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
+            s" error getting individual protector $index from trusts service ${e.getMessage}"
+        )
 
-          Future.successful(Redirect(controllers.routes.AddAProtectorController.onPageLoad()))
-        case e =>
-          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
-            s" error getting individual protector $index from trusts service ${e.getMessage}")
-
-          errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
-      }
+        errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
+    }
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
-    implicit request =>
-
-      trust.getIndividualProtector(request.userAnswers.identifier, index).flatMap {
-        protector =>
-          val form = formProvider.withPrefixAndEntityStartDate("individualProtector.whenRemoved", protector.entityStart)
-          form.bindFromRequest().fold(
-            formWithErrors => {
-              Future.successful(BadRequest(view(formWithErrors, index, protector.name.displayName)))
-            },
-            value =>
-              trustService.removeProtector(request.userAnswers.identifier, RemoveProtector(ProtectorType.IndividualProtector, index, value)).map(_ =>
-                Redirect(controllers.routes.AddAProtectorController.onPageLoad())
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async { implicit request =>
+    trust.getIndividualProtector(request.userAnswers.identifier, index).flatMap { protector =>
+      val form = formProvider.withPrefixAndEntityStartDate("individualProtector.whenRemoved", protector.entityStart)
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, index, protector.name.displayName))),
+          value =>
+            trustService
+              .removeProtector(
+                request.userAnswers.identifier,
+                RemoveProtector(ProtectorType.IndividualProtector, index, value)
               )
-          )
-      }
+              .map(_ => Redirect(controllers.routes.AddAProtectorController.onPageLoad()))
+        )
+    }
   }
+
 }

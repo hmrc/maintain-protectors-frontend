@@ -29,10 +29,9 @@ trait ModelGenerators {
     Gen.oneOf(DetailsType.values)
   }
 
-  implicit lazy val arbitraryYesNoDontKnow: Arbitrary[YesNoDontKnow] = {
+  implicit lazy val arbitraryYesNoDontKnow: Arbitrary[YesNoDontKnow] =
     Arbitrary {
       Gen.oneOf(YesNoDontKnow.values)
     }
-  }
 
 }

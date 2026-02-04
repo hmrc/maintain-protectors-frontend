@@ -29,42 +29,39 @@ trait Protector {
   val entityStart: LocalDate
 }
 
-case class Protectors(protector: List[IndividualProtector],
-                      protectorCompany: List[BusinessProtector]) {
+case class Protectors(protector: List[IndividualProtector], protectorCompany: List[BusinessProtector]) {
 
   val size: Int = (protector ++ protectorCompany).size
 
-  def addToHeading()(implicit mp: MessagesProvider): String = {
+  def addToHeading()(implicit mp: MessagesProvider): String =
 
     size match {
       case c if c > 1 => Messages("addAProtector.count.heading", c)
-      case _ => Messages("addAProtector.heading")
+      case _          => Messages("addAProtector.heading")
     }
-  }
 
-  private val options: List[(Int, ProtectorType)] = {
+  private val options: List[(Int, ProtectorType)] =
     (protector.size, ProtectorType.IndividualProtector) ::
       (protectorCompany.size, ProtectorType.BusinessProtector) ::
       Nil
-  }
 
-  val nonMaxedOutOptions: List[RadioOption] = {
-    options.filter(x => x._1 < MAX).map {
-      x => RadioOption(ProtectorType.prefix, x._2.toString)
+  val nonMaxedOutOptions: List[RadioOption] =
+    options.filter(x => x._1 < MAX).map { x =>
+      RadioOption(ProtectorType.prefix, x._2.toString)
     }
-  }
 
-  val maxedOutOptions: List[RadioOption] = {
-    options.filter(x => x._1 >= MAX).map {
-      x => RadioOption(ProtectorType.prefix, x._2.toString)
+  val maxedOutOptions: List[RadioOption] =
+    options.filter(x => x._1 >= MAX).map { x =>
+      RadioOption(ProtectorType.prefix, x._2.toString)
     }
-  }
 
 }
 
 object Protectors {
+
   implicit val reads: Reads[Protectors] = (
     (__ \ "protectors" \ "protector").readWithDefault[List[IndividualProtector]](Nil)
       and (__ \ "protectors" \ "protectorCompany").readWithDefault[List[BusinessProtector]](Nil)
-    ).apply(Protectors.apply _)
+  ).apply(Protectors.apply _)
+
 }

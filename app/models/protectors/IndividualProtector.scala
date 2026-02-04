@@ -23,15 +23,17 @@ import play.api.libs.json._
 
 import java.time.LocalDate
 
-final case class IndividualProtector(name: Name,
-                                     dateOfBirth: Option[LocalDate],
-                                     countryOfNationality: Option[String] = None,
-                                     identification: Option[IndividualIdentification],
-                                     countryOfResidence: Option[String] = None,
-                                     address: Option[Address],
-                                     mentalCapacityYesNo: Option[YesNoDontKnow] = None,
-                                     entityStart: LocalDate,
-                                     provisional: Boolean) extends Protector
+final case class IndividualProtector(
+  name: Name,
+  dateOfBirth: Option[LocalDate],
+  countryOfNationality: Option[String] = None,
+  identification: Option[IndividualIdentification],
+  countryOfResidence: Option[String] = None,
+  address: Option[Address],
+  mentalCapacityYesNo: Option[YesNoDontKnow] = None,
+  entityStart: LocalDate,
+  provisional: Boolean
+) extends Protector
 
 object IndividualProtector extends ProtectorReads {
 
@@ -56,7 +58,7 @@ object IndividualProtector extends ProtectorReads {
       readMentalCapacity and
       (__ \ "entityStart").read[LocalDate] and
       (__ \ "provisional").readWithDefault(false)
-    )(IndividualProtector.apply _)
+  )(IndividualProtector.apply _)
 
   implicit val writes: Writes[IndividualProtector] = (
     (__ \ Symbol("name")).write[Name] and
@@ -68,6 +70,6 @@ object IndividualProtector extends ProtectorReads {
       (__ \ Symbol("legallyIncapable")).writeNullable[YesNoDontKnow](legallyIncapableWrites) and
       (__ \ "entityStart").write[LocalDate] and
       (__ \ "provisional").write[Boolean]
-    )(unlift(IndividualProtector.unapply))
+  )(unlift(IndividualProtector.unapply))
 
 }

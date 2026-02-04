@@ -25,10 +25,10 @@ import views.html.business.remove.RemoveBusinessProtectorView
 
 class RemoveBusinessProtectorViewSpec extends YesNoViewBehaviours {
 
-  val messageKeyPrefix = "removeBusinessProtectorYesNo"
+  val messageKeyPrefix    = "removeBusinessProtectorYesNo"
   val form: Form[Boolean] = (new YesNoFormProvider).withPrefix(messageKeyPrefix)
-  val name = "Name"
-  val index = 0
+  val name                = "Name"
+  val index               = 0
 
   "RemoveBusinessProtector view" must {
 
@@ -41,6 +41,13 @@ class RemoveBusinessProtectorViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, Some(name), routes.RemoveBusinessProtectorController.onSubmit(index).url)
+    behave like yesNoPage(
+      form,
+      applyView,
+      messageKeyPrefix,
+      Some(name),
+      routes.RemoveBusinessProtectorController.onSubmit(index).url
+    )
   }
+
 }

@@ -31,8 +31,7 @@ class SessionTimeoutController @Inject() (
   val config: Configuration,
   val env: Environment,
   mcc: MessagesControllerComponents
-) extends FrontendController(mcc)
-    with Logging {
+) extends FrontendController(mcc) with Logging {
 
   val keepAlive: Action[AnyContent] = Action.async { implicit request =>
     logger.info(

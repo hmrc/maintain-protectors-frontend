@@ -22,32 +22,30 @@ import viewmodels.addAnother.{AddRow, AddToRows}
 
 class AddAProtectorViewHelper(protectors: Protectors)(implicit messages: Messages) {
 
-  private def individualProtectorRow(protector: IndividualProtector, index: Int): AddRow = {
+  private def individualProtectorRow(protector: IndividualProtector, index: Int): AddRow =
     AddRow(
       name = protector.name.displayName,
       typeLabel = messages("entities.protector.individual"),
       changeLabel = messages("site.change.details"),
       changeUrl = Some(controllers.individual.amend.routes.CheckDetailsController.extractAndRender(index).url),
-      removeLabel =  messages("site.delete"),
+      removeLabel = messages("site.delete"),
       removeUrl = Some(controllers.individual.remove.routes.RemoveIndividualProtectorController.onPageLoad(index).url)
     )
-  }
 
-  private def businessProtectorRow(protector: BusinessProtector, index: Int): AddRow = {
+  private def businessProtectorRow(protector: BusinessProtector, index: Int): AddRow =
     AddRow(
       name = protector.name,
       typeLabel = messages("entities.protector.business"),
       changeLabel = messages("site.change.details"),
       changeUrl = Some(controllers.business.amend.routes.CheckDetailsController.extractAndRender(index).url),
-      removeLabel =  messages("site.delete"),
+      removeLabel = messages("site.delete"),
       removeUrl = Some(controllers.business.remove.routes.RemoveBusinessProtectorController.onPageLoad(index).url)
     )
-  }
 
   def rows: AddToRows = {
     val complete =
       protectors.protector.zipWithIndex.map(x => individualProtectorRow(x._1, x._2)) ++
-      protectors.protectorCompany.zipWithIndex.map(x => businessProtectorRow(x._1, x._2))
+        protectors.protectorCompany.zipWithIndex.map(x => businessProtectorRow(x._1, x._2))
 
     AddToRows(Nil, complete)
   }

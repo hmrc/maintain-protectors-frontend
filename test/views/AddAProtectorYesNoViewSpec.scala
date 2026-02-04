@@ -27,7 +27,7 @@ import views.html.AddAProtectorYesNoView
 class AddAProtectorYesNoViewSpec extends YesNoViewBehaviours {
 
   val messageKeyPrefix = "addAProtectorYesNo"
-  val name: Name = Name("First", Some("Middle"), "Last")
+  val name: Name       = Name("First", Some("Middle"), "Last")
 
   val form: Form[Boolean] = new YesNoFormProvider().withPrefix(messageKeyPrefix)
 
@@ -44,4 +44,5 @@ class AddAProtectorYesNoViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithASubmitButton(applyView(form))
   }
+
 }

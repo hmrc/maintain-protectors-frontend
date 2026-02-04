@@ -36,58 +36,53 @@ import views.html.individual.amend.CheckDetailsView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class CheckDetailsController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        standardActionSets: StandardActionSets,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: CheckDetailsView,
-                                        service: TrustService,
-                                        connector: TrustsConnector,
-                                        val appConfig: FrontendAppConfig,
-                                        playbackRepository: PlaybackRepository,
-                                        printHelper: IndividualProtectorPrintHelper,
-                                        mapper: IndividualProtectorMapper,
-                                        nameAction: NameRequiredAction,
-                                        extractor: IndividualProtectorExtractor,
-                                        errorHandler: ErrorHandler
-                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class CheckDetailsController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  val controllerComponents: MessagesControllerComponents,
+  view: CheckDetailsView,
+  service: TrustService,
+  connector: TrustsConnector,
+  val appConfig: FrontendAppConfig,
+  playbackRepository: PlaybackRepository,
+  printHelper: IndividualProtectorPrintHelper,
+  mapper: IndividualProtectorMapper,
+  nameAction: NameRequiredAction,
+  extractor: IndividualProtectorExtractor,
+  errorHandler: ErrorHandler
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
-  private def render(userAnswers: UserAnswers,
-                     index: Int,
-                     name: String)
-                    (implicit request: Request[AnyContent]): Result=
-  {
+  private def render(userAnswers: UserAnswers, index: Int, name: String)(implicit
+    request: Request[AnyContent]
+  ): Result = {
     val section: AnswerSection = printHelper(userAnswers, adding = false, name)
     Ok(view(Seq(section), index))
   }
 
   def extractAndRender(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-
-      service.getIndividualProtector(request.userAnswers.identifier, index) flatMap {
-        trust =>
-          for {
-            extractedF <- Future.fromTry(extractor(request.userAnswers, trust, index))
-            _ <- playbackRepository.set(extractedF)
-          } yield {
-              render(extractedF, index, trust.name.displayName)
-          }
+      service.getIndividualProtector(request.userAnswers.identifier, index) flatMap { trust =>
+        for {
+          extractedF <- Future.fromTry(extractor(request.userAnswers, trust, index))
+          _          <- playbackRepository.set(extractedF)
+        } yield render(extractedF, index, trust.name.displayName)
       }
   }
 
-  def renderFromUserAnswers(index: Int) : Action[AnyContent] = standardActionSets.verifiedForIdentifier.andThen(nameAction) {
-    implicit request =>
+  def renderFromUserAnswers(index: Int): Action[AnyContent] =
+    standardActionSets.verifiedForIdentifier.andThen(nameAction) { implicit request =>
       render(request.userAnswers, index, request.protectorName)
+    }
+
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async { implicit request =>
+    mapper(request.userAnswers)
+      .map { individual =>
+        connector
+          .amendIndividualProtector(request.userAnswers.identifier, index, individual)
+          .map(_ => Redirect(controllers.routes.AddAProtectorController.onPageLoad()))
+      }
+      .getOrElse(errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html)))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
-    implicit request =>
-
-      mapper(request.userAnswers).map {
-        individual =>
-          connector.amendIndividualProtector(request.userAnswers.identifier, index, individual).map(_ =>
-            Redirect(controllers.routes.AddAProtectorController.onPageLoad())
-          )
-      }.getOrElse(errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html)))
-  }
 }

@@ -30,8 +30,8 @@ import scala.concurrent.{Await, Future}
 
 class TrustServiceSpec extends SpecBase {
 
-  private val identifier: String = "utr"
-  private implicit val hc: HeaderCarrier = HeaderCarrier()
+  private val identifier: String         = "utr"
+  implicit private val hc: HeaderCarrier = HeaderCarrier()
 
   private val business: BusinessProtector = BusinessProtector(
     name = "Business 1",

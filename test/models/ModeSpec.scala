@@ -18,7 +18,7 @@ package models
 
 import base.SpecBase
 
-class ModeSpec extends SpecBase{
+class ModeSpec extends SpecBase {
 
   "Mode" must {
 
@@ -30,4 +30,5 @@ class ModeSpec extends SpecBase{
       Mode.jsLiteral.to(CheckMode) mustBe "CheckMode"
     }
   }
+
 }

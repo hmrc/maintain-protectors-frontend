@@ -34,14 +34,14 @@ class BusinessProtectorMapper extends Mapper[BusinessProtector] {
       readAddress and
       StartDatePage.path.read[LocalDate] and
       Reads(_ => JsSuccess(true))
-    )(BusinessProtector.apply _)
+  )(BusinessProtector.apply _)
 
-  override def countryOfResidenceYesNoPage: QuestionPage[Boolean] = CountryOfResidenceYesNoPage
+  override def countryOfResidenceYesNoPage: QuestionPage[Boolean]   = CountryOfResidenceYesNoPage
   override def countryOfResidenceUkYesNoPage: QuestionPage[Boolean] = CountryOfResidenceUkYesNoPage
-  override def countryOfResidencePage: QuestionPage[String] = CountryOfResidencePage
-  override def addressDeciderPage: QuestionPage[Boolean] = UtrYesNoPage
-  override def addressYesNoPage: QuestionPage[Boolean] = AddressYesNoPage
-  override def ukAddressYesNoPage: QuestionPage[Boolean] = AddressUkYesNoPage
-  override def ukAddressPage: QuestionPage[UkAddress] = UkAddressPage
-  override def nonUkAddressPage: QuestionPage[NonUkAddress] = NonUkAddressPage
+  override def countryOfResidencePage: QuestionPage[String]         = CountryOfResidencePage
+  override def addressDeciderPage: QuestionPage[Boolean]            = UtrYesNoPage
+  override def addressYesNoPage: QuestionPage[Boolean]              = AddressYesNoPage
+  override def ukAddressYesNoPage: QuestionPage[Boolean]            = AddressUkYesNoPage
+  override def ukAddressPage: QuestionPage[UkAddress]               = UkAddressPage
+  override def nonUkAddressPage: QuestionPage[NonUkAddress]         = NonUkAddressPage
 }

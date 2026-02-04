@@ -32,14 +32,14 @@ class ProtectorNavigator {
 
     routes.filter(_._1.size < MAX) match {
       case (_, x) :: Nil => x
-      case _ => controllers.routes.AddNowController.onPageLoad()
+      case _             => controllers.routes.AddNowController.onPageLoad()
     }
   }
 
-  def addProtectorNowRoute(`type`: ProtectorType): Call = {
+  def addProtectorNowRoute(`type`: ProtectorType): Call =
     `type` match {
       case IndividualProtector => controllers.individual.routes.NameController.onPageLoad(NormalMode)
-      case BusinessProtector => controllers.business.routes.NameController.onPageLoad(NormalMode)
+      case BusinessProtector   => controllers.business.routes.NameController.onPageLoad(NormalMode)
     }
-  }
+
 }

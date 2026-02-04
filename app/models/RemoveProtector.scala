@@ -21,17 +21,17 @@ import java.time.LocalDate
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Writes}
 
-case class RemoveProtector(`type`: ProtectorType, index : Int, endDate: LocalDate)
+case class RemoveProtector(`type`: ProtectorType, index: Int, endDate: LocalDate)
 
 object RemoveProtector {
 
-  implicit val writes : Writes[RemoveProtector] =
+  implicit val writes: Writes[RemoveProtector] =
     (
       (JsPath \ "type").write[ProtectorType](ProtectorType.writesToTrusts) and
-      (JsPath \ "index").write[Int] and
-      (JsPath \ "endDate").write[LocalDate]
+        (JsPath \ "index").write[Int] and
+        (JsPath \ "endDate").write[LocalDate]
     ).apply(unlift(RemoveProtector.unapply))
 
-  def apply(`type`: ProtectorType, index: Int): RemoveProtector =  RemoveProtector(`type`, index, LocalDate.now)
+  def apply(`type`: ProtectorType, index: Int): RemoveProtector = RemoveProtector(`type`, index, LocalDate.now)
 
 }
