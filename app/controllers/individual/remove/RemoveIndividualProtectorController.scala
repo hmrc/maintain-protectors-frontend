@@ -19,6 +19,7 @@ package controllers.individual.remove
 import controllers.actions.StandardActionSets
 import forms.YesNoFormProvider
 import handlers.ErrorHandler
+
 import javax.inject.Inject
 import models.{ProtectorType, RemoveProtector}
 import pages.individual.RemoveYesNoPage
@@ -29,6 +30,8 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.IndexAndGenericExceptionRecovery
+import views.html.OutOfBoundsPageNotFoundView
 import views.html.individual.remove.RemoveIndividualProtectorView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -41,9 +44,10 @@ class RemoveIndividualProtectorController @Inject() (
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: RemoveIndividualProtectorView,
-  errorHandler: ErrorHandler
+  val errorHandler: ErrorHandler,
+  val outOfBoundsView: OutOfBoundsPageNotFoundView
 )(implicit ec: ExecutionContext)
-    extends FrontendBaseController with I18nSupport with Logging {
+    extends FrontendBaseController with I18nSupport with Logging with IndexAndGenericExceptionRecovery {
 
   private val messagesPrefix: String = "removeIndividualProtectorYesNo"
 
@@ -57,22 +61,8 @@ class RemoveIndividualProtectorController @Inject() (
 
     trustService.getIndividualProtector(request.userAnswers.identifier, index).map { protector =>
       Ok(view(preparedForm, index, protector.name.displayName))
-    } recoverWith {
-      case iobe: IndexOutOfBoundsException =>
-        logger.warn(
-          s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
-            s" error getting individual protector $index from trusts service ${iobe.getMessage}: IndexOutOfBoundsException"
-        )
-
-        Future.successful(Redirect(controllers.routes.AddAProtectorController.onPageLoad()))
-      case e                               =>
-        logger.error(
-          s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
-            s" error getting individual protector $index from trusts service ${e.getMessage}"
-        )
-
-        errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
-    }
+    } recoverWith
+      recoverIndexAndGenericException("protector", index, request.userAnswers.identifier, "onPageLoad")
 
   }
 

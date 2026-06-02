@@ -19,6 +19,7 @@ package controllers.business.remove
 import controllers.actions.StandardActionSets
 import forms.YesNoFormProvider
 import handlers.ErrorHandler
+
 import javax.inject.Inject
 import models.{ProtectorType, RemoveProtector}
 import pages.business.RemoveYesNoPage
@@ -29,6 +30,8 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.IndexAndGenericExceptionRecovery
+import views.html.OutOfBoundsPageNotFoundView
 import views.html.business.remove.RemoveBusinessProtectorView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -41,9 +44,10 @@ class RemoveBusinessProtectorController @Inject() (
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: RemoveBusinessProtectorView,
-  errorHandler: ErrorHandler
+  val errorHandler: ErrorHandler,
+  val outOfBoundsView: OutOfBoundsPageNotFoundView
 )(implicit ec: ExecutionContext)
-    extends FrontendBaseController with I18nSupport with Logging {
+    extends FrontendBaseController with I18nSupport with Logging with IndexAndGenericExceptionRecovery {
 
   private val messagesPrefix: String = "removeBusinessProtectorYesNo"
 
@@ -57,22 +61,8 @@ class RemoveBusinessProtectorController @Inject() (
 
     trustService.getBusinessProtector(request.userAnswers.identifier, index).map { protector =>
       Ok(view(preparedForm, index, protector.name))
-    } recoverWith {
-      case iobe: IndexOutOfBoundsException =>
-        logger.warn(
-          s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
-            s" error getting business protector $index from trusts service ${iobe.getMessage}: IndexOutOfBoundsException"
-        )
-
-        Future.successful(Redirect(controllers.routes.AddAProtectorController.onPageLoad()))
-      case e                               =>
-        logger.error(
-          s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
-            s" error getting business protector $index from trusts service ${e.getMessage}"
-        )
-
-        errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
-    }
+    } recoverWith
+      recoverIndexAndGenericException("protector", index, request.userAnswers.identifier, "onPageLoad")
 
   }
 

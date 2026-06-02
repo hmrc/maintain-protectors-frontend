@@ -19,6 +19,7 @@ package controllers.business.remove
 import controllers.actions.StandardActionSets
 import forms.DateRemovedFromTrustFormProvider
 import handlers.ErrorHandler
+
 import javax.inject.Inject
 import models.{ProtectorType, RemoveProtector}
 import play.api.Logging
@@ -26,6 +27,8 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.IndexAndGenericExceptionRecovery
+import views.html.OutOfBoundsPageNotFoundView
 import views.html.business.remove.WhenRemovedView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,30 +41,17 @@ class WhenRemovedController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: WhenRemovedView,
   trustService: TrustService,
-  errorHandler: ErrorHandler
+  val errorHandler: ErrorHandler,
+  val outOfBoundsView: OutOfBoundsPageNotFoundView
 )(implicit ec: ExecutionContext)
-    extends FrontendBaseController with I18nSupport with Logging {
+    extends FrontendBaseController with I18nSupport with Logging with IndexAndGenericExceptionRecovery {
 
   def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async { implicit request =>
     trust.getBusinessProtector(request.userAnswers.identifier, index).map { protector =>
       val form = formProvider.withPrefixAndEntityStartDate("businessProtector.whenRemoved", protector.entityStart)
       Ok(view(form, index, protector.name))
-    } recoverWith {
-      case iobe: IndexOutOfBoundsException =>
-        logger.warn(
-          s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
-            s" error getting business protector $index from trusts service ${iobe.getMessage}: IndexOutOfBoundsException"
-        )
-
-        Future.successful(Redirect(controllers.routes.AddAProtectorController.onPageLoad()))
-      case e                               =>
-        logger.error(
-          s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
-            s" error getting business protector $index from trusts service ${e.getMessage}"
-        )
-
-        errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
-    }
+    } recoverWith
+      recoverIndexAndGenericException("protector", index, request.userAnswers.identifier, "onPageLoad")
   }
 
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async { implicit request =>

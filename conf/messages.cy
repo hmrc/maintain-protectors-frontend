@@ -436,3 +436,11 @@ protector.info.section3.bullet1=salwch meddwl
 protector.info.section3.bullet2=anabledd dysgu
 protector.info.section3.bullet3=dementia neu gyflwr cysylltiedig
 protector.info.section3.bullet4=analluogrwydd i gyfathrebu
+
+outOfBoundsPageNotFound.title = Heb ddod o hyd i’r dudalen
+outOfBoundsPageNotFound.heading = Heb ddod o hyd i’r dudalen
+outOfBoundsPageNotFound.p1 = Ni ellir dod o hyd i’r dudalen yr ydych yn chwilio amdani.
+outOfBoundsPageNotFound.p2 = Er mwyn parhau i wneud newidiadau i’ch ymddiriedolaeth gallwch wneud y canlynol:
+outOfBoundsPageNotFound.bullet1 = mynd i drosolwg yr ymddiriedolaeth
+outOfBoundsPageNotFound.bullet2 = ychwanegu neu newid manylion ar gyfer {0}
+outOfBoundsPageNotFound.bullet2.protector = amddiffynnydd
