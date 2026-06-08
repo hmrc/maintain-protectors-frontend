@@ -489,3 +489,12 @@ businessProtector.whenRemoved.error.required = The date the business protector w
 businessProtector.whenRemoved.error.invalid = Enter a real date when the business protector was removed from the trust
 businessProtector.whenRemoved.error.future = The date the business protector was removed from the trust must be today or in the past
 businessProtector.whenRemoved.error.past = The date the business protector was removed must be on or after the date they were added
+
+
+outOfBoundsPageNotFound.title = Page not found
+outOfBoundsPageNotFound.heading = Page not found
+outOfBoundsPageNotFound.p1 = The page you are looking for cannot be found.
+outOfBoundsPageNotFound.p2 = To continue making changes to your trust you can:
+outOfBoundsPageNotFound.bullet1 = go to the trust overview
+outOfBoundsPageNotFound.bullet2 = add or change details for {0}
+outOfBoundsPageNotFound.bullet2.protector = a protector
