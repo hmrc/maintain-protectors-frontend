@@ -31,8 +31,6 @@ lazy val microservice = Project(appName, file("."))
         group(
           Seq(
             "javascripts/maintainprotectorsfrontend.js",
-            "javascripts/autocomplete.js",
-            "javascripts/libraries/location-autocomplete.min.js",
             "javascripts/iebacklink.js"
           )
         )
