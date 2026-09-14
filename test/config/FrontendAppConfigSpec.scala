@@ -54,4 +54,11 @@ class FrontendAppConfigSpec extends SpecBase {
     ) mustBe "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/welsh-language-helplines"
   }
 
+  "expose login, continue, logout URLs and logoutAudit" in {
+    appConfig.loginUrl         mustBe "http://localhost:9949/auth-login-stub/gg-sign-in"
+    appConfig.loginContinueUrl mustBe "http://localhost:9781/trusts-registration"
+    appConfig.logoutUrl        mustBe "http://localhost:9514/feedback/trusts?useServiceNavigation"
+    appConfig.logoutAudit      mustBe false
+  }
+
 }

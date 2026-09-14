@@ -21,7 +21,6 @@ import controllers.routes
 import play.api.Configuration
 import play.api.i18n.{Lang, Messages}
 import play.api.mvc.Call
-import uk.gov.hmrc.hmrcfrontend.config.ContactFrontendConfig
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import java.time.LocalDate
@@ -29,8 +28,7 @@ import java.time.LocalDate
 @Singleton
 class FrontendAppConfig @Inject() (
   configuration: Configuration,
-  servicesConfig: ServicesConfig,
-  contactFrontendConfig: ContactFrontendConfig
+  servicesConfig: ServicesConfig
 ) {
 
   final val ENGLISH         = "en"
@@ -39,10 +37,6 @@ class FrontendAppConfig @Inject() (
 
   val appName: String = configuration.get[String]("appName")
 
-  val betaFeedbackUrl =
-    s"${contactFrontendConfig.baseUrl.get}/contact/beta-feedback?service=${contactFrontendConfig.serviceId.get}"
-
-  lazy val authUrl: String          = servicesConfig.baseUrl("auth")
   lazy val loginUrl: String         = configuration.get[String]("urls.login")
   lazy val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
 
@@ -58,15 +52,12 @@ class FrontendAppConfig @Inject() (
   lazy val locationCanonicalList: String   = configuration.get[String]("location.canonical.list.all")
   lazy val locationCanonicalListCY: String = configuration.get[String]("location.canonical.list.allCY")
 
-  lazy val logoutUrl: String = configuration.get[String]("urls.logout")
+  lazy val logoutUrl: String = s"${configuration.get[String]("urls.logout")}?useServiceNavigation"
 
   lazy val logoutAudit: Boolean =
     configuration.get[Boolean]("microservice.services.features.auditing.logout")
 
   lazy val maintainATrustOverview: String = configuration.get[String]("urls.maintainATrustOverview")
-
-  lazy val languageTranslationEnabled: Boolean =
-    configuration.get[Boolean]("microservice.services.features.welsh-translation")
 
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang(ENGLISH),
