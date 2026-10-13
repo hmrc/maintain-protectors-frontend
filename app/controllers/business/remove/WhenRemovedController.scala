@@ -55,21 +55,23 @@ class WhenRemovedController @Inject() (
   }
 
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async { implicit request =>
-    trust.getBusinessProtector(request.userAnswers.identifier, index).flatMap { protector =>
-      val form = formProvider.withPrefixAndEntityStartDate("businessProtector.whenRemoved", protector.entityStart)
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, index, protector.name))),
-          value =>
-            trustService
-              .removeProtector(
-                request.userAnswers.identifier,
-                RemoveProtector(ProtectorType.BusinessProtector, index, value)
-              )
-              .map(_ => Redirect(controllers.routes.AddAProtectorController.onPageLoad()))
-        )
-    }
+    trust
+      .getBusinessProtector(request.userAnswers.identifier, index)
+      .flatMap { protector =>
+        val form = formProvider.withPrefixAndEntityStartDate("businessProtector.whenRemoved", protector.entityStart)
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, index, protector.name))),
+            value =>
+              trustService
+                .removeProtector(
+                  request.userAnswers.identifier,
+                  RemoveProtector(ProtectorType.BusinessProtector, index, value)
+                )
+                .map(_ => Redirect(controllers.routes.AddAProtectorController.onPageLoad()))
+          )
+      }
       .recoverWith {
         recoverIndexAndGenericException("protector", index, request.userAnswers.identifier, "onSubmit")
       }
