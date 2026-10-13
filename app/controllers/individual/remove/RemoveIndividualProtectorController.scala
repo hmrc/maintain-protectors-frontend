@@ -92,6 +92,9 @@ class RemoveIndividualProtectorController @Inject() (
                 } yield Redirect(controllers.individual.remove.routes.WhenRemovedController.onPageLoad(index).url)
               }
             }
+              .recoverWith {
+                recoverIndexAndGenericException("protector", index, request.userAnswers.identifier, "onSubmit")
+              }
           } else {
             Future.successful(Redirect(controllers.routes.AddAProtectorController.onPageLoad().url))
           }

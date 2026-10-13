@@ -70,6 +70,9 @@ class WhenRemovedController @Inject() (
               .map(_ => Redirect(controllers.routes.AddAProtectorController.onPageLoad()))
         )
     }
+      .recoverWith {
+        recoverIndexAndGenericException("protector", index, request.userAnswers.identifier, "onSubmit")
+      }
   }
 
 }
