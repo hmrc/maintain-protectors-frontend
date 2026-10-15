@@ -55,21 +55,26 @@ class WhenRemovedController @Inject() (
   }
 
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async { implicit request =>
-    trust.getIndividualProtector(request.userAnswers.identifier, index).flatMap { protector =>
-      val form = formProvider.withPrefixAndEntityStartDate("individualProtector.whenRemoved", protector.entityStart)
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, index, protector.name.displayName))),
-          value =>
-            trustService
-              .removeProtector(
-                request.userAnswers.identifier,
-                RemoveProtector(ProtectorType.IndividualProtector, index, value)
-              )
-              .map(_ => Redirect(controllers.routes.AddAProtectorController.onPageLoad()))
-        )
-    }
+    trust
+      .getIndividualProtector(request.userAnswers.identifier, index)
+      .flatMap { protector =>
+        val form = formProvider.withPrefixAndEntityStartDate("individualProtector.whenRemoved", protector.entityStart)
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, index, protector.name.displayName))),
+            value =>
+              trustService
+                .removeProtector(
+                  request.userAnswers.identifier,
+                  RemoveProtector(ProtectorType.IndividualProtector, index, value)
+                )
+                .map(_ => Redirect(controllers.routes.AddAProtectorController.onPageLoad()))
+          )
+      }
+      .recoverWith {
+        recoverIndexAndGenericException("protector", index, request.userAnswers.identifier, "onSubmit")
+      }
   }
 
 }

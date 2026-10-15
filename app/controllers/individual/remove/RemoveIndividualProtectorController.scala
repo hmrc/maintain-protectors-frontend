@@ -77,21 +77,26 @@ class RemoveIndividualProtectorController @Inject() (
         value =>
           if (value) {
 
-            trustService.getIndividualProtector(request.userAnswers.identifier, index).flatMap { protector =>
-              if (protector.provisional) {
-                trustService
-                  .removeProtector(
-                    request.userAnswers.identifier,
-                    RemoveProtector(ProtectorType.IndividualProtector, index)
-                  )
-                  .map(_ => Redirect(controllers.routes.AddAProtectorController.onPageLoad()))
-              } else {
-                for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(RemoveYesNoPage, value))
-                  _              <- repository.set(updatedAnswers)
-                } yield Redirect(controllers.individual.remove.routes.WhenRemovedController.onPageLoad(index).url)
+            trustService
+              .getIndividualProtector(request.userAnswers.identifier, index)
+              .flatMap { protector =>
+                if (protector.provisional) {
+                  trustService
+                    .removeProtector(
+                      request.userAnswers.identifier,
+                      RemoveProtector(ProtectorType.IndividualProtector, index)
+                    )
+                    .map(_ => Redirect(controllers.routes.AddAProtectorController.onPageLoad()))
+                } else {
+                  for {
+                    updatedAnswers <- Future.fromTry(request.userAnswers.set(RemoveYesNoPage, value))
+                    _              <- repository.set(updatedAnswers)
+                  } yield Redirect(controllers.individual.remove.routes.WhenRemovedController.onPageLoad(index).url)
+                }
               }
-            }
+              .recoverWith {
+                recoverIndexAndGenericException("protector", index, request.userAnswers.identifier, "onSubmit")
+              }
           } else {
             Future.successful(Redirect(controllers.routes.AddAProtectorController.onPageLoad().url))
           }
